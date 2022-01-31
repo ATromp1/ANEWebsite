@@ -1,10 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
+{% extends "base.html" %}
+
 <head>
     <meta charset="UTF-8">
     <title>HomePage</title>
 </head>
 <body>
-    <h1>This is a Title</h1>
+{% block content %}
+
+    {% load account %}
+
+    <h1>home.html</h1>
+
+    {% if request.user.is_authenticated %}
+        {{ social_accounts.0.extra_data.battletag }} has logged in...
+    {% else %}
+        You're not logged in
+    {% endif %}
+    <p>With characters:</p>
+    {% for entries in db %}
+        <p>{{ entries.name }}</p>
+    {% endfor %}
+    <h1>Guild Roster</h1>
+    {% for char in roster %}
+        <p>{{ char.name }}</p>
+    {% endfor %}
+
+{% endblock %}
+
 </body>
 </html>
