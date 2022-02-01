@@ -5,6 +5,15 @@
     <title>Title</title>
 </head>
 <body>
+{% block content %}
 
+    <h1>RAID EVENTS</h1>
+
+    {% for content in abc %}
+        <p>{{ content.roster.name }}</p>
+        <p>{{ content.date }}</p>
+    {% endfor %}
+
+{% endblock %}
 </body>
 </html>

@@ -18,7 +18,8 @@ from django.urls import path, include
 
 from pages.views import (
     home_view,
-    roster_view
+    roster_view,
+    calendar_view
 )
 
 urlpatterns = [
@@ -26,6 +27,7 @@ urlpatterns = [
     path('', home_view),
     path('accounts/', include('allauth.urls')),
     path('roster/', roster_view),
+    path('calendar/', calendar_view)
     # path('social/', include('social_django.urls', namespace='social'))
 
 ]

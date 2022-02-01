@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CurrentUser, Roster
+from .models import CurrentUser, Roster, RaidEvent
 
 
 class PlayerAdmin(admin.ModelAdmin):
@@ -7,8 +7,11 @@ class PlayerAdmin(admin.ModelAdmin):
 
 
 class RosterAdmin(admin.ModelAdmin):
-    list_display = ['name', 'rank']
+    list_display = ['name', 'character_id', 'rank']
 
+class RaidEventAdmin(admin.ModelAdmin):
+    list_display = ['date']
 
 admin.site.register(CurrentUser, PlayerAdmin)
 admin.site.register(Roster, RosterAdmin)
+admin.site.register(RaidEvent, RaidEventAdmin)
