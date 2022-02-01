@@ -26,5 +26,6 @@ urlpatterns = [
     path('', home_view),
     path('accounts/', include('allauth.urls')),
     path('roster/', roster_view),
+    # path('social/', include('social_django.urls', namespace='social'))
 
 ]

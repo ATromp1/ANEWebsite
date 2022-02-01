@@ -15,7 +15,7 @@
     <h1>home.html</h1>
 
     {% if request.user.is_authenticated %}
-        {{ social_accounts.0.extra_data.battletag }} has logged in...
+        {{ social_user }} has logged in...
     {% else %}
         You're not logged in
     {% endif %}

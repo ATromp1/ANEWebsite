@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from allauth.socialaccount.models import SocialAccount, SocialToken
 import requests
@@ -9,20 +10,21 @@ from django.db import IntegrityError
 
 from players.utils import json_extract
 
-
+@login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
 def home_view(request):
     template_name = 'home.html'
 
-    api_profiles = get_profile_summary()
+    api_profiles = get_profile_summary(request)
     populate_char_db(api_profiles)
     api_roster = get_guild_roster()
 
     populate_roster_db(api_roster)
 
+
     context = {
         'social_accounts': SocialAccount.objects.all(),
-        'db': CurrentUser.objects.all(),
-        'roster': Roster.objects.all()
+        'social_user': SocialAccount.objects.filter(user=request.user).first().extra_data['battletag'],
+        'roster': Roster.objects.all(),
     }
 
     return render(request, template_name, context)
@@ -44,7 +46,9 @@ def populate_roster_db(api_roster):
             Roster.objects.filter(name=character).update_or_create(name=character, rank=rank)
 
 
-def get_profile_summary():
+def get_profile_summary(request):
+
+    print("Current user: ", SocialAccount.objects.filter(user=request.user))
     access_token = SocialToken.objects.all().first()
     header = {
         'Authorization': 'Bearer %s' % access_token,
