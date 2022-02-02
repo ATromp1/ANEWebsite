@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "base.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Events Details</title>
+</head>
+<body>
+
+{% block content %}
+
+    <h1>Events Details</h1>
+    <p>Roster</p>
+
+    <ul>
+    {% for player in roster %}
+        <li>{{ player.name }}</li>
+    {% endfor %}
+    </ul>
+    <p>Signed Off</p>
+    <ul>
+        {% for player in event.sign_off.all %}
+            <li>{{ player.name }}</li>
+        {% endfor %}
+    </ul>
+
+
+
+{% endblock %}
+
+</body>
+</html>

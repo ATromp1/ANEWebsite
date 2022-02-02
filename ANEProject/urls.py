@@ -19,15 +19,19 @@ from django.urls import path, include
 from pages.views import (
     home_view,
     roster_view,
-    calendar_view
+    calendar_view,
+    events_view,
+    events_details_view,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view),
     path('accounts/', include('allauth.urls')),
-    path('roster/', roster_view),
-    path('calendar/', calendar_view)
+    path('roster/', roster_view, name='roster'),
+    path('calendar/', calendar_view, name='calendar'),
+    path('events/', events_view, name='events'),
+    path('events/details/<raidevent_id>', events_details_view, name='events-details'),
     # path('social/', include('social_django.urls', namespace='social'))
 
 ]

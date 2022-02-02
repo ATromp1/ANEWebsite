@@ -22,7 +22,27 @@ def home_view(request):
     context = {
         'social_accounts': SocialAccount.objects.all(),
         'social_user': SocialAccount.objects.filter(user=request.user).first().extra_data['battletag'],
-        'roster': Roster.objects.all(),
+    }
+    return render(request, template_name, context)
+
+def events_view(request):
+    template_name = 'raid_events.html'
+
+    event_list = RaidEvent.objects.all()
+    context = {
+        'event_list': event_list,
+    }
+    return render(request, template_name, context)
+
+def events_details_view(request, raidevent_id):
+    event = RaidEvent.objects.get(pk=raidevent_id)
+
+    roster = RaidEvent.objects.first()
+    roster = roster.roster()
+    template_name = 'events_details.html'
+    context = {
+        'event': event,
+        'roster': roster,
     }
     return render(request, template_name, context)
 
@@ -40,6 +60,7 @@ def calendar_view(request):
     current_month = datetime.now().month
     #create calendar
     cal = HTMLCalendar().formatmonth(current_year, current_month)
+    # print("DATETIME: ", datetime.now().isocalendar().week)
 
     context = {
         'abc': RaidEvent.objects.all(),

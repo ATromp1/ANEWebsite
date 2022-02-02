@@ -10,7 +10,7 @@ class RosterAdmin(admin.ModelAdmin):
     list_display = ['name', 'character_id', 'rank']
 
 class RaidEventAdmin(admin.ModelAdmin):
-    list_display = ['date']
+    list_display = ['name', 'date']
 
 admin.site.register(CurrentUser, PlayerAdmin)
 admin.site.register(Roster, RosterAdmin)
