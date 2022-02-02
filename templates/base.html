@@ -15,19 +15,8 @@
     <title>Hello, world!</title>
 </head>
 <body>
+{% include 'extentions/navbar.html' %}
 
-<div class="buttons">
-    <form method="GET" action="/">
-        <button type="submit" class="btn btn-primary">Homepage</button>
-    </form>
-    <form method="GET" action="/accounts/battlenet/login/?process=login">
-        <button type="submit" class="btn btn-primary">BattleNet</button>
-    </form>
-    <form method="GET" action="/roster">
-        <button type="submit" class="btn btn-primary">Roster</button>
-    </form>
-
-</div>
 
 {% block content %}
 

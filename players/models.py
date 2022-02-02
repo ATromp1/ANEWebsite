@@ -22,11 +22,16 @@ class Roster(models.Model):
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.CharField(max_length=20)
 
+class RaidInstance(models.Model):
+    boss = models.CharField(max_length=20)
+    name = models.CharField(max_length=40)
+
 
 class RaidEvent(models.Model):
     date = models.DateField()
-    roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
+    roster = models.ManyToManyField(Roster)
     sign_off = models.ManyToManyField(CurrentUser)
+
 
     def create_event(self):
         pass
@@ -38,8 +43,6 @@ class RaidEvent(models.Model):
         pass
 
 
-class RaidInstance(models.Model):
-    boss = models.CharField(max_length=20)
-    name = models.CharField(max_length=40)
+
 
 
