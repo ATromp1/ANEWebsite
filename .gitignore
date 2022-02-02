@@ -1,1 +1,9 @@
 db.sqlite3
+
+/players/__pycache__
+/players/migrations/__pycache__
+
+/pages/__pycache__
+/pages/migrations/__pycache__
+
+/ANEProject/__pycache__
