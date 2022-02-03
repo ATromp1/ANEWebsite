@@ -18,7 +18,7 @@ def home_view(request):
 
     # json decode error
     # api_roster = get_guild_roster()
-    #
+
     # populate_roster_db(api_roster)
 
     context = {
@@ -38,13 +38,30 @@ def events_view(request):
 
 def events_details_view(request, raidevent_id):
     event = RaidEvent.objects.get(pk=raidevent_id)
+    #
+    # roster = RaidEvent.objects.first()
+    # roster = roster.roster()
+    roster = []
+    for character in Roster.objects.all():
+        roster.append(character.name)
 
-    roster = RaidEvent.objects.first()
-    roster = roster.roster()
+    current_user = SocialAccount.objects.filter(user=request.user).first().extra_data['id']
+    characters_user = CurrentUser.objects.filter(account_id=current_user)
+    user_chars = []
+    for character in characters_user:
+        user_chars.append(character.name)
+
+    difference = list(set(roster)-set(user_chars))
+    intersection = set(roster).intersection(set(user_chars))
+    print(intersection)
+    print(difference)
+
+
     template_name = 'events_details.html'
     context = {
         'event': event,
-        'roster': roster,
+        'roster': difference,
+        'excluded': intersection,
     }
     return render(request, template_name, context)
 

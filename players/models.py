@@ -51,7 +51,6 @@ class RaidEvent(models.Model):
         all_characters = Roster.objects.all()
         # roster = all_characters.difference(signed_off)
         # print(roster)
-
         return dummy
 
 

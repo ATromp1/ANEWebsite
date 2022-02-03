@@ -16,13 +16,13 @@
 
     <ul>
     {% for player in roster %}
-        <li>{{ player.name }}</li>
+        <li>{{ player }}</li>
     {% endfor %}
     </ul>
     <p>Signed Off</p>
     <ul>
-        {% for player in event.sign_off.all %}
-            <li>{{ player.name }}</li>
+        {% for player in excluded %}
+            <li>{{ player }}</li>
         {% endfor %}
     </ul>
 
