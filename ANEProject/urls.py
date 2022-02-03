@@ -26,7 +26,7 @@ from pages.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_view),
+    path('', home_view, name='home'),
     path('accounts/', include('allauth.urls')),
     path('roster/', roster_view, name='roster'),
     path('calendar/', calendar_view, name='calendar'),

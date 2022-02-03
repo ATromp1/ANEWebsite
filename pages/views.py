@@ -6,7 +6,7 @@ from calendar import HTMLCalendar
 from datetime import datetime
 
 from pages.utils import populate_roster_db, get_profile_summary, get_guild_roster, populate_char_db
-from players.models import Roster, RaidEvent
+from players.models import Roster, RaidEvent, CurrentUser
 
 
 @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
@@ -15,9 +15,11 @@ def home_view(request):
 
     api_profiles = get_profile_summary(request)
     populate_char_db(api_profiles)
-    api_roster = get_guild_roster()
 
-    populate_roster_db(api_roster)
+    # json decode error
+    # api_roster = get_guild_roster()
+    #
+    # populate_roster_db(api_roster)
 
     context = {
         'social_accounts': SocialAccount.objects.all(),
