@@ -25,14 +25,12 @@ body {
 .list-group-item {
   background-color: var(--main-text-color);
   color: var(--white-color); }
-
-.list-group-item:hover {
-  background-color: var(--bg-hover-color);
-  color: var(--white-color); }
-
-.list-group-item.active {
-  background-color: var(--bg-active-color);
-  border-color: var(--bg-active-color); }
+  .list-group-item:hover {
+    background-color: var(--bg-hover-color);
+    color: var(--white-color); }
+  .list-group-item.active {
+    background-color: var(--bg-active-color);
+    border-color: var(--bg-active-color); }
 
 .material-icons {
   margin-right: 1em;
@@ -56,7 +54,7 @@ body {
       .navbar .navbar-content-container .navbar-btn:hover {
         color: var(--white-color);
         background-color: var(--bg-active-color); }
-      .navbar .navbar-content-container .navbar-btn:active {
+      .navbar .navbar-content-container .navbar-btn.active {
         color: var(--white-color);
         background-color: var(--bg-active-color); }
     .navbar .navbar-content-container .navbar-ane {
@@ -72,6 +70,7 @@ body {
       max-width: 500px;
       width: 80%; }
       .navbar .navbar-content-container .navbar-links .navbar-nav {
+        height: 3rem;
         justify-content: space-between;
         align-content: center;
         align-items: center; }
@@ -93,17 +92,17 @@ body {
         align-content: center;
         align-items: center; }
         .navbar .navbar-content-container .navbar-user .navbar-user-menu .navbar-user-menu-btn {
-          height: 51px;
-          margin-left: 0.5em; }
-  @media screen and (max-width: 60em) {
-    .navbar .navbar-user {
-      margin-right: 0px !important; }
-      .navbar .navbar-user .navbar-user-menu span {
-        display: none; }
-      .navbar .navbar-user .navbar-user-menu .navbar-user-menu-btn {
-        width: auto;
-        height: auto;
-        margin: 0px; } }
+          margin-left: 0.5rem;
+          text-align: center; }
+    @media screen and (max-width: 60em) {
+      .navbar .navbar-content-container .navbar-user {
+        margin-right: 0px !important; }
+        .navbar .navbar-content-container .navbar-user .navbar-user-menu .navbar-user-menu-btn {
+          width: auto;
+          height: auto;
+          margin: 0px; }
+        .navbar .navbar-content-container .navbar-user .navbar-user-menu span {
+          display: none; } }
   @media screen and (max-width: 46em) {
     .navbar .navbar-ane {
       display: none; }
@@ -122,7 +121,10 @@ body {
   max-width: 950px;
   width: 90%;
   height: 70vh;
-  max-height: 450px; }
+  max-height: 450px;
+  /* calendar-grid-container */ }
+  .calendar-grid-container h1 {
+    margin: 1rem 0; }
   .calendar-grid-container .calendar-grid {
     width: 100%;
     height: 100%;
@@ -145,12 +147,13 @@ body {
       background-color: var(--main-bg-color);
       color: var(--main-text-color);
       border: var(--main-text-color) 2px solid;
-      border-radius: 0.25rem; }
+      border-radius: 0.25rem;
+      transition: all 150ms ease-in;
+      transition-delay: 100ms; }
       .calendar-grid-container .calendar-grid .calendar-grid-item:hover {
-        transition: all 150ms ease-in;
-        transition-delay: 100ms;
-        background-color: var(--main-text-color);
-        color: var(--white-color); }
+        transform: scale(1.1, 1.1);
+        /*                 background-color: var(--main-text-color);
+                color: var(--white-color); */ }
       .calendar-grid-container .calendar-grid .calendar-grid-item.disabled {
         border-color: var(--bg-active-color);
         pointer-events: none;
@@ -159,32 +162,29 @@ body {
         border: #0d6efd 2px solid; }
         .calendar-grid-container .calendar-grid .calendar-grid-item.active .calendar-grid-date {
           color: #0d6efd; }
-
-@media screen and (max-width: 600px) {
-  .calendar-grid-container {
-    max-height: 370px; } }
-
-@media screen and (max-width: 420px) {
-  .calendar-grid-container {
-    max-height: 320px; } }
-
-.calendar-grid-item-content {
-  width: 90%;
-  margin: auto;
-  text-align: center; }
-  .calendar-grid-item-content .calendar-grid-event-btn {
-    display: none; }
-  @media screen and (min-width: 960px) and (min-height: 350px) {
-    .calendar-grid-item-content .calendar-grid-event-btn {
-      cursor: pointer;
-      text-decoration: none;
-      color: var(--main-text-color);
-      display: block;
-      border-radius: 0.25rem;
-      padding: 5% 0; }
-      .calendar-grid-item-content .calendar-grid-event-btn.selected {
+  .calendar-grid-container .calendar-grid-item-content {
+    width: 90%;
+    margin: auto;
+    text-align: center; }
+    .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn {
+      display: none; }
+    @media screen and (min-width: 960px) and (min-height: 350px) {
+      .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn {
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--main-text-color);
+        display: block;
+        border-radius: 0.25rem;
+        padding: 5% 0; }
+      .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.selected {
         background-color: #28c995; }
-      .calendar-grid-item-content .calendar-grid-event-btn.benched {
+      .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.benched {
         background-color: #ffc107; }
-      .calendar-grid-item-content .calendar-grid-event-btn.absent {
+      .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.absent {
         background-color: #c9283e; } }
+  @media screen and (max-width: 600px) {
+    .calendar-grid-container {
+      max-height: 370px; } }
+  @media screen and (max-width: 420px) {
+    .calendar-grid-container {
+      max-height: 320px; } }

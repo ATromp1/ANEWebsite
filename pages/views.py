@@ -119,13 +119,11 @@ def calendar_view(request):
         except AttributeError:
             event_name = "Raid"
 
-
-
         events_dict.update({event.id: {
             'event_name': event_name,
             'event_date': event.date,
             'event_id': event.id,
-            'currentUser_status': currentUser_status,
+            # 'currentUser_status': currentUser_status,
 
         }})
 
@@ -198,8 +196,6 @@ def generate_calendar(events):
             current_day_of_month, current_month)
         calendarhtml += "<div class='calendar-grid-item-content'>"
 
-        # selected / absent / benched
-
         for index in events:
             if events[index]['event_date'].day == current_day_of_month:
                 if events[index]['event_date'].month == current_month:
@@ -208,7 +204,6 @@ def generate_calendar(events):
                     #    event_status = events[index]['event_status']
                     event_status = "absent"
                     event_status_cssclass = event_status
-
 
                     calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
                     calendarhtml += "<a href='/calendar' class='calendar-grid-event-btn %s'>%s</a>" % (

@@ -34,14 +34,19 @@
             <div class="navbar-user">
                 <div class="navbar-user-menu">
                     {% if request.user.is_authenticated %}
-                        <span>{{ social_user }} Kaspon#2412</span>
+                    {% comment %} TEST USER REMOVE {% endcomment %}
+                        <span>{{ social_user }}  Kaspon#2412</span>
                     {% endif %}
-
+                    
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
                     {% if request.user.is_authenticated %}
-                        <a class="navbar-btn navbar-user-menu-btn" href="/roster">Logout</a>
+                        <a class="navbar-btn navbar-user-menu-btn" href="/accounts/battlenet/login/">Logout</a>
                     {% else %}
-                        <a class="navbar-btn navbar-user-menu-btn" href="/roster">Login</a>
+                        <a class="navbar-btn navbar-user-menu-btn" href="/accounts/battlenet/login/">Login</a>
                     {% endif %}
+                </li>
+            </ul> 
                 </div>
             </div> 
         </div>     
