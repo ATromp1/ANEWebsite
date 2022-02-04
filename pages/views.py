@@ -15,14 +15,17 @@ from players.models import Roster, RaidEvent
 def home_view(request):
     template_name = 'home.html'
 
-    api_profiles = get_profile_summary(request)
-    populate_char_db(api_profiles)
-
     context = {
         'social_accounts': SocialAccount.objects.all(),
         'social_user': get_current_user_id(request)['battletag'],
     }
     return render(request, template_name, context)
+
+
+def login_user_button(request):
+    api_profiles = get_profile_summary(request)
+    populate_char_db(api_profiles)
+    return redirect('/accounts/battlenet/login/?process=login')
 
 
 def events_view(request):

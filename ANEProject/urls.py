@@ -26,12 +26,14 @@ from pages.views import (
     sign_off_user,
     sign_in_user,
     add_event,
+    login_user_button
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
     path('accounts/', include('allauth.urls')),
+    path('login_user/', login_user_button, name='login-user-button'),
     path('roster/', roster_view, name='roster'),
     path('roster/update', update_roster, name='update-roster'),
     path('calendar/', calendar_view, name='calendar'),
