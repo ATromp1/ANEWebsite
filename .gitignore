@@ -1,4 +1,5 @@
 db.sqlite3
+.gitignore
 
 /players/__pycache__
 /players/migrations/__pycache__
@@ -7,3 +8,9 @@ db.sqlite3
 /pages/migrations/__pycache__
 
 /ANEProject/__pycache__
+
+package-lock.json
+package.json
+node_modules
+
+/static/styles.scss
