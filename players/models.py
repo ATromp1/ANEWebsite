@@ -48,13 +48,13 @@ class RaidEvent(models.Model):
     #         self.roster.add(Roster.objects.get(name=character))
     #     super().__init__()
 
-    def sign_off(self):
+    def sign_off(self, current_user_id):
         roster = []
         for character in Roster.objects.all():
             roster.append(character.name)
             self.roster.add(Roster.objects.get(name=character))
         user_chars = []
-        for character in CurrentUser.objects.all():
+        for character in CurrentUser.objects.filter(account_id=current_user_id):
             user_chars.append(character.name)
         diff = set(roster).intersection(set(user_chars))
 

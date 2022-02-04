@@ -48,7 +48,8 @@ def events_details_view(request, raidevent_id):
 
 def sign_off_user(request, raidevent_id):
     event_obj = RaidEvent.objects.get(pk=raidevent_id)
-    event_obj.sign_off()
+    current_user_account_id = SocialAccount.objects.filter(user=request.user).first().extra_data['sub']
+    event_obj.sign_off(current_user_id=current_user_account_id)
     return redirect('events-details', raidevent_id=event_obj.id)
 
 
