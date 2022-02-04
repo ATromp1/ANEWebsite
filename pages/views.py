@@ -46,8 +46,8 @@ def add_event(request):
             month = request.POST['date_month']
             day = request.POST['date_day']
             year = request.POST['date_year']
-            date = year + "-" + month + "-"+ day
-            RaidEvent.objects.get(date=date).populate_roster()
+            event_date = year + "-" + month + "-" + day
+            RaidEvent.objects.get(date=event_date).populate_roster()
             return HttpResponseRedirect('/add_event?submitted=True')
     else:
         form = Eventform
@@ -104,7 +104,6 @@ def roster_view(request):
 def update_roster(request):
     api_roster = get_guild_roster(request)
     populate_roster_db(api_roster)
-
     return redirect('roster')
 
 
