@@ -12,16 +12,17 @@
 {% block content %}
 
     <h1>Events Details</h1>
-    <p>Roster</p>
+
+    <h2>Roster</h2>
 
     <ul>
-    {% for player in roster %}
+    {% for player in roster_in %}
         <li>{{ player }}</li>
     {% endfor %}
     </ul>
     <p>Signed Off</p>
     <ul>
-        {% for player in excluded %}
+        {% for player in roster_out %}
             <li>{{ player }}</li>
         {% endfor %}
     </ul>

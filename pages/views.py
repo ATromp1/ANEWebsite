@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
 import calendar
 from calendar import HTMLCalendar
@@ -16,19 +16,15 @@ def home_view(request):
     api_profiles = get_profile_summary(request)
     populate_char_db(api_profiles)
 
-    # json decode error
-    # api_roster = get_guild_roster()
-
-    # populate_roster_db(api_roster)
-
     context = {
         'social_accounts': SocialAccount.objects.all(),
         'social_user': SocialAccount.objects.filter(user=request.user).first().extra_data['battletag'],
     }
     return render(request, template_name, context)
 
+
 def events_view(request):
-    template_name = 'raid_events.html'
+    template_name = 'events.html'
 
     event_list = RaidEvent.objects.all()
     context = {
@@ -36,34 +32,37 @@ def events_view(request):
     }
     return render(request, template_name, context)
 
+
 def events_details_view(request, raidevent_id):
     event = RaidEvent.objects.get(pk=raidevent_id)
-    #
-    # roster = RaidEvent.objects.first()
-    # roster = roster.roster()
-    roster = []
-    for character in Roster.objects.all():
-        roster.append(character.name)
 
-    current_user = SocialAccount.objects.filter(user=request.user).first().extra_data['id']
-    characters_user = CurrentUser.objects.filter(account_id=current_user)
-    user_chars = []
-    for character in characters_user:
-        user_chars.append(character.name)
-
-    difference = list(set(roster)-set(user_chars))
-    intersection = set(roster).intersection(set(user_chars))
-    print(intersection)
-    print(difference)
-
+    roster_in = event.event_roster()
+    roster_out = event.event_sign_offs()
 
     template_name = 'events_details.html'
     context = {
         'event': event,
-        'roster': difference,
-        'excluded': intersection,
+        'roster_in': roster_in,
+        'roster_out': roster_out,
     }
     return render(request, template_name, context)
+
+def update_events_details_view(request, raidevent_id):
+    id = RaidEvent.objects.get(pk=raidevent_id)
+    date = RaidEvent.objects.filter(pk=raidevent_id).first().date
+
+    test = RaidEvent.objects.get(date=date)
+    roster = test.event_roster()
+    sign_offs = test.event_sign_offs()
+
+    context = {
+        'event': id,
+        'roster': roster,
+        'sign_off': sign_offs,
+    }
+
+    return render(request, 'update_event.html', context)
+
 
 def roster_view(request):
     template_name = 'roster.html'
@@ -72,12 +71,21 @@ def roster_view(request):
     }
     return render(request, template_name, context)
 
+
+
+def update_roster(request):
+    api_roster = get_guild_roster(request)
+    populate_roster_db(api_roster)
+
+    return redirect('roster')
+
+
 def calendar_view(request):
     template_name = 'calendar.html'
 
     current_year = datetime.now().year
     current_month = datetime.now().month
-    #create calendar
+    # create calendar
     cal = HTMLCalendar().formatmonth(current_year, current_month)
     # print("DATETIME: ", datetime.now().isocalendar().week)
 
@@ -86,5 +94,3 @@ def calendar_view(request):
         'cal': cal,
     }
     return render(request, template_name, context)
-
-

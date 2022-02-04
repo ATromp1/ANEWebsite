@@ -7,7 +7,7 @@ class PlayerAdmin(admin.ModelAdmin):
 
 
 class RosterAdmin(admin.ModelAdmin):
-    list_display = ['name', 'character_id', 'rank']
+    list_display = ['name', 'character_id', 'rank', 'in_raid']
 
 class RaidEventAdmin(admin.ModelAdmin):
     list_display = ['name', 'date']

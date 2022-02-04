@@ -12,6 +12,9 @@
 {% block content %}
 
     <h1>Guild Roster</h1>
+    {% if request.user.is_staff %}
+        <button type="submit" onclick="location.href='{% url 'update-roster' %}'">Update Roster</button>
+    {% endif %}
 
 
     {% for char in roster %}

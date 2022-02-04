@@ -22,6 +22,8 @@ from pages.views import (
     calendar_view,
     events_view,
     events_details_view,
+    update_roster,
+    update_events_details_view
 )
 
 urlpatterns = [
@@ -29,9 +31,11 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('accounts/', include('allauth.urls')),
     path('roster/', roster_view, name='roster'),
+    path('roster/update', update_roster, name='update-roster'),
     path('calendar/', calendar_view, name='calendar'),
     path('events/', events_view, name='events'),
-    path('events/details/<raidevent_id>', events_details_view, name='events-details'),
-    # path('social/', include('social_django.urls', namespace='social'))
+    path('events/<raidevent_id>', events_details_view, name='events-details'),
+    path('update_events/<raidevent_id>', update_events_details_view, name='update-events-details'),
+    # path('events/<raidevent_id>/update', update_events_details_view, name='update-events-details'),
 
 ]

@@ -2,6 +2,7 @@ import requests
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from django.db import IntegrityError
 
+
 from players.models import CurrentUser, Roster
 
 
@@ -25,12 +26,14 @@ def get_profile_summary(request):
     }
     response = requests.get('https://eu.api.blizzard.com/profile/user/wow?namespace=profile-eu&locale=en_US',
                             headers=header)
+
     result = response.json()
     return result
 
 
-def get_guild_roster():
-    access_token = SocialToken.objects.all().first()
+def get_guild_roster(request):
+    current_user = SocialAccount.objects.filter(user=request.user).first()
+    access_token = SocialToken.objects.filter(account=current_user).first()
     header = {
         'Authorization': 'Bearer %s' % access_token,
     }
@@ -49,6 +52,7 @@ def populate_char_db(res):
             char_id = res['wow_accounts'][i]['characters'][j]['id']
 
             try:
-                CurrentUser.objects.update_or_create(name=char_name, account_id=account_id, character_id=char_id, rank='7')
+                CurrentUser.objects.update_or_create(name=char_name, account_id=account_id, character_id=char_id,
+                                                     rank='7')
             except IntegrityError:
                 pass

@@ -24,6 +24,7 @@ class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
+    in_raid = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -40,26 +41,31 @@ class RaidInstance(models.Model):
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField()
+    roster = models.ManyToManyField(Roster, blank=True, default=True)
     sign_off = models.ManyToManyField(CurrentUser, blank=True)
 
     def __str__(self):
         return self.name
 
-    def roster(self):
-        dummy = []
-        signed_off = CurrentUser.objects.all()
-        all_characters = Roster.objects.all()
-        # roster = all_characters.difference(signed_off)
-        # print(roster)
-        return dummy
+    def event_roster(self):
+        roster = []
+        for character in Roster.objects.all():
+            roster.append(character.name)
+        user_chars = []
+        for character in CurrentUser.objects.all():
+            user_chars.append(character.name)
+        diff = set(roster).difference(set(user_chars))
+        for item in diff:
+            self.roster.add(Roster.objects.get(name=item))
 
+        return diff
 
-
-    def create_event(self):
-        pass
-
-    def delete_event(self):
-        pass
-
-    def edit_event(self):
-        pass
+    def event_sign_offs(self):
+        roster = []
+        for character in Roster.objects.all():
+            roster.append(character.name)
+        user_chars = []
+        for character in CurrentUser.objects.all():
+            user_chars.append(character.name)
+        intersection = set(roster).intersection(set(user_chars))
+        return intersection
