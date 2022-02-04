@@ -24,7 +24,8 @@ from pages.views import (
     events_details_view,
     update_roster,
     sign_off_user,
-    sign_in_user
+    sign_in_user,
+    add_event,
 )
 
 urlpatterns = [
@@ -36,6 +37,7 @@ urlpatterns = [
     path('calendar/', calendar_view, name='calendar'),
     path('events/', events_view, name='events'),
     path('events/<raidevent_id>', events_details_view, name='events-details'),
+    path('add_event', add_event, name='add-event'),
     path('sign_off_user/<raidevent_id>', sign_off_user, name='sign-off'),
     path('sign_in_user/<raidevent_id>', sign_in_user, name='sign-in'),
 

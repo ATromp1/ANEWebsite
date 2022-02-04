@@ -40,19 +40,19 @@ class RaidInstance(models.Model):
 
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
-    date = models.DateField()
+    date = models.DateField(unique=True)
     roster = models.ManyToManyField(Roster, blank=True, default=True)
 
-    # def __init__(self):
-    #     for character in Roster.objects.all():
-    #         self.roster.add(Roster.objects.get(name=character))
-    #     super().__init__()
+
+    def populate_roster(self):
+        for character in Roster.objects.all():
+            self.roster.add(Roster.objects.get(name=character))
 
     def sign_off(self, current_user_id):
         roster = []
         for character in Roster.objects.all():
             roster.append(character.name)
-            self.roster.add(Roster.objects.get(name=character))
+            # self.roster.add(Roster.objects.get(name=character))
         user_chars = []
         for character in CurrentUser.objects.filter(account_id=current_user_id):
             user_chars.append(character.name)
@@ -62,12 +62,12 @@ class RaidEvent(models.Model):
             self.roster.remove(Roster.objects.get(name=item))
             self.save()
 
-    def sign_in(self):
+    def sign_in(self, current_user_id):
         roster = []
         for character in Roster.objects.all():
             roster.append(character.name)
         user_chars = []
-        for character in CurrentUser.objects.all():
+        for character in CurrentUser.objects.filter(account_id=current_user_id):
             user_chars.append(character.name)
         diff = set(roster).intersection(set(user_chars))
         for item in diff:
