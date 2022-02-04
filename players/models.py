@@ -41,6 +41,7 @@ class RaidInstance(models.Model):
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField()
+
     roster = models.ManyToManyField(Roster, blank=True, default=True)
     sign_off = models.ManyToManyField(CurrentUser, blank=True)
 
@@ -51,12 +52,15 @@ class RaidEvent(models.Model):
         roster = []
         for character in Roster.objects.all():
             roster.append(character.name)
+            self.roster.add(Roster.objects.get(name=character))
         user_chars = []
         for character in CurrentUser.objects.all():
             user_chars.append(character.name)
-        diff = set(roster).difference(set(user_chars))
+        diff = set(roster).intersection(set(user_chars))
+
         for item in diff:
-            self.roster.add(Roster.objects.get(name=item))
+            self.roster.remove(Roster.objects.get(name=item))
+            self.save()
 
         return diff
 
