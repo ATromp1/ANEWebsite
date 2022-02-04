@@ -15,7 +15,7 @@
     <ul>
         {% for event in event_list %}
             <li><a href="{% url 'events-details' event.id %}">{{ event.date }}</a>
-            -- <a href="{% url 'update-events-details' event.id %}">Update</a>
+
             </li>
     {% endfor %}
     </ul>

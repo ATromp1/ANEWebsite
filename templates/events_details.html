@@ -14,18 +14,19 @@
     <h1>Events Details</h1>
 
     <h2>Roster</h2>
+    <a href="{% url 'sign-off' event.id %}">Sign Off</a> -- <a href="{% url 'sign-in' event.id %}">Sign In</a>
 
     <ul>
-    {% for player in roster_in %}
+    {% for player in roster %}
         <li>{{ player }}</li>
     {% endfor %}
     </ul>
-    <p>Signed Off</p>
-    <ul>
-        {% for player in roster_out %}
-            <li>{{ player }}</li>
-        {% endfor %}
-    </ul>
+{#    <p>Signed Off</p>#}
+{#    <ul>#}
+{#        {% for player in roster_out %}#}
+{#            <li>{{ player }}</li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
 
 
 

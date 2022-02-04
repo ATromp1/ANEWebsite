@@ -23,7 +23,8 @@ from pages.views import (
     events_view,
     events_details_view,
     update_roster,
-    update_events_details_view
+    sign_off_user,
+    sign_in_user
 )
 
 urlpatterns = [
@@ -35,7 +36,7 @@ urlpatterns = [
     path('calendar/', calendar_view, name='calendar'),
     path('events/', events_view, name='events'),
     path('events/<raidevent_id>', events_details_view, name='events-details'),
-    path('update_events/<raidevent_id>', update_events_details_view, name='update-events-details'),
-    # path('events/<raidevent_id>/update', update_events_details_view, name='update-events-details'),
+    path('sign_off_user/<raidevent_id>', sign_off_user, name='sign-off'),
+    path('sign_in_user/<raidevent_id>', sign_in_user, name='sign-in'),
 
 ]

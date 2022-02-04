@@ -34,34 +34,28 @@ def events_view(request):
 
 
 def events_details_view(request, raidevent_id):
-    event = RaidEvent.objects.get(pk=raidevent_id)
+    event_obj = RaidEvent.objects.get(pk=raidevent_id)
 
-    roster_in = event.event_roster()
-    roster_out = event.event_sign_offs()
+    roster = event_obj.roster.all()
 
     template_name = 'events_details.html'
     context = {
-        'event': event,
-        'roster_in': roster_in,
-        'roster_out': roster_out,
+        'event': event_obj,
+        'roster': roster,
     }
     return render(request, template_name, context)
 
-def update_events_details_view(request, raidevent_id):
-    id = RaidEvent.objects.get(pk=raidevent_id)
-    date = RaidEvent.objects.filter(pk=raidevent_id).first().date
 
-    test = RaidEvent.objects.get(date=date)
-    roster = test.event_roster()
-    sign_offs = test.event_sign_offs()
+def sign_off_user(request, raidevent_id):
+    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+    event_obj.sign_off()
+    return redirect('events-details', raidevent_id=event_obj.id)
 
-    context = {
-        'event': id,
-        'roster': roster,
-        'sign_off': sign_offs,
-    }
 
-    return render(request, 'update_event.html', context)
+def sign_in_user(request, raidevent_id):
+    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+    event_obj.sign_in()
+    return redirect('events-details', raidevent_id=event_obj.id)
 
 
 def roster_view(request):
@@ -70,7 +64,6 @@ def roster_view(request):
         'roster': Roster.objects.all()
     }
     return render(request, template_name, context)
-
 
 
 def update_roster(request):
