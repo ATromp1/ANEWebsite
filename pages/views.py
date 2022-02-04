@@ -11,7 +11,7 @@ from players.forms import Eventform
 from players.models import Roster, RaidEvent
 
 
-@login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
+# @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
 def home_view(request):
     template_name = 'home.html'
 
@@ -65,7 +65,6 @@ def add_event(request):
 
 def events_details_view(request, raidevent_id):
     event_obj = RaidEvent.objects.get(pk=raidevent_id)
-    print(event_obj.date)
     roster = event_obj.roster.all()
 
     template_name = 'events_details.html'
