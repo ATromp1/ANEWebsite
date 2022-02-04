@@ -1,16 +1,14 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from allauth.socialaccount.models import SocialAccount
-import calendar
-from calendar import Calendar, HTMLCalendar, TextCalendar
-from datetime import datetime, date, timedelta
-
-from calendar import HTMLCalendar
 from datetime import datetime
+from datetime import timedelta
+
+from allauth.socialaccount.models import SocialAccount
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+
 from pages.utils import populate_roster_db, get_profile_summary, get_guild_roster, populate_char_db
-from players.models import Roster, RaidEvent
 from players.forms import Eventform
+from players.models import Roster, RaidEvent
 
 
 @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
@@ -148,10 +146,6 @@ def generate_calendar(events):
         5: "Satur",
         6: "Sun",
     }
-
-
-
-
 
     # Calendar should start on wednesday - Get current weekday and go back x days to get to last wednesday
     # Current date
