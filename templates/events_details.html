@@ -13,20 +13,27 @@
 
     <h1>Events Details</h1>
 
-    <h2>Sign Ups</h2>
-    <a href="{% url 'sign-off' event.id %}" class="btn btn-danger">Sign Off</a> -- <a href="{% url 'sign-in' event.id %}" class="btn btn-success">Sign In</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h2>Sign Ups</h2>
+                <a href="{% url 'sign-off' event.id %}" class="btn btn-danger">Sign Off</a> -- <a href="{% url 'sign-in' event.id %}" class="btn btn-success">Sign In</a>
+                <ul>
+                    {% for player in roster %}
+                        <li>{{ player }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-sm">
+                One of three columns
+            </div>
+            <div class="col-sm">
+                One of three columns
+            </div>
+        </div>
+    </div>
 
-    <ul>
-    {% for player in roster %}
-        <li>{{ player }}</li>
-    {% endfor %}
-    </ul>
-{#    <p>Signed Off</p>#}
-{#    <ul>#}
-{#        {% for player in roster_out %}#}
-{#            <li>{{ player }}</li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
+
 
 
 

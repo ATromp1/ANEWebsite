@@ -13,6 +13,5 @@ class Eventform(ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Event name'}),
-            # 'date': forms.SelectDateWidget(attrs={'class': 'form-control', 'placeholder':'Date'})
             'date': forms.DateInput(attrs=dict(type='date'))
         }

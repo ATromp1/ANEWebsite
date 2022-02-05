@@ -16,8 +16,7 @@
 
     <ul>
         {% for event in event_list %}
-            <li><a href="{% url 'events-details' event.id %}" class="btn btn-success">{{ event.date }}</a> ---- <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-
+            <li><a href="{% url 'events-details' event.id %}" class="btn btn-outline-success">{{ event.date }}</a> ---- <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
             </li>
     {% endfor %}
     </ul>
