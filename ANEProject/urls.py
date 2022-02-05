@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from pages.views import (
+from core.views import (
     home_view,
     roster_view,
     calendar_view,
@@ -40,7 +40,7 @@ urlpatterns = [
     path('events/<raidevent_id>', events_details_view, name='events-details'),
     path('add_event', add_event, name='add-event'),
     path('delete_event/<raidevent_id>', delete_event, name='delete-event'),
-    path('sign_off_user/<raidevent_id>', rem_user_from_roster_button, name='sign-off'),
-    path('sign_in_user/<raidevent_id>', add_user_to_roster_button, name='sign-in'),
+    path('sign_off_user/<raidevent_id>', rem_user_from_roster_button, name='opt-out'),
+    path('sign_in_user/<raidevent_id>', add_user_to_roster_button, name='opt-in'),
 
 ]

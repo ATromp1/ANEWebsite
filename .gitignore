@@ -1,8 +1,8 @@
 db.sqlite3
 .gitignore
 
-/players/__pycache__
-/players/migrations/__pycache__
+/core/__pycache__
+/core/migrations/__pycache__
 
 .idea/ANEProject.iml
 

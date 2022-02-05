@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-sm">
                 <h2>Sign Ups</h2>
-                <a href="{% url 'Opt-out' event.id %}" class="btn btn-danger">Sign Off</a> -- <a href="{% url 'sign-in' event.id %}" class="btn btn-success">Sign In</a>
+                <a href="{% url 'opt-out' event.id %}" class="btn btn-danger">Sign Off</a> -- <a href="{% url 'opt-in' event.id %}" class="btn btn-success">Sign In</a>
                 <ul>
                     {% for player in roster %}
                         <li>{{ player }}</li>
@@ -25,7 +25,7 @@
                 </ul>
             </div>
             <div class="col-sm">
-                <a href="{% url '' event.id %}" class="btn btn-danger">Added Boss</a>
+{#                <a href="{% url '' event.id %}" class="btn btn-danger">Added Boss</a>#}
             </div>
             <div class="col-sm">
                 One of three columns

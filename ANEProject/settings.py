@@ -51,8 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # own
-    'pages.apps.PagesConfig',
-    'players',
+    'core',
 
     # allauth
     'django.contrib.sites',
