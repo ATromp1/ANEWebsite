@@ -5,7 +5,8 @@ from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import render, redirect
 
 from core.forms import Eventform
-from core.models import Roster, RaidEvent, populate_roster_db, get_guild_roster, update_guild_roster_classes
+from core.models import Roster, RaidEvent, populate_roster_db, get_guild_roster, update_guild_roster_classes, \
+    RaidInstance
 
 
 # @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
@@ -69,11 +70,13 @@ def delete_event(request, raidevent_id):
 def events_details_view(request, raidevent_id):
     event_obj = RaidEvent.objects.get(pk=raidevent_id)
     roster = event_obj.roster.all()
+    bosses = RaidInstance.objects.all()
 
     template_name = 'events_details.html'
     context = {
         'event': event_obj,
         'roster': roster,
+        'bosses': bosses,
         'social_user': get_user_display_name(request),
     }
     return render(request, template_name, context)
