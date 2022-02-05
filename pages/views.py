@@ -43,11 +43,8 @@ def add_event(request):
         form = Eventform(request.POST)
         if form.is_valid():
             form.save()
-            month = request.POST['date_month']
-            day = request.POST['date_day']
-            year = request.POST['date_year']
-            event_date = year + "-" + month + "-" + day
-            RaidEvent.objects.get(date=event_date).populate_roster()
+            date = request.POST['date']
+            RaidEvent.objects.get(date=date).populate_roster()
             return redirect('events')
     else:
         form = Eventform

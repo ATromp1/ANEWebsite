@@ -1,7 +1,5 @@
 from django.db import models
 
-from players.utils import get_chars_in_roster
-
 
 class Rank(models.IntegerChoices):
     GM = 0, 'GM'
@@ -31,10 +29,15 @@ class Roster(models.Model):
     def __str__(self):
         return self.name
 
+class RaidBosses(models.Model):
+    boss_name = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return self.boss_name
 
 class RaidInstance(models.Model):
-    boss = models.CharField(max_length=20)
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, null=True)
+    bosses = models.ManyToManyField(RaidBosses, blank=True)
 
     def __str__(self):
         return self.name
