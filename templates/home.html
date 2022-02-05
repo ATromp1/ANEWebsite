@@ -12,6 +12,7 @@
 
     {% load account %}
     <h1>home.html</h1>
+
     {% if request.user.is_authenticated %}
         {{ social_user }} has logged in...
     {% else %}

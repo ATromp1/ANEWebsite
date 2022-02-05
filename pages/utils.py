@@ -1,8 +1,6 @@
 import requests
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from django.db import IntegrityError
-
-
 from players.models import CurrentUser, Roster
 
 
