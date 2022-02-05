@@ -134,7 +134,6 @@ def calendar_view(request):
 
 
 def get_user_display_name(request):
-    global user
     if request.user.is_authenticated:
         if request.user.is_anonymous:
             user = 'Anonymous'
@@ -213,8 +212,8 @@ def generate_calendar(events):
                     event_status_cssclass = event_status
 
                     calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
-                    calendarhtml += "<a href='/calendar' class='calendar-grid-event-btn %s'>%s</a>" % (
-                        event_status_cssclass, event_status)
+                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % \
+                                    (events[id]['event_id'], event_status_cssclass, event_status)
 
         calendarhtml += "</div></div>"
 
