@@ -202,18 +202,19 @@ def generate_calendar(events):
             current_day_of_month, current_month)
         calendarhtml += "<div class='calendar-grid-item-content'>"
 
-        for index in events:
-            if events[index]['event_date'].day == current_day_of_month:
-                if events[index]['event_date'].month == current_month:
-                    event_name = events[index]['event_name']
+        for id in events:
+            # Index == ID
+            if events[id]['event_date'].day == current_day_of_month:
+                if events[id]['event_date'].month == current_month:
+                    event_name = events[id]['event_name']
 
                     #    event_status = events[index]['event_status']
-                    event_status = "absent"
+                    event_status = "benched"
                     event_status_cssclass = event_status
 
                     calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
-                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % \
-                                    (events[id]['event_id'], event_status_cssclass, event_status)
+                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (events[id]['event_id'],
+                                                                                                        event_status_cssclass, event_status)
 
         calendarhtml += "</div></div>"
 
