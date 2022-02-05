@@ -12,7 +12,7 @@ from players.models import Roster, RaidEvent, populate_roster_db, get_guild_rost
 def home_view(request):
     template_name = 'home.html'
     context = {
-        'social_user': get_user_name(request),
+        'social_user': get_user_display_name(request),
     }
     return render(request, template_name, context)
 
@@ -27,7 +27,7 @@ def events_view(request):
     event_list = RaidEvent.objects.all()
     context = {
         'event_list': event_list,
-        'social_user': get_user_name(request),
+        'social_user': get_user_display_name(request),
     }
     return render(request, template_name, context)
 
@@ -73,7 +73,7 @@ def events_details_view(request, raidevent_id):
     context = {
         'event': event_obj,
         'roster': roster,
-        'social_user': get_user_name(request),
+        'social_user': get_user_display_name(request),
     }
     return render(request, template_name, context)
 
@@ -100,7 +100,7 @@ def roster_view(request):
     template_name = 'roster.html'
     context = {
         'roster': Roster.objects.all(),
-        'social_user': get_user_name(request),
+        'social_user': get_user_display_name(request),
     }
     return render(request, template_name, context)
 
@@ -128,12 +128,12 @@ def calendar_view(request):
 
     context = {
         'cal': cal,
-        'social_user': get_user_name(request),
+        'social_user': get_user_display_name(request),
     }
     return render(request, template_name, context)
 
 
-def get_user_name(request):
+def get_user_display_name(request):
     global user
     if request.user.is_authenticated:
         if request.user.is_anonymous:
