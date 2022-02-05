@@ -15,6 +15,8 @@ class CurrentUser(models.Model):
     character_id = models.IntegerField(unique=True)
     name = models.CharField(max_length=20)
     rank = models.IntegerField(choices=Rank.choices, null=True)
+    # 0 = selected, 1 = benched, 2 = absent
+    #raid_status = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -24,6 +26,8 @@ class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
+
+    # TODO: REMOVE
     in_raid = models.BooleanField(default=True)
 
     def __str__(self):
@@ -43,10 +47,13 @@ class RaidEvent(models.Model):
     date = models.DateField(unique=True)
     roster = models.ManyToManyField(Roster, blank=True, default=True)
 
-
     def populate_roster(self):
         for character in Roster.objects.all():
             self.roster.add(Roster.objects.get(name=character))
+
+    #  def current_user_status(self, current_user_id):
+
+    #    return status
 
     def sign_off(self, current_user_id):
         roster = []
@@ -57,6 +64,8 @@ class RaidEvent(models.Model):
         for character in CurrentUser.objects.filter(account_id=current_user_id):
             user_chars.append(character.name)
         diff = set(roster).intersection(set(user_chars))
+        # CurrentUser.objects.filter(
+        #    account_id=current_user_id).update(raid_status=2)
 
         for item in diff:
             self.roster.remove(Roster.objects.get(name=item))

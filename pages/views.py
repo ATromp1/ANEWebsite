@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
+from time import time
 
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
@@ -50,7 +51,8 @@ def add_event(request):
             year = request.POST['date_year']
             event_date = year + "-" + month + "-" + day
             RaidEvent.objects.get(date=event_date).populate_roster()
-            return HttpResponseRedirect('/add_event?submitted=True')
+            # HttpResponseRedirect('/add_event?submitted=True')
+            return redirect('events')
     else:
         form = Eventform
         if 'submitted' in request.GET:
@@ -125,7 +127,7 @@ def calendar_view(request):
             'event_name': event_name,
             'event_date': event.date,
             'event_id': event.id,
-            # 'currentUser_status': currentUser_status,
+            # 'currentUser_status': event.current_user_status(get_current_user_id(request)['uid']),
 
         }})
 
@@ -195,18 +197,19 @@ def generate_calendar(events):
             current_day_of_month, current_month)
         calendarhtml += "<div class='calendar-grid-item-content'>"
 
-        for index in events:
-            if events[index]['event_date'].day == current_day_of_month:
-                if events[index]['event_date'].month == current_month:
-                    event_name = events[index]['event_name']
+        for id in events:
+            # Index == ID
+            if events[id]['event_date'].day == current_day_of_month:
+                if events[id]['event_date'].month == current_month:
+                    event_name = events[id]['event_name']
 
                     #    event_status = events[index]['event_status']
-                    event_status = "absent"
+                    event_status = "benched"
                     event_status_cssclass = event_status
 
                     calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
-                    calendarhtml += "<a href='/calendar' class='calendar-grid-event-btn %s'>%s</a>" % (
-                        event_status_cssclass, event_status)
+                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (events[id]['event_id'],
+                                                                                                        event_status_cssclass, event_status)
 
         calendarhtml += "</div></div>"
 
