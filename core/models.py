@@ -30,9 +30,7 @@ class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
-
-    # TODO: REMOVE
-    in_raid = models.BooleanField(default=True)
+    playable_class = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -147,17 +145,26 @@ def populate_roster_db(api_roster):
     Adding characters from the API call that contains all guild roster characters and filters them by rank
     Also updating the ranks in the CurrentUser database
     """
-    ranks = [0, 1, 3, 4, 5]
+    raider_ranks = [0, 1, 3, 4, 5]
     for member in api_roster['members']:
         rank = member['rank']
         name = member['character']['name']
         character_id = member['character']['id']
-
         CurrentUser.objects.filter(name=name).update(rank=rank)
-        if rank in ranks:
+        if rank in raider_ranks:
             Roster.objects.filter(name=name).update_or_create(name=name,
                                                               rank=rank,
                                                               character_id=character_id)
+
+def update_guild_roster_classes():
+    """
+    Pulls class data from Current user and cross-references it to characters in Roster to fill/update their respective
+    character classes
+    """
+    for character in Roster.objects.all():
+        if CurrentUser.objects.filter(character_id=character.character_id).exists():
+            playable_class = CurrentUser.objects.get(character_id=character.character_id).playable_class
+            Roster.objects.filter(character_id=character.character_id).update(playable_class=playable_class)
 
 
 def get_guild_roster(request):

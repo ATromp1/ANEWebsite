@@ -5,7 +5,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import render, redirect
 
 from core.forms import Eventform
-from core.models import Roster, RaidEvent, populate_roster_db, get_guild_roster
+from core.models import Roster, RaidEvent, populate_roster_db, get_guild_roster, update_guild_roster_classes
 
 
 # @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
@@ -40,6 +40,7 @@ def add_event(request):
             form.save()
             api_roster = get_guild_roster(request)
             populate_roster_db(api_roster)
+            update_guild_roster_classes()
             date = request.POST['date']
             RaidEvent.objects.get(date=date).populate_roster()
             return redirect('events')
