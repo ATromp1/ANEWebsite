@@ -105,11 +105,6 @@ def roster_view(request):
     return render(request, template_name, context)
 
 
-def update_roster(request):
-
-    return redirect('roster')
-
-
 def calendar_view(request):
     template_name = 'calendar.html'
 
