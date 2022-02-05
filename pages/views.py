@@ -4,9 +4,8 @@ from datetime import timedelta
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import render, redirect
 
-from pages.utils import populate_roster_db, get_guild_roster
 from players.forms import Eventform
-from players.models import Roster, RaidEvent
+from players.models import Roster, RaidEvent, populate_roster_db, get_guild_roster
 
 
 # @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
@@ -39,6 +38,8 @@ def add_event(request):
         form = Eventform(request.POST)
         if form.is_valid():
             form.save()
+            api_roster = get_guild_roster(request)
+            populate_roster_db(api_roster)
             date = request.POST['date']
             RaidEvent.objects.get(date=date).populate_roster()
             return redirect('events')
@@ -105,8 +106,7 @@ def roster_view(request):
 
 
 def update_roster(request):
-    api_roster = get_guild_roster(request)
-    populate_roster_db(api_roster)
+
     return redirect('roster')
 
 
