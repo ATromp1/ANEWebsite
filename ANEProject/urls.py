@@ -26,7 +26,8 @@ from pages.views import (
     rem_user_from_roster_button,
     add_user_to_roster_button,
     add_event,
-    login_user_button
+    login_user_button,
+    delete_event,
 )
 
 urlpatterns = [
@@ -40,6 +41,7 @@ urlpatterns = [
     path('events/', events_view, name='events'),
     path('events/<raidevent_id>', events_details_view, name='events-details'),
     path('add_event', add_event, name='add-event'),
+    path('delete_event/<raidevent_id>', delete_event, name='delete-event'),
     path('sign_off_user/<raidevent_id>', rem_user_from_roster_button, name='sign-off'),
     path('sign_in_user/<raidevent_id>', add_user_to_roster_button, name='sign-in'),
 

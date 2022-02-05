@@ -2,6 +2,8 @@ from datetime import datetime
 from datetime import timedelta
 
 from allauth.socialaccount.models import SocialAccount
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
@@ -14,9 +16,14 @@ from players.models import Roster, RaidEvent
 def home_view(request):
     template_name = 'home.html'
 
+    if User.is_anonymous:
+        current_user = 'Not logged in'
+    else:
+        current_user = get_current_user_id(request)['battletag']
+
     context = {
-        'social_accounts': SocialAccount.objects.all(),
-        'social_user': get_current_user_id(request)['battletag'],
+        # 'social_accounts': SocialAccount.objects.all(),
+        'social_user': current_user,
     }
     return render(request, template_name, context)
 
@@ -58,6 +65,14 @@ def add_event(request):
     }
     return render(request, template_name, context)
 
+
+def delete_event(request, raidevent_id):
+    event = RaidEvent.objects.get(pk=raidevent_id)
+    if request.user.is_staff:
+        event.delete()
+        return redirect('events')
+    else:
+        return redirect('events')
 
 def events_details_view(request, raidevent_id):
     event_obj = RaidEvent.objects.get(pk=raidevent_id)
