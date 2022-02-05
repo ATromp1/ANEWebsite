@@ -19,6 +19,7 @@ class CurrentUser(models.Model):
     account_id = models.IntegerField()
     character_id = models.IntegerField(unique=True)
     name = models.CharField(max_length=20)
+    playable_class = models.CharField(max_length=30, null=True, blank=True)
     rank = models.IntegerField(choices=Rank.choices, null=True)
 
     def __str__(self):
@@ -109,13 +110,16 @@ def populate_char_db(char_json):
         for j in range(len(char_json['wow_accounts'][i]['characters'])):
             realm_id = char_json['wow_accounts'][i]['characters'][j]['realm']['id']
             character_level = char_json['wow_accounts'][i]['characters'][j]['level']
-            if realm_id == 1306 and character_level == 60:  # tarrenmill
+            if realm_id == 1306 and character_level == 60:
                 account_id = char_json['id']
                 char_name = char_json['wow_accounts'][i]['characters'][j]['name']
                 char_id = char_json['wow_accounts'][i]['characters'][j]['id']
-
+                playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
                 try:
-                    CurrentUser.objects.update_or_create(name=char_name, account_id=account_id, character_id=char_id,
+                    CurrentUser.objects.update_or_create(name=char_name,
+                                                         account_id=account_id,
+                                                         character_id=char_id,
+                                                         playable_class=playable_class,
                                                          rank='7')
                 except IntegrityError:
                     pass
@@ -151,7 +155,9 @@ def populate_roster_db(api_roster):
 
         CurrentUser.objects.filter(name=name).update(rank=rank)
         if rank in ranks:
-            Roster.objects.filter(name=name).update_or_create(name=name, rank=rank, character_id=character_id)
+            Roster.objects.filter(name=name).update_or_create(name=name,
+                                                              rank=rank,
+                                                              character_id=character_id)
 
 
 def get_guild_roster(request):

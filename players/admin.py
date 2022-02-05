@@ -3,7 +3,7 @@ from .models import CurrentUser, Roster, RaidEvent, RaidInstance, RaidBosses
 
 
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ['name', 'character_id', 'account_id', 'rank']
+    list_display = ['name', 'character_id', 'account_id', 'playable_class', 'rank']
 
 
 
