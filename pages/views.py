@@ -2,12 +2,9 @@ from datetime import datetime
 from datetime import timedelta
 
 from allauth.socialaccount.models import SocialAccount
-from django.contrib import messages
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from pages.utils import populate_roster_db, get_profile_summary, get_guild_roster, populate_char_db
+from pages.utils import populate_roster_db, get_guild_roster
 from players.forms import Eventform
 from players.models import Roster, RaidEvent
 
@@ -22,8 +19,6 @@ def home_view(request):
 
 
 def login_user_button(request):
-    # api_profiles = get_profile_summary(request)
-    # populate_char_db(api_profiles)
     return redirect('/accounts/battlenet/login/?process=login')
 
 
