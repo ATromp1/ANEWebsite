@@ -24,6 +24,11 @@
                 <li class="nav-item">
                     <a class=" navbar-btn" href="{% url 'events' %}">Events</a>
                 </li>
+                {% if request.user.is_staff %}
+                    <li class="nav-item">
+                        <a class=" navbar-btn" href="/admin/">Admin</a>
+                    </li>
+                {% endif %}
 
                 <li class="responsive-user-btn">
                 {% if request.user.is_authenticated %}
