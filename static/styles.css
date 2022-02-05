@@ -1,10 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 :root {
-  --main-bg-color: #dddddd;
+  /* #353840 */
+  --main-bg-color: #353840;
   --bg-hover-color: #343A40;
   --bg-active-color: #6E7276;
   --bg-disabled-color: #22262a;
-  --main-text-color: #212529;
+  --main-text-color: #ddd;
   --text-disabled-color: #aaa;
   --white-color: #fff; }
 
@@ -144,12 +145,14 @@ body {
       height: 100%;
       width: 100%;
       font-size: 1rem;
-      background-color: var(--main-bg-color);
+      background-color: var(--bg-hover-color);
       color: var(--main-text-color);
       border: var(--main-text-color) 2px solid;
       border-radius: 0.25rem;
       transition: all 150ms ease-in;
       transition-delay: 100ms; }
+      .calendar-grid-container .calendar-grid .calendar-grid-item .calendar-grid-date {
+        margin-left: 5px; }
       .calendar-grid-container .calendar-grid .calendar-grid-item:hover {
         transform: scale(1.1, 1.1);
         /*                 background-color: var(--main-text-color);
@@ -175,7 +178,8 @@ body {
         color: var(--main-text-color);
         display: block;
         border-radius: 0.25rem;
-        padding: 5% 0; }
+        padding: 5% 0;
+        color: var(--bg-disabled-color); }
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.selected {
         background-color: #28c995; }
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.benched {

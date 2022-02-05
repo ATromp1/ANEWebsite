@@ -6,6 +6,7 @@ class PlayerAdmin(admin.ModelAdmin):
     list_display = ['name', 'character_id', 'account_id', 'rank']
 
 
+
 class RosterAdmin(admin.ModelAdmin):
     list_display = ['name', 'character_id', 'rank', 'in_raid']
 

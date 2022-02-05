@@ -29,6 +29,8 @@ class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
+
+    # TODO: REMOVE
     in_raid = models.BooleanField(default=True)
 
     def __str__(self):
