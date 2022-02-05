@@ -1,5 +1,7 @@
 from django.db import models
 
+from players.utils import get_chars_in_roster
+
 
 class Rank(models.IntegerChoices):
     GM = 0, 'GM'
@@ -43,33 +45,18 @@ class RaidEvent(models.Model):
     date = models.DateField(unique=True)
     roster = models.ManyToManyField(Roster, blank=True, default=True)
 
-
     def populate_roster(self):
         for character in Roster.objects.all():
             self.roster.add(Roster.objects.get(name=character))
 
-    def sign_off(self, current_user_id):
-        roster = []
-        for character in Roster.objects.all():
-            roster.append(character.name)
-            # self.roster.add(Roster.objects.get(name=character))
-        user_chars = []
-        for character in CurrentUser.objects.filter(account_id=current_user_id):
-            user_chars.append(character.name)
-        diff = set(roster).intersection(set(user_chars))
-
-        for item in diff:
+    def remove_char_from_roster(self, current_user_id):
+        user_chars_in_roster = get_chars_in_roster(current_user_id)
+        for item in user_chars_in_roster:
             self.roster.remove(Roster.objects.get(name=item))
             self.save()
 
     def sign_in(self, current_user_id):
-        roster = []
-        for character in Roster.objects.all():
-            roster.append(character.name)
-        user_chars = []
-        for character in CurrentUser.objects.filter(account_id=current_user_id):
-            user_chars.append(character.name)
-        diff = set(roster).intersection(set(user_chars))
-        for item in diff:
+        user_chars_in_roster = get_chars_in_roster(current_user_id)
+        for item in user_chars_in_roster:
             self.roster.add(Roster.objects.get(name=item))
             self.save()

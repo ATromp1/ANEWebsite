@@ -3,7 +3,6 @@ from datetime import timedelta
 
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from pages.utils import populate_roster_db, get_profile_summary, get_guild_roster, populate_char_db
@@ -49,7 +48,7 @@ def add_event(request):
             year = request.POST['date_year']
             event_date = year + "-" + month + "-" + day
             RaidEvent.objects.get(date=event_date).populate_roster()
-            return HttpResponseRedirect('/add_event?submitted=True')
+            return redirect('events')
     else:
         form = Eventform
         if 'submitted' in request.GET:
@@ -75,18 +74,18 @@ def events_details_view(request, raidevent_id):
     return render(request, template_name, context)
 
 
-def sign_off_user(request, raidevent_id):
-    event_obj = RaidEvent.objects.get(pk=raidevent_id)
-    current_user_account_id = get_current_user_id(request)['sub']
-    event_obj.sign_off(current_user_id=current_user_account_id)
-    return redirect('events-details', raidevent_id=event_obj.id)
-
-
 def get_current_user_id(request):
     return SocialAccount.objects.filter(user=request.user).first().extra_data
 
 
-def sign_in_user(request, raidevent_id):
+def rem_user_from_roster_button(request, raidevent_id):
+    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+    current_user_account_id = get_current_user_id(request)['sub']
+    event_obj.remove_char_from_roster(current_user_id=current_user_account_id)
+    return redirect('events-details', raidevent_id=event_obj.id)
+
+
+def add_user_to_roster_button(request, raidevent_id):
     event_obj = RaidEvent.objects.get(pk=raidevent_id)
     current_user_account_id = get_current_user_id(request)['sub']
     event_obj.sign_in(current_user_account_id)

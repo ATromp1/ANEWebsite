@@ -23,8 +23,8 @@ from pages.views import (
     events_view,
     events_details_view,
     update_roster,
-    sign_off_user,
-    sign_in_user,
+    rem_user_from_roster_button,
+    add_user_to_roster_button,
     add_event,
     login_user_button
 )
@@ -40,7 +40,7 @@ urlpatterns = [
     path('events/', events_view, name='events'),
     path('events/<raidevent_id>', events_details_view, name='events-details'),
     path('add_event', add_event, name='add-event'),
-    path('sign_off_user/<raidevent_id>', sign_off_user, name='sign-off'),
-    path('sign_in_user/<raidevent_id>', sign_in_user, name='sign-in'),
+    path('sign_off_user/<raidevent_id>', rem_user_from_roster_button, name='sign-off'),
+    path('sign_in_user/<raidevent_id>', add_user_to_roster_button, name='sign-in'),
 
 ]
