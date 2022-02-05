@@ -15,10 +15,8 @@ from players.models import Roster, RaidEvent
 # @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
 def home_view(request):
     template_name = 'home.html'
-
-    user = get_user_name(request)
     context = {
-        'social_user': user,
+        'social_user': get_user_name(request),
     }
     return render(request, template_name, context)
 
@@ -33,10 +31,9 @@ def events_view(request):
     template_name = 'events.html'
 
     event_list = RaidEvent.objects.all()
-    user = get_user_name(request)
     context = {
         'event_list': event_list,
-        'social_user': user,
+        'social_user': get_user_name(request),
     }
     return render(request, template_name, context)
 
@@ -71,16 +68,16 @@ def delete_event(request, raidevent_id):
     else:
         return redirect('events')
 
+
 def events_details_view(request, raidevent_id):
     event_obj = RaidEvent.objects.get(pk=raidevent_id)
     roster = event_obj.roster.all()
 
     template_name = 'events_details.html'
-    user = get_user_name(request)
     context = {
         'event': event_obj,
         'roster': roster,
-        'social_user': user,
+        'social_user': get_user_name(request),
     }
     return render(request, template_name, context)
 
@@ -105,10 +102,9 @@ def add_user_to_roster_button(request, raidevent_id):
 
 def roster_view(request):
     template_name = 'roster.html'
-    user = get_user_name(request)
     context = {
         'roster': Roster.objects.all(),
-        'social_user': user,
+        'social_user': get_user_name(request),
     }
     return render(request, template_name, context)
 
@@ -140,11 +136,9 @@ def calendar_view(request):
 
     cal = generate_calendar(events_dict)
 
-    user = get_user_name(request)
-
     context = {
         'cal': cal,
-        'social_user': user,
+        'social_user': get_user_name(request),
     }
     return render(request, template_name, context)
 
