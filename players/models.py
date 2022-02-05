@@ -73,6 +73,10 @@ class RaidEvent(models.Model):
 
 
 def get_chars_in_roster(current_user_id):
+    """
+    Cross-referencing characters that exist in both de Roster database and the CurrentUser database
+    :return: a list of characters
+    """
     roster = []
     for character in Roster.objects.all():
         roster.append(character.name)
@@ -85,6 +89,10 @@ def get_chars_in_roster(current_user_id):
 
 @receiver(user_logged_in)
 def post_login(sender, user, request, **kwargs):
+    """
+    If new user logs in via battlenet, their characters will be fetched by API and
+    stored in CurrentUser.
+    """
     account_id = SocialAccount.objects.get(user=request.user).extra_data['id']
     if not CurrentUser.objects.filter(account_id=account_id).exists():
         api_profiles = get_profile_summary(request)
@@ -92,22 +100,30 @@ def post_login(sender, user, request, **kwargs):
 
 
 def populate_char_db(char_json):
+    """
+    Updates the current user's characters filtered by realm = tarrenmill and level = 60
+    """
     for i in range(len(char_json['wow_accounts'])):
         for j in range(len(char_json['wow_accounts'][i]['characters'])):
             realm_id = char_json['wow_accounts'][i]['characters'][j]['realm']['id']
             character_level = char_json['wow_accounts'][i]['characters'][j]['level']
-            if realm_id == 1306 and character_level == 60:  #tarrenmill
+            if realm_id == 1306 and character_level == 60:  # tarrenmill
                 account_id = char_json['id']
                 char_name = char_json['wow_accounts'][i]['characters'][j]['name']
                 char_id = char_json['wow_accounts'][i]['characters'][j]['id']
 
                 try:
-                    CurrentUser.objects.update_or_create(name=char_name, account_id=account_id, character_id=char_id, rank='7')
+                    CurrentUser.objects.update_or_create(name=char_name, account_id=account_id, character_id=char_id,
+                                                         rank='7')
                 except IntegrityError:
                     pass
 
 
 def get_profile_summary(request):
+    """
+    API calls to the blizzard endpoint that returns all
+    characters that belong to the logged-in user
+    """
     current_user = SocialAccount.objects.filter(user=request.user).first()
     access_token = SocialToken.objects.filter(account=current_user).first()
     header = {
@@ -116,5 +132,38 @@ def get_profile_summary(request):
     response = requests.get('https://eu.api.blizzard.com/profile/user/wow?namespace=profile-eu&locale=en_US',
                             headers=header)
 
+    result = response.json()
+    return result
+
+
+def populate_roster_db(api_roster):
+    """
+    Adding characters from the API call that contains all guild roster characters and filters them by rank
+    Also updating the ranks in the CurrentUser database
+    """
+    ranks = [0, 1, 3, 4, 5]
+    for member in api_roster['members']:
+        rank = member['rank']
+        name = member['character']['name']
+        character_id = member['character']['id']
+
+        CurrentUser.objects.filter(name=name).update(rank=rank)
+        if rank in ranks:
+            Roster.objects.filter(name=name).update_or_create(name=name, rank=rank, character_id=character_id)
+
+
+def get_guild_roster(request):
+    """
+    API calls to the blizzard endpoint that returns all
+    characters that exist in A Necessary Evil
+"""
+    current_user = SocialAccount.objects.filter(user=request.user).first()
+    access_token = SocialToken.objects.filter(account=current_user).first()
+    header = {
+        'Authorization': 'Bearer %s' % access_token,
+    }
+    response = requests.get(
+        'https://eu.api.blizzard.com/data/wow/guild/tarren-mill/a-necessary-evil/roster?namespace=profile-eu&locale=en_US',
+        headers=header)
     result = response.json()
     return result
