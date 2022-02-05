@@ -4,6 +4,8 @@ db.sqlite3
 /players/__pycache__
 /players/migrations/__pycache__
 
+.idea
+
 /pages/__pycache__
 /pages/migrations/__pycache__
 

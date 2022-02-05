@@ -40,6 +40,7 @@ def events_view(request):
     event_list = RaidEvent.objects.all()
     context = {
         'event_list': event_list,
+        'social_user': get_current_user_id(request)['battletag'],
     }
     return render(request, template_name, context)
 
@@ -82,6 +83,7 @@ def events_details_view(request, raidevent_id):
     context = {
         'event': event_obj,
         'roster': roster,
+        'social_user': get_current_user_id(request)['battletag'],
     }
     return render(request, template_name, context)
 
@@ -107,7 +109,8 @@ def add_user_to_roster_button(request, raidevent_id):
 def roster_view(request):
     template_name = 'roster.html'
     context = {
-        'roster': Roster.objects.all()
+        'roster': Roster.objects.all(),
+        'social_user': get_current_user_id(request)['battletag'],
     }
     return render(request, template_name, context)
 
@@ -140,6 +143,7 @@ def calendar_view(request):
     cal = generate_calendar(events_dict)
     context = {
         'cal': cal,
+        'social_user': get_current_user_id(request)['battletag'],
     }
     return render(request, template_name, context)
 
