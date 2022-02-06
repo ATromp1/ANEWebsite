@@ -11,11 +11,10 @@ from core.models import Roster, RaidEvent, populate_roster_db, get_guild_roster,
 
 # @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
 def home_view(request):
-    template_name = 'home.html'
     context = {
         'social_user': get_user_display_name(request),
     }
-    return render(request, template_name, context)
+    return render(request, 'home.html', context)
 
 
 def login_user_button(request):
@@ -23,14 +22,12 @@ def login_user_button(request):
 
 
 def events_view(request):
-    template_name = 'events.html'
-
     event_list = RaidEvent.objects.all()
     context = {
         'event_list': event_list,
         'social_user': get_user_display_name(request),
     }
-    return render(request, template_name, context)
+    return render(request, 'events.html', context)
 
 
 def add_event(request):
@@ -50,12 +47,11 @@ def add_event(request):
         if 'submitted' in request.GET:
             submitted = True
 
-    template_name = 'add_event.html'
     context = {
         'form': form,
         'submitted': submitted,
     }
-    return render(request, template_name, context)
+    return render(request, 'add_event.html', context)
 
 
 def delete_event(request, event_date):
@@ -72,14 +68,13 @@ def events_details_view(request, event_date):
     roster = event_obj.roster.all()
     bosses = RaidInstance.objects.first().bosses.all()
 
-    template_name = 'events_details.html'
     context = {
         'event': event_obj,
         'roster': roster,
         'bosses': bosses,
         'social_user': get_user_display_name(request),
     }
-    return render(request, template_name, context)
+    return render(request, 'events_details.html', context)
 
 
 def boss_view(request, event_date, boss_id):
@@ -112,17 +107,14 @@ def add_user_to_roster_button(request, event_date):
 
 
 def roster_view(request):
-    template_name = 'roster.html'
     context = {
         'roster': Roster.objects.all(),
         'social_user': get_user_display_name(request),
     }
-    return render(request, template_name, context)
+    return render(request, 'roster.html', context)
 
 
 def calendar_view(request):
-    template_name = 'calendar.html'
-
     events = RaidEvent.objects.all()
     events_dict = {}
     for event in events:
@@ -145,7 +137,7 @@ def calendar_view(request):
         'cal': cal,
         'social_user': get_user_display_name(request),
     }
-    return render(request, template_name, context)
+    return render(request, 'calendar.html', context)
 
 
 def get_user_display_name(request):
