@@ -58,10 +58,10 @@ def add_event(request):
     return render(request, template_name, context)
 
 
-def delete_event(request, raidevent_id):
-    event = RaidEvent.objects.get(pk=raidevent_id)
+def delete_event(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
     if request.user.is_staff:
-        event.delete()
+        event_obj.delete()
         return redirect('events')
     else:
         return redirect('events')
@@ -82,32 +82,33 @@ def events_details_view(request, event_date):
     return render(request, template_name, context)
 
 
-def boss_view(request, raidevent_id, boss_id):
-    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+def boss_view(request, event_date, boss_id):
+    event_obj = RaidEvent.objects.get(date=event_date)
     raid_instance_obj = RaidInstance.objects.get(pk=boss_id)
     context = {
         'event': event_obj,
         'raid_instance': raid_instance_obj,
         'social_user': get_user_display_name(request)
     }
-    return render(request, 'bossview.html', context)
+    return render(request, 'boss_detail.html', context)
+
 
 def get_current_user_id(request):
     return SocialAccount.objects.filter(user=request.user).first().extra_data
 
 
-def rem_user_from_roster_button(request, raidevent_id):
-    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+def rem_user_from_roster_button(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_id(request)['sub']
     event_obj.remove_char_from_roster(current_user_id=current_user_account_id)
-    return redirect('events-details', raidevent_id=event_obj.id)
+    return redirect('events-details', event_date=event_obj.date)
 
 
-def add_user_to_roster_button(request, raidevent_id):
-    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+def add_user_to_roster_button(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_id(request)['sub']
     event_obj.sign_in(current_user_account_id)
-    return redirect('events-details', raidevent_id=event_obj.id)
+    return redirect('events-details', event_date=event_obj.date)
 
 
 def roster_view(request):
@@ -227,10 +228,10 @@ def generate_calendar(events):
                     event_status_cssclass = event_status
 
                     calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
-                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (events[id]['event_date'],
-                                                                                                        event_status_cssclass, event_status)
+                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (
+                    events[id]['event_date'],
+                    event_status_cssclass, event_status)
 
         calendarhtml += "</div></div>"
 
     return calendarhtml
-
