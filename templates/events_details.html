@@ -10,38 +10,32 @@
 <body>
 
 {% block content %}
-
-    <h1>Events Details</h1>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h2>Sign Ups</h2>
-                <a href="{% url 'opt-out' event.date %}" class="btn btn-danger">Sign Off</a> -- <a href="{% url 'opt-in' event.date %}" class="btn btn-success">Sign In</a>
-                <ul>
-                    {% for player in roster %}
-                        <li>{{ player }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="col-sm">
+    <div class="event-view-container">
+        <div class="event-view-signups">
+            <h2>Sign Ups</h2>
+            <a href="{% url 'opt-out' event.date %}" class="btn btn-danger">Sign Off</a><a href="{% url 'opt-in' event.date %}" class="btn btn-success">Sign In</a>
             <ul>
+                {% for player in roster %}
+                    <li>{{ player }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
 {#                {% for boss in bosses %}#}
 {#                  <li style="display:inline"><a href="{% url 'boss' event.date boss.boss_name|slugify %}" class="btn btn-danger">{{ boss }}</a></li>#}
 {#                {% endfor %}#}
-            </ul>
-            </div>
-            <div id="vue-app" class="col-sm">
+
+            <div id="vue-app">
                 <div class="boss">
-                    <div class="boss-image">
-                        <img v-bind:src="image">
-                    </div>
-                <ul class="mr-auto">
+                <ul class="event-view-boss-list">
                     <li v-for="boss in bosses">
                         <a v-bind:href="boss.url">[[ boss.fields.boss_name ]]</a>
                     </li>
                 </ul>
                 </div>
+            </div>
+
+            <div class="temp-invis-div">
             </div>
         </div>
     </div>
