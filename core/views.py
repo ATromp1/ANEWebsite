@@ -70,7 +70,7 @@ def delete_event(request, raidevent_id):
 def events_details_view(request, raidevent_id):
     event_obj = RaidEvent.objects.get(pk=raidevent_id)
     roster = event_obj.roster.all()
-    bosses = RaidInstance.objects.all()
+    bosses = RaidInstance.objects.first().bosses.all()
 
     template_name = 'events_details.html'
     context = {

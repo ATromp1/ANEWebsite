@@ -3,6 +3,7 @@
 
 {% extends "base.html" %}
 
+
 <head>
     <meta charset="UTF-8">
     <title>Events Details</title>
@@ -25,7 +26,14 @@
                 </ul>
             </div>
             <div class="col-sm">
-{#                <a href="{% url '' event.id %}" class="btn btn-danger">Added Boss</a>#}
+            <ul>
+                {% for boss in bosses %}
+                  <li style="display:inline"><a href="{% url 'events-details' event.id %}" class="btn btn-danger">{{ boss }}</a></li>
+                {% endfor %}
+                {% block bossview %}
+
+                {% endblock %}
+            </ul>
             </div>
             <div class="col-sm">
                 One of three columns
