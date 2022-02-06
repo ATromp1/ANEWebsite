@@ -7,7 +7,20 @@
   --bg-navbar-color: #212529;
   --main-text-color: #ddd;
   --text-disabled-color: #aaa;
-  --white-color: #fff; }
+  --white-color: #fff;
+  /* Class colors WoW */
+  --classcolor-warrior: #C69B6D;
+  --classcolor-warlock: #8788EE;
+  --classcolor-shaman: #0070DD;
+  --classcolor-rogue: #FFF468;
+  --classcolor-priest: #FFFFFF;
+  --classcolor-paladin: #F48CBA;
+  --classcolor-monk: #00FF98;
+  --classcolor-mage: #3FC7EB;
+  --classcolor-hunter: #AAD372;
+  --classcolor-druid: #FF7C0A;
+  --classcolor-demonhunter: #A330C9;
+  --classcolor-deathknight: #C41E3A; }
 
 * {
   font-family: 'Roboto', sans-serif;
@@ -194,17 +207,59 @@ body {
 .roster-container {
   width: 90%;
   margin: auto; }
+  .roster-container h1 {
+    margin: 0.5em 0 1em 0; }
   .roster-container .roster-grid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    grid-template-columns: repeat(6, minmax(150px, 1fr));
     row-gap: 10%;
     column-gap: 1%; }
+    @media screen and (max-width: 1350px) {
+      .roster-container .roster-grid {
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+        row-gap: 5%; } }
+    @media screen and (max-width: 800px) {
+      .roster-container .roster-grid {
+        grid-template-columns: repeat(3, minmax(150px, 1fr)); } }
+    @media screen and (max-width: 600px) {
+      .roster-container .roster-grid {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+        row-gap: 2%; } }
+    .roster-container .roster-grid .roster-class-col {
+      text-shadow: 2px 2px 4px #000; }
     .roster-container .roster-grid .roster-class-col-header {
       font-size: 1.3em;
       border-bottom: 1px solid var(--main-text-color);
       padding-bottom: .5em;
       text-align: center; }
+      .roster-container .roster-grid .roster-class-col-header.warrior {
+        border-bottom: 1px solid var(--classcolor-warrior); }
+      .roster-container .roster-grid .roster-class-col-header.paladin {
+        border-bottom: 1px solid var(--classcolor-paladin); }
+      .roster-container .roster-grid .roster-class-col-header.hunter {
+        border-bottom: 1px solid var(--classcolor-hunter); }
+      .roster-container .roster-grid .roster-class-col-header.rogue {
+        border-bottom: 1px solid var(--classcolor-rogue); }
+      .roster-container .roster-grid .roster-class-col-header.priest {
+        border-bottom: 1px solid var(--classcolor-priest); }
+      .roster-container .roster-grid .roster-class-col-header.shaman {
+        border-bottom: 1px solid var(--classcolor-shaman); }
+      .roster-container .roster-grid .roster-class-col-header.mage {
+        border-bottom: 1px solid var(--classcolor-mage); }
+      .roster-container .roster-grid .roster-class-col-header.warlock {
+        border-bottom: 1px solid var(--classcolor-warlock); }
+      .roster-container .roster-grid .roster-class-col-header.monk {
+        border-bottom: 1px solid var(--classcolor-monk); }
+      .roster-container .roster-grid .roster-class-col-header.druid {
+        border-bottom: 1px solid var(--classcolor-druid); }
+      .roster-container .roster-grid .roster-class-col-header.demonhunter {
+        border-bottom: 1px solid var(--classcolor-demonhunter); }
+      .roster-container .roster-grid .roster-class-col-header.deathknight {
+        border-bottom: 1px solid var(--classcolor-deathknight); }
+    .roster-container .roster-grid .roster-class-col-content {
+      text-align: center;
+      margin-top: 10px; }
 
 /* /.................// Mediaquery @600px //................./ */
 /* Navbar (Hamburger menu) -- Calendar  */
