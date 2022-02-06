@@ -66,23 +66,23 @@ def delete_event(request, event_date):
 def events_details_view(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
     roster = event_obj.roster.all()
-    bosses = RaidInstance.objects.first().bosses.all()
+    boss_objects = RaidInstance.objects.first().bosses.all()
 
     context = {
         'event': event_obj,
         'roster': roster,
-        'bosses': bosses,
+        'bosses': boss_objects,
         'social_user': get_user_display_name(request),
     }
     return render(request, 'events_details.html', context)
 
 
-def boss_view(request, event_date, boss_id):
-    event_obj = RaidEvent.objects.get(date=event_date)
-    raid_instance_obj = RaidInstance.objects.get(pk=boss_id)
+def boss_view(request, event_date, boss_name):
+    # event_obj = RaidEvent.objects.get(date=event_date)
+    # boss_context_name = RaidInstance.objects.first().bosses.get(boss_name=boss_name)
     context = {
-        'event': event_obj,
-        'raid_instance': raid_instance_obj,
+        # 'event': event_obj,
+        # 'boss': boss_context_name,
         'social_user': get_user_display_name(request)
     }
     return render(request, 'boss_detail.html', context)

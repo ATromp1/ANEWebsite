@@ -28,7 +28,7 @@
             <div class="col-sm">
             <ul>
                 {% for boss in bosses %}
-{#                  <li style="display:inline"><a href="{% url 'boss' event.id raid_instance.id %}" class="btn btn-danger">{{ boss }}</a></li>#}
+                  <li style="display:inline"><a href="{% url 'boss' event.date boss.boss_name|slugify %}" class="btn btn-danger">{{ boss }}</a></li>
                 {% endfor %}
                 {% block bossview %}
 
@@ -40,9 +40,6 @@
             </div>
         </div>
     </div>
-
-
-
 
 
 {% endblock %}

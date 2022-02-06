@@ -39,10 +39,10 @@ urlpatterns = [
     path('calendar/', calendar_view, name='calendar'),
     path('events/', events_view, name='events'),
     path('events/<slug:event_date>/', events_details_view, name='events-details'),
-    path('events/<slug:event_date>/boss/<slug:boss_name>', boss_view, name='boss'),
+    path('events/<slug:event_date>/<slug:boss_name>', boss_view, name='boss'),
     path('add_event', add_event, name='add-event'),
     path('delete_event/<event_date>', delete_event, name='delete-event'),
-    path('sign_off_user/<event_date>', rem_user_from_roster_button, name='opt-out'),
-    path('sign_in_user/<event_date>', add_user_to_roster_button, name='opt-in'),
+    path('sign_off_user/<event_date>/*', rem_user_from_roster_button, name='opt-out'),
+    path('sign_in_user/<event_date>/*', add_user_to_roster_button, name='opt-in'),
 
 ]
