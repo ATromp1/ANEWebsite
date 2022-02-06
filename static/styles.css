@@ -38,6 +38,7 @@ body {
   color: var(--bg-active-color);
   font-size: 10px; }
 
+/* /.................// Navbar //................./ */
 .navbar {
   display: block;
   width: 100%; }
@@ -120,6 +121,7 @@ body {
       max-width: 100% !important;
       width: 100% !important; } }
 
+/* /.................// Calendar //................./ */
 .calendar-grid-container {
   margin: auto;
   max-width: 950px;
@@ -188,6 +190,24 @@ body {
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.absent {
         background-color: #c9283e; } }
 
+/* /.................// Roster //................./ */
+.roster-container {
+  width: 90%;
+  margin: auto; }
+  .roster-container .roster-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    row-gap: 10%;
+    column-gap: 1%; }
+    .roster-container .roster-grid .roster-class-col-header {
+      font-size: 1.3em;
+      border-bottom: 1px solid var(--main-text-color);
+      padding-bottom: .5em;
+      text-align: center; }
+
+/* /.................// Mediaquery @600px //................./ */
+/* Navbar (Hamburger menu) -- Calendar  */
 @media screen and (max-width: 600px) {
   /* calendar-grid-container */
   .calendar-grid-container {
@@ -283,6 +303,7 @@ body {
                 color: var(--white-color);
                 background-color: var(--bg-active-color); } }
 
+/* /.................// Mediaquery @420px //................./ */
 @media screen and (max-width: 420px) {
   .calendar-grid-container {
     max-height: 370px; }

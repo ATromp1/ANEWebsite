@@ -106,8 +106,24 @@ def add_user_to_roster_button(request, raidevent_id):
 
 def roster_view(request):
     template_name = 'roster.html'
+
+    playable_classes = {
+        'warrior': 'Warrior',
+        'paladin': 'Paladin',
+        'hunter': 'Hunter',
+        'rogue': 'Rogue',
+        'priest': 'Priest',
+        'shaman': 'Shaman',
+        'mage': 'Mage',
+        'warlock': 'Warlock',
+        'monk': 'Monk',
+        'druid': 'Druid',
+        'demonhunter': 'Demon Hunter',
+        'deathknight': 'Death Knight',
+    }
     context = {
         'roster': Roster.objects.all(),
+        'playable_classes': playable_classes,
         'social_user': get_user_display_name(request),
     }
     return render(request, template_name, context)
