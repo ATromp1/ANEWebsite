@@ -54,7 +54,9 @@ body {
 /* /.................// Navbar //................./ */
 .navbar {
   display: block;
-  width: 100%; }
+  width: 100%;
+  position: sticky;
+  top: 0; }
   .navbar .navbar-hamburger-menu {
     /* Only used on smaller screens - displayed in mediaqueries @600px */
     display: none; }
@@ -264,6 +266,7 @@ body {
       text-align: center;
       margin-top: 10px; }
 
+/* /.................// Event View //................./ */
 .event-view-container {
   display: flex;
   justify-content: space-between;
@@ -274,22 +277,21 @@ body {
     width: 170px; }
   .event-view-container .temp-invis-div {
     width: 170px; }
-
-.boss .event-view-boss-list {
-  list-style: none;
-  display: flex; }
-  .boss .event-view-boss-list li {
-    cursor: pointer;
-    text-decoration: none;
-    border: 1px solid var(--bs-success);
-    color: var(--white-color);
-    padding: 1rem 1.5rem;
-    border-radius: 0.25rem; }
-    .boss .event-view-boss-list li:hover {
+  .event-view-container .boss .event-view-boss-list {
+    list-style: none;
+    display: flex; }
+    .event-view-container .boss .event-view-boss-list li {
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid var(--bs-success);
       color: var(--white-color);
-      background-color: var(--bg-active-color); }
-    .boss .event-view-boss-list li.active {
-      /* change color */ }
+      padding: 1rem 1.5rem;
+      border-radius: 0.25rem; }
+      .event-view-container .boss .event-view-boss-list li:hover {
+        color: var(--white-color);
+        background-color: var(--bg-active-color); }
+      .event-view-container .boss .event-view-boss-list li.active {
+        /* change color */ }
 
 /* /.................// Mediaquery @600px //................./ */
 /* Navbar (Hamburger menu) -- Calendar  */
@@ -326,7 +328,6 @@ body {
         display: block;
         height: 23px;
         width: 35px;
-        position: absolute;
         top: 0.6rem;
         left: 20px;
         display: flex;
