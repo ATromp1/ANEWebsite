@@ -22,6 +22,10 @@ def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
 
 
+def logout_user_button():
+    return redirect('/accounts/logout/')
+
+
 def events_view(request):
     template_name = 'events.html'
 
