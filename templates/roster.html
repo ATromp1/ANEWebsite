@@ -7,17 +7,46 @@
     <meta charset="UTF-8">
     <title>Roster</title>
 </head>
+
 <body>
+    {% block content %}
+    {% load static %}
 
-{% block content %}
+    <div class="roster-container">
+        <h1>Guild Roster</h1>
+        <div class="roster-grid">
+            {% for class, display_class in playable_classes.items %}
+            <div class="roster-class-col">
+                <div class="roster-class-col-header {{ class }}">
+                    <div class="roster-class-icon">
+                        {% with 'images/classIcons/'|add:class|add:'.png' as class_icon_path %}
+                        <img src="{% static class_icon_path %}" alt="Logo">
+                        {% endwith %}
+                    </div>
+                    {{ display_class }}
+                </div>
 
-    <h1>Guild Roster</h1>
+                <div class="roster-class-col-content {{ class }}">
+                    {% for char in roster %}
+                    {% if char.playable_class == display_class %}
+                    <p>{{ char.name }}</p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="roster-view unsorted">
+                {% for char in roster %}
+                {% if char.playable_class == None %}
+                <p>{{ char.name }}</p>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-    {% for char in roster %}
-        <p>{{ char.name }}</p>
-    {% endfor %}
-
-{% endblock %}
+    {% endblock %}
 
 </body>
+
 </html>

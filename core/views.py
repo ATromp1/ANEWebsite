@@ -23,6 +23,10 @@ def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
 
 
+def logout_user_button():
+    return redirect('/accounts/logout/')
+
+
 def events_view(request):
     event_list = RaidEvent.objects.all()
     context = {
@@ -113,8 +117,23 @@ def add_user_to_roster_button(request, event_date):
 
 
 def roster_view(request):
+    playable_classes = {
+        'warrior': 'Warrior',
+        'paladin': 'Paladin',
+        'hunter': 'Hunter',
+        'rogue': 'Rogue',
+        'priest': 'Priest',
+        'shaman': 'Shaman',
+        'mage': 'Mage',
+        'warlock': 'Warlock',
+        'monk': 'Monk',
+        'druid': 'Druid',
+        'demonhunter': 'Demon Hunter',
+        'deathknight': 'Death Knight',
+    }
     context = {
         'roster': Roster.objects.all(),
+        'playable_classes': playable_classes,
         'social_user': get_user_display_name(request),
     }
     return render(request, 'roster.html', context)
@@ -153,7 +172,7 @@ def get_user_display_name(request):
         else:
             user = get_current_user_id(request)['battletag']
     else:
-        user = 'Not logged in'
+        user = ''
     return user
 
 

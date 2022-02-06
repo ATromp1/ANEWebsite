@@ -26,16 +26,17 @@ from core.views import (
     add_user_to_roster_button,
     add_event,
     login_user_button,
+    logout_user_button,
     delete_event,
     boss_view,
 )
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
     path('accounts/', include('allauth.urls')),
     path('login_user/', login_user_button, name='login-user-button'),
+    path('accounts/logout/', logout_user_button, name='logout-user-button'),
     path('roster/', roster_view, name='roster'),
     path('calendar/', calendar_view, name='calendar'),
     path('events/', events_view, name='events'),
