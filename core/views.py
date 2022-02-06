@@ -148,7 +148,7 @@ def get_user_display_name(request):
         else:
             user = get_current_user_id(request)['battletag']
     else:
-        user = 'Not logged in'
+        user = ''
     return user
 
 
