@@ -157,6 +157,9 @@ body {
       @media screen and (max-height: 350px) {
         .calendar-grid-container .calendar-grid .calendar-grid-item-header {
           border-bottom: none; } }
+      .calendar-grid-container .calendar-grid .calendar-grid-item-header:nth-child(5) {
+        border-color: #f68786;
+        color: #f68786; }
     .calendar-grid-container .calendar-grid .calendar-grid-item {
       height: 100%;
       width: 100%;
