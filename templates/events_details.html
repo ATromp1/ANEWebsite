@@ -3,7 +3,6 @@
 
 {% extends "base.html" %}
 
-
 <head>
     <meta charset="UTF-8">
     <title>Events Details</title>
@@ -27,22 +26,47 @@
             </div>
             <div class="col-sm">
             <ul>
-                {% for boss in bosses %}
-                  <li style="display:inline"><a href="{% url 'boss' event.date boss.boss_name|slugify %}" class="btn btn-danger">{{ boss }}</a></li>
-                {% endfor %}
-                {% block bossview %}
-
-                {% endblock %}
+{#                {% for boss in bosses %}#}
+{#                  <li style="display:inline"><a href="{% url 'boss' event.date boss.boss_name|slugify %}" class="btn btn-danger">{{ boss }}</a></li>#}
+{#                {% endfor %}#}
             </ul>
             </div>
-            <div class="col-sm">
-                One of three columns
+            <div id="vue-app" class="col-sm">
+                <div class="boss">
+                    <div class="boss-image">
+                        <img v-bind:src="image">
+                    </div>
+                <ul class="mr-auto">
+                    <li v-for="boss in bosses">
+                        <a v-bind:href="boss.url">[[ boss.fields.boss_name ]]</a>
+                    </li>
+                </ul>
+                </div>
             </div>
         </div>
     </div>
 
+    <script type="text/javascript">
+        var boss_list = {{ itemtest|safe }};
+        var roster = {{ rostertest|safe }}
+        var app = new Vue({
+            el: "#vue-app",
+            delimiters: ['[[',']]'],
+            data: {
+                bosses: boss_list,
+                roster: roster,
+                image: '/static/images/classIcons/deathknight.png'
+            },
+
+        });
+    </script>
 
 {% endblock %}
 
+
+
+
 </body>
+
+
 </html>
