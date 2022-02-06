@@ -67,8 +67,8 @@ def delete_event(request, raidevent_id):
         return redirect('events')
 
 
-def events_details_view(request, raidevent_id):
-    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+def events_details_view(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
     roster = event_obj.roster.all()
     bosses = RaidInstance.objects.first().bosses.all()
 
@@ -81,6 +81,16 @@ def events_details_view(request, raidevent_id):
     }
     return render(request, template_name, context)
 
+
+def boss_view(request, raidevent_id, boss_id):
+    event_obj = RaidEvent.objects.get(pk=raidevent_id)
+    raid_instance_obj = RaidInstance.objects.get(pk=boss_id)
+    context = {
+        'event': event_obj,
+        'raid_instance': raid_instance_obj,
+        'social_user': get_user_display_name(request)
+    }
+    return render(request, 'bossview.html', context)
 
 def get_current_user_id(request):
     return SocialAccount.objects.filter(user=request.user).first().extra_data
@@ -217,9 +227,10 @@ def generate_calendar(events):
                     event_status_cssclass = event_status
 
                     calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
-                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (events[id]['event_id'],
+                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (events[id]['event_date'],
                                                                                                         event_status_cssclass, event_status)
 
         calendarhtml += "</div></div>"
 
     return calendarhtml
+
