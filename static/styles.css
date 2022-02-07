@@ -277,21 +277,33 @@ body {
     width: 170px; }
   .event-view-container .temp-invis-div {
     width: 170px; }
-  .event-view-container .boss .event-view-boss-list {
-    list-style: none;
-    display: flex; }
-    .event-view-container .boss .event-view-boss-list li {
-      cursor: pointer;
-      text-decoration: none;
-      border: 1px solid var(--bs-success);
-      color: var(--white-color);
-      padding: 1rem 1.5rem;
-      border-radius: 0.25rem; }
-      .event-view-container .boss .event-view-boss-list li:hover {
+  .event-view-container .event-view-boss-container {
+    width: 100%; }
+    .event-view-container .event-view-boss-container .event-view-boss-list {
+      margin: 0;
+      padding: 0;
+      justify-content: space-between;
+      list-style: none;
+      display: flex; }
+      .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
+        cursor: pointer;
+        text-decoration: none;
+        background-color: var(--bs-success);
         color: var(--white-color);
-        background-color: var(--bg-active-color); }
-      .event-view-container .boss .event-view-boss-list li.active {
-        /* change color */ }
+        padding: 1rem 1.5rem;
+        border-radius: 0.25rem;
+        width: 200px;
+        text-align: center; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn:hover {
+          color: var(--white-color);
+          background-color: var(--bg-active-color); }
+      .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-roster-list {
+        /*  display: none; */
+        margin: 0;
+        padding: 0;
+        list-style: none; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-roster-list.open {
+          display: block; }
 
 /* /.................// Mediaquery @600px //................./ */
 /* Navbar (Hamburger menu) -- Calendar  */

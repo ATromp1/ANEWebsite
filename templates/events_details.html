@@ -20,36 +20,84 @@
                 {% endfor %}
             </ul>
         </div>
-            <div id="vue-app">
-                <div class="boss">
-                <ul class="event-view-boss-list">
-                    <li v-for="boss in bosses">
-                        <a v-bind:href="boss.url">[[ boss.fields.boss_name ]]</a>
-                    </li>
-                </ul>
+        <div class="event-view-boss-container">
+            <div class="event-view-boss-list">
+                </div>
+                <div class="event-view-boss-info">
+                    testesttestestestestests
                 </div>
             </div>
+        </div>
 
             <div class="temp-invis-div">
             </div>
         </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
-        var boss_list = {{ itemtest|safe }};
-        var roster = {{ rostertest|safe }}
-        var app = new Vue({
-            el: "#vue-app",
-            delimiters: ['[[',']]'],
-            data: {
-                bosses: boss_list,
-                roster: roster,
-                image: '/static/images/classIcons/deathknight.png'
-            },
+        let boss_list = {{ itemtest|safe }}
+        let roster = {{ rostertest|safe }}  
 
-        });
+        let roster_characters = []
+        for(i = 0; i < roster.length; i++){
+            roster_characters.push({
+                'name': roster[i].fields.name,
+                'playable_class': roster[i].fields.playable_class,
+            })
+        }
+
+
+        let boss_name_list = []
+        for(i = 0; i < boss_list.length; i++){
+            boss_name_list.push({
+                'name': boss_list[i].fields.boss_name,
+                'id': i
+            })
+        }
+
+
+        // Create the boss buttons
+        let HTMLtoAppend = ''
+        for(i = 0; i < boss_name_list.length; i++){
+            HTMLtoAppend = HTMLtoAppend + '<div class="boss-view-btn">' + boss_name_list[i].name + '</div>'
+        }
+        $('.event-view-boss-list').append(HTMLtoAppend);
+
+        // Fill each boss with a roster
+        let boss_roster = []
+        let roster_per_boss = []
+        for(i = 0; i < boss_name_list.length; i++){
+            for(j = 0; j < roster_characters.length; j++){
+                roster_per_boss[j] = {
+                    'name': roster_characters[j].name,
+                    'playable_class': roster_characters[j].playable_class
+                }
+            }
+            boss_roster[boss_name_list[i].name] = roster_per_boss
+
+        }
+        
+        console.log(boss_roster)
+        
+
+        var elements = $(".boss-view-btn");
+
+        let updateRosterView = function(){
+            let boss = this.innerHTML;
+            let roster_info_element = $('.event-view-boss-info')
+            roster_info_element.empty();
+
+            for(i = 0; i < boss_roster[boss].length; i++){
+                roster_info_element.append('<p class="">' + boss_roster[boss][i].name +  '</p>')
+            }
+        }
+
+        Array.from(elements).forEach(function(element) {
+            element.addEventListener('click', updateRosterView);
+          });
+    
     </script>
-
 {% endblock %}
 
 
