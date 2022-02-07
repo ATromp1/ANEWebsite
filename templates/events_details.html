@@ -22,11 +22,25 @@
         </div>
             <div id="vue-app">
                 <div class="boss">
-                <ul class="event-view-boss-list">
-                    <li v-for="boss in bosses">
-                        <a v-bind:href="boss.url">[[ boss.fields.boss_name ]]</a>
-                    </li>
-                </ul>
+                    <ul class="event-view-boss-list">
+                        <li v-for="boss in bosses">
+                            <a v-bind:href="boss.url">[[ boss.fields.boss_name ]]</a>
+                        </li>
+                    </ul>
+                    <div class="roster">
+                        <ul class="roster-per-boss">
+
+                            <li v-for="player in roster">
+                                <a v-model="NewPlayerName" @click="addToList(player.fields.name); rosterBackendToList">[[ player.fields.name ]]</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="benched">
+                        <ul class="bench-list-per-boss">
+                            <li v-for="player in testlist">
+                                <a>[[ player ]]</a>
+                            </li>
+                        </ul>
                 </div>
             </div>
 
@@ -36,7 +50,7 @@
     </div>
 
     <script type="text/javascript">
-        var boss_list = {{ itemtest|safe }};
+        var boss_list = {{ itemtest|safe }}
         var roster = {{ rostertest|safe }}
         var app = new Vue({
             el: "#vue-app",
@@ -44,9 +58,28 @@
             data: {
                 bosses: boss_list,
                 roster: roster,
-                image: '/static/images/classIcons/deathknight.png'
+                NewPlayerName: '',
+                testlist: [],
+                rosterlist: [],
             },
+            methods: {
+                addToList(test) {
+                    this.testlist.push(test)
 
+                },
+                removeFromList(test) {
+                    this.roster.remove(test)
+                },
+                rosterBackendToList() {
+                    for (object in bosses) {
+                        this.rosterlist.push({
+                            name: object.fields.name,
+                            playable_class: object.fields.playable_class
+                        })
+                    }
+
+                }
+            }
         });
     </script>
 
