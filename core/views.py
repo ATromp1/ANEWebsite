@@ -72,14 +72,23 @@ def delete_event(request, event_date):
 def events_details_view(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
     roster = event_obj.roster.all()
-    roster_serialized = serializers.serialize("json", roster)
+
+    # TODO: refactor this into a separate function, maybe put similar functions back into utils.py
+    roster_dict = {}
+    for character in roster:
+        roster_dict[character.id] = {
+            'name': character.name,
+            'playable_class': character.playable_class
+        }
+
+
     boss_objects = RaidInstance.objects.first().bosses.all()
     itemtest = serializers.serialize("json", boss_objects)
 
     context = {
         'event': event_obj,
         'roster': roster,
-        'rostertest': roster_serialized,
+        'roster_dict': roster_dict,
         'bosses': boss_objects,
         'itemtest': itemtest,
         'social_user': get_user_display_name(request),
