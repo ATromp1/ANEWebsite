@@ -6,3 +6,7 @@ $('.hamburger-menu-toggle-button').click(function(){
     $('.navbar-hamburger-menu-content').toggleClass('open');
     $('.navbar-hamburger-menu').toggleClass('open');
 });
+
+
+
+

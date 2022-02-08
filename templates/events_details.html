@@ -20,39 +20,25 @@
                 {% endfor %}
             </ul>
         </div>
-            <div id="vue-app">
-                <div class="boss">
-                    <ul class="event-view-boss-list">
-                        <li v-for="boss in bosses">
-                            <a>[[ boss.fields.boss_name ]]</a>
-                        </li>
-                    </ul>
-                    <div class="roster">
-                        <ul class="roster-per-boss">
-
-                            <li v-for="(player, index) in roster">
-{#                                @click="addToList(player.name,player.playable_class); removeFromRoster(index)"#}
-                                <strong :id="player.name" class="testThis">[[ player.name ]]</strong>
-                                <button class="testbutton" id="tankbutton" type="button">Tank</button>
-                                <button class="testbutton" id="healerbutton" type="button">Healer</button>
-                                <button class="testbutton" id="meleebutton" type="button">Melee</button>
-                                <button class="testbutton" id="rangedbutton" type="button">Ranged</button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="benched">
-                        <ul class="bench-list-per-boss">
-                            <li v-for="(player, index) in testlist">
-                                <a @click="addToRoster(player); removeFromList(index)">[[ player.name ]]</a>
-                            </li>
-                        </ul>
+        <div class="event-view-boss-container">
+            <div class="event-view-boss-list">
+                </div>
+                <div class="event-view-boss-info">
                 </div>
             </div>
+        </div>
 
             <div class="temp-invis-div">
             </div>
         </div>
     </div>
+    {% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        let boss_list = {{itemtest | safe}}
+        let roster = {{rostertest | safe}}
+    </script>
+    <script src="{% static '/js/event_view.js' %}"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -87,37 +73,19 @@
     </script>
 
     <script type="text/javascript">
+        var boss_list = {{ itemtest|safe }};
+        var roster = {{ rostertest|safe }}
         var app = new Vue({
             el: "#vue-app",
             delimiters: ['[[',']]'],
             data: {
-                bosses: {{itemtest|safe}},
-                roster: {{roster_dict|safe}},
-                testlist: [],
-                index: [],
+                bosses: boss_list,
+                roster: roster,
+                image: '/static/images/classIcons/deathknight.png'
             },
-            methods: {
-                addToList(name,test) {
-                    this.testlist.push({
-                        name: name,
-                        playable_class: test,
-                    })
-                },
-                removeFromList(index) {
-                    this.$delete(this.testlist, index)
-                },
-                removeFromRoster(index) {
-                    this.index.push(index)
-                    this.$delete(this.roster, index)
-                },
-                addToRoster(name,test) {
-                    this.$set(this.roster, this.index[0], name, test)
-                    this.$delete(this.index, 0)
-                },
-            }
-        })
-    </script>
 
+        });
+    </script>
 {% endblock %}
 
 
