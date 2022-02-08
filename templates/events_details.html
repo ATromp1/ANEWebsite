@@ -32,6 +32,7 @@
             </div>
         </div>
     </div>
+
     {% load static %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -72,24 +73,8 @@
         });
     </script>
 
-    <script type="text/javascript">
-        var boss_list = {{ itemtest|safe }};
-        var roster = {{ rostertest|safe }}
-        var app = new Vue({
-            el: "#vue-app",
-            delimiters: ['[[',']]'],
-            data: {
-                bosses: boss_list,
-                roster: roster,
-                image: '/static/images/classIcons/deathknight.png'
-            },
 
-        });
-    </script>
 {% endblock %}
-
-
-
 
 </body>
 

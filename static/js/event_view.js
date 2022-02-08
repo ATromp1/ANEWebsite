@@ -84,7 +84,7 @@ class RosterPerBoss {
     }
 }
 
-class RosterCharacter extends RosterPerBoss {
+class RosterCharacter {
     constructor(name, playable_class, role) {
         this.boss_name = boss_name;
         this.name = name;

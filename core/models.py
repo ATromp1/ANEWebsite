@@ -50,6 +50,9 @@ class RaidEvent(models.Model):
     roster = models.ManyToManyField(Roster, blank=True, default=True)
     bosses = models.ManyToManyField(Boss, through='RaidBosses')
 
+    def __str__(self):
+        return str(self.date)
+
     def populate_roster(self):
         for character in Roster.objects.all():
             self.roster.add(Roster.objects.get(name=character))
