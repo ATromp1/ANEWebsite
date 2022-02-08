@@ -82,6 +82,7 @@ def events_details_view(request, event_date):
         'rostertest': roster_serialized,
         'bosses': boss_objects,
         'itemtest': itemtest,
+        'playable_classes_css_class': playable_classes_to_css_class(),
         'social_user': get_user_display_name(request),
     }
     return render(request, 'events_details.html', context)
@@ -116,7 +117,10 @@ def add_user_to_roster_button(request, event_date):
     return redirect('events-details', event_date=event_obj.date)
 
 
-def roster_view(request):
+def playable_classes_to_css_class():
+    '''
+    Returns an array of playable_class from blizzard API to something usable as a CSS class
+    '''
     playable_classes = {
         'warrior': 'Warrior',
         'paladin': 'Paladin',
@@ -131,9 +135,14 @@ def roster_view(request):
         'demonhunter': 'Demon Hunter',
         'deathknight': 'Death Knight',
     }
+
+    return playable_classes
+
+
+def roster_view(request):
     context = {
         'roster': Roster.objects.all(),
-        'playable_classes': playable_classes,
+        'playable_classes': playable_classes_to_css_class(),
         'social_user': get_user_display_name(request),
     }
     return render(request, 'roster.html', context)

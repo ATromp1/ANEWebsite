@@ -40,43 +40,7 @@
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
 
-    <script type="text/javascript">
 
-
-
-
-
-        // Fill each boss with a roster
-        let boss_roster = []
-        let roster_per_boss = []
-        for(i = 0; i < boss_name_list.length; i++){
-            for(j = 0; j < roster_characters.length; j++){
-                roster_per_boss[j] = {
-                    'name': roster_characters[j].name,
-                    'playable_class': roster_characters[j].playable_class
-                }
-             }
-            boss_roster[boss_name_list[i].name] = roster_per_boss
-
-        }
-        
-        //console.log(boss_roster)
-        
-
-
-        let updateRosterView = function(){
-            let boss = this.innerHTML;
-            let roster_info_element = $('.event-view-boss-info')
-            roster_info_element.empty();
-
-            for(i = 0; i < boss_roster[boss].length; i++){
-                roster_info_element.append('<p class="">' + boss_roster[boss][i].name +  '</p>')
-            }
-        }
-
-
-    
-    </script>
 {% endblock %}
 
 
