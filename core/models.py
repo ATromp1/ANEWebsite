@@ -31,30 +31,24 @@ class Roster(models.Model):
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
     playable_class = models.CharField(max_length=50, null=True, blank=True)
+    role = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
-class RaidBosses(models.Model):
+class Boss(models.Model):
     boss_name = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.boss_name
 
 
-class RaidInstance(models.Model):
-    name = models.CharField(max_length=40, null=True)
-    bosses = models.ManyToManyField(RaidBosses, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField(unique=True)
     roster = models.ManyToManyField(Roster, blank=True, default=True)
+    bosses = models.ManyToManyField(Boss, through='RaidBosses')
 
     def populate_roster(self):
         for character in Roster.objects.all():
@@ -71,6 +65,26 @@ class RaidEvent(models.Model):
         for item in user_chars_in_roster:
             self.roster.add(Roster.objects.get(name=item))
             self.save()
+
+
+class RaidBosses(models.Model):
+    # boss_name = models.CharField(max_length=50, null=True, blank=True)
+    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
+    boss = models.ForeignKey(Boss, on_delete=models.CASCADE, null=True)
+    inherited_roster = models.ManyToManyField(Roster)
+
+    def __str__(self):
+        return str(self.raid_event.date)
+
+
+
+
+class RaidInstance(models.Model):
+    name = models.CharField(max_length=40, null=True)
+    bosses = models.ManyToManyField(RaidBosses, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 def get_chars_in_roster(current_user_id):
@@ -155,6 +169,7 @@ def populate_roster_db(api_roster):
             Roster.objects.filter(name=name).update_or_create(name=name,
                                                               rank=rank,
                                                               character_id=character_id)
+
 
 def update_guild_roster_classes():
     """

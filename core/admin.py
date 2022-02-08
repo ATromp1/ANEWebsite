@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CurrentUser, Roster, RaidEvent, RaidInstance, RaidBosses
+from .models import CurrentUser, Roster, RaidEvent, RaidInstance, RaidBosses, Boss
 
 
 class PlayerAdmin(admin.ModelAdmin):
@@ -19,6 +19,8 @@ class RaidInstanceAdmin(admin.ModelAdmin):
     filter_horizontal = ('bosses',)
 
 
+
+admin.site.register(Boss)
 admin.site.register(CurrentUser, PlayerAdmin)
 admin.site.register(Roster, RosterAdmin)
 admin.site.register(RaidEvent, RaidEventAdmin)
