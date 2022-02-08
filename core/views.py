@@ -7,8 +7,14 @@ from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import render, redirect
 
 from core.forms import Eventform
-from core.models import Roster, RaidEvent, populate_roster_db, get_guild_roster, update_guild_roster_classes, \
-    RaidInstance
+from core.models import (
+    Roster,
+    RaidEvent,
+    populate_roster_db,
+    get_guild_roster,
+    update_guild_roster_classes,
+    Boss,
+)
 
 
 # @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
@@ -86,15 +92,14 @@ def events_details_view(request, event_date):
     print(test)
 
 
-    boss_objects = RaidInstance.objects.first().bosses.all()
-    itemtest = serializers.serialize("json", boss_objects)
+    boss_objects = Boss.objects.all()
+    bosses = serializers.serialize("json", boss_objects)
 
     context = {
         'event': event_obj,
         'roster': roster,
         'roster_dict': roster_dict,
-        'bosses': boss_objects,
-        'itemtest': itemtest,
+        'bosses': bosses,
         'social_user': get_user_display_name(request),
     }
     return render(request, 'events_details.html', context)

@@ -36,8 +36,8 @@
     {% load static %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        let boss_list = {{itemtest | safe}}
-        let roster = {{rostertest | safe}}
+        let boss_list = {{bosses | safe}}
+        let roster = {{roster_dict | safe}}
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
 

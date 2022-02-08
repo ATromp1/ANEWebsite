@@ -23,11 +23,12 @@ let roles_per_class = {
 
 
 let roster_characters = []
-for (i = 0; i < roster.length; i++) {
-    roles = roles_per_class[roster[i].fields.playable_class]
+for (let i in roster) {
+    let roles = roles_per_class[roster[i].playable_class]
+    console.log(roster[i])
     roster_characters.push({
-        'name': roster[i].fields.name,
-        'playable_class': roster[i].fields.playable_class,
+        'name': roster[i].name,
+        'playable_class': roster[i].playable_class,
         'roles': roles,
     })
 }
@@ -75,7 +76,7 @@ class RosterPerBoss {
     update_roster_display(){
         $('.event-view-boss-info').empty();
         HTMLtoAppend = ''
-        roster = raid_event.roster_per_boss_objects[this.boss];
+        let roster = raid_event.roster_per_boss_objects[this.boss];
         HTMLtoAppend = HTMLtoAppend + roster.boss
         for(let char in roster.initial_roster){
             HTMLtoAppend = HTMLtoAppend +'<p>' + roster.initial_roster[char].name + '</p>';
