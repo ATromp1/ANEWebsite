@@ -217,6 +217,7 @@ def generate_calendar(events):
         # current refers to the day in the future
         current_day_of_month = day_in_future.day
         day_of_week = day_in_future.weekday()
+        current_year = day_in_future.year
         current_month = day_in_future.month
 
         # If day is todays date make it highlighted
@@ -236,18 +237,19 @@ def generate_calendar(events):
 
         for id in events:
             # Index == ID
-            if events[id]['event_date'].day == current_day_of_month:
+            if events[id]['event_date'].year == current_year:
                 if events[id]['event_date'].month == current_month:
-                    event_name = events[id]['event_name']
+                    if events[id]['event_date'].day == current_day_of_month:
+                        event_name = events[id]['event_name']
 
-                    #    event_status = events[index]['event_status']
-                    event_status = "benched"
-                    event_status_cssclass = event_status
+                        #    event_status = events[index]['event_status']
+                        event_status = "benched"
+                        event_status_cssclass = event_status
 
-                    calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
-                    calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (
-                    events[id]['event_date'],
-                    event_status_cssclass, event_status)
+                        calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
+                        calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (
+                            events[id]['event_date'],
+                            event_status_cssclass, event_status)
 
         calendarhtml += "</div></div>"
 
