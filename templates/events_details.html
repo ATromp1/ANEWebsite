@@ -31,7 +31,12 @@
                         <ul class="roster-per-boss">
 
                             <li v-for="(player, index) in roster">
-                                <a @click="addToList(player.name,player.playable_class); removeFromRoster(index)">[[ player.name ]] -- [[ player.playable_class ]]</a>
+{#                                @click="addToList(player.name,player.playable_class); removeFromRoster(index)"#}
+                                <strong :id="player.name" class="testThis">[[ player.name ]]</strong>
+                                <button class="testbutton" id="tankbutton" type="button">Tank</button>
+                                <button class="testbutton" id="healerbutton" type="button">Healer</button>
+                                <button class="testbutton" id="meleebutton" type="button">Melee</button>
+                                <button class="testbutton" id="rangedbutton" type="button">Ranged</button>
                             </li>
                         </ul>
                     </div>
@@ -48,6 +53,38 @@
             </div>
         </div>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            $(".testThis").click(function () {
+                console.log($(this)[0].id);
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/events/{{event.date|date:"o-m-d"}}',
+                    data: {
+                        'name': $(this)[0].id,
+                    },
+                    dataType: 'json',
+                    success: function () {
+                        console.log("PRINT SOMETHING")
+                    }
+                })
+            });
+            $(".testbutton").click(function () {
+                console.log($(this));
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/events/{{event.date|date:"o-m-d"}}',
+                    data: {
+                        'name': $(this)[0].id,
+                    },
+                    dataType: 'json',
+                    success: function () {
+                        console.log("PRINT SOMETHING")
+                    }
+                })
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         var app = new Vue({

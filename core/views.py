@@ -81,6 +81,10 @@ def events_details_view(request, event_date):
             'playable_class': character.playable_class
         }
 
+    # if request.GET.get('name') is not None:
+    test = request.GET.get('name')
+    print(test)
+
 
     boss_objects = RaidInstance.objects.first().bosses.all()
     itemtest = serializers.serialize("json", boss_objects)
