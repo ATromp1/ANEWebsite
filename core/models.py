@@ -72,14 +72,13 @@ class RaidEvent(models.Model):
 
 class RaidBosses(models.Model):
     # boss_name = models.CharField(max_length=50, null=True, blank=True)
-    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
+    raid_event = models.ForeignKey(
+        RaidEvent, on_delete=models.CASCADE, null=True)
     boss = models.ForeignKey(Boss, on_delete=models.CASCADE, null=True)
     inherited_roster = models.ManyToManyField(Roster)
 
     def __str__(self):
         return str(self.raid_event.date)
-
-
 
 
 class RaidInstance(models.Model):
@@ -181,8 +180,10 @@ def update_guild_roster_classes():
     """
     for character in Roster.objects.all():
         if CurrentUser.objects.filter(character_id=character.character_id).exists():
-            playable_class = CurrentUser.objects.get(character_id=character.character_id).playable_class
-            Roster.objects.filter(character_id=character.character_id).update(playable_class=playable_class)
+            playable_class = CurrentUser.objects.get(
+                character_id=character.character_id).playable_class
+            Roster.objects.filter(character_id=character.character_id).update(
+                playable_class=playable_class)
 
 
 def get_guild_roster(request):

@@ -6,6 +6,7 @@ for (i = 0; i < boss_list.length; i++) {
     })
 }
 
+
 let roles_per_class = {
     'Warrior': ['tank', 'mdps'],
     'Paladin': ['tank', 'mdps', 'healer'],
@@ -25,7 +26,6 @@ let roles_per_class = {
 let roster_characters = []
 for (let i in roster) {
     let roles = roles_per_class[roster[i].playable_class]
-    console.log(roster[i])
     roster_characters.push({
         'name': roster[i].name,
         'playable_class': roster[i].playable_class,
@@ -71,7 +71,7 @@ class RosterPerBoss {
                 this.initial_roster.playable_class,
                 this.initial_roster.role)
         }
-    }
+    }   
 
     update_roster_display(){
         $('.event-view-boss-info').empty();
@@ -79,7 +79,14 @@ class RosterPerBoss {
         let roster = raid_event.roster_per_boss_objects[this.boss];
         HTMLtoAppend = HTMLtoAppend + roster.boss
         for(let char in roster.initial_roster){
-            HTMLtoAppend = HTMLtoAppend +'<p>' + roster.initial_roster[char].name + '</p>';
+            HTMLtoAppend = HTMLtoAppend +'<div class="'+ css_classes[roster.initial_roster[char].playable_class] +'">' + roster.initial_roster[char].name;
+        
+            for(let role in roster.initial_roster[char].roles){
+                HTMLtoAppend = HTMLtoAppend + '<div class="event-view-role-icon" id="'+ roster.initial_roster[char].roles[role] +' '+ roster.initial_roster[char].name+'"></div>';
+            }
+
+            HTMLtoAppend = HTMLtoAppend + '</div>';
+        
         }
         $('.event-view-boss-info').append(HTMLtoAppend);   
     }
@@ -109,22 +116,3 @@ $('.event-view-boss-list').append(HTMLtoAppend);
 $('.boss-view-btn').click(function(){
     raid_event.roster_per_boss_objects[this.id].update_roster_display()
 })
-
-
-  
-/* function update_roster_display(){
-    console.log(this.id)
-
-    $('.event-view-boss-info').empty();
-    HTMLtoAppend = ''
-    roster = raid_event.roster_per_boss_objects[this.id];
-    HTMLtoAppend = HTMLtoAppend + roster.boss
-    for(let char in roster.initial_roster){
-        HTMLtoAppend = HTMLtoAppend +'<p>' + roster.initial_roster[char].name + '</p>';
-    }
-    $('.event-view-boss-info').append(HTMLtoAppend);   
-} */
- 
-
-
-

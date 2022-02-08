@@ -279,6 +279,30 @@ body {
     width: 170px; }
   .event-view-container .event-view-boss-container {
     width: 100%; }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.warrior {
+      color: var(--classcolor-warrior); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.paladin {
+      color: var(--classcolor-paladin); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.hunter {
+      color: var(--classcolor-hunter); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.rogue {
+      color: var(--classcolor-rogue); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.priest {
+      color: var(--classcolor-priest); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.shaman {
+      color: var(--classcolor-shaman); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.mage {
+      color: var(--classcolor-mage); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.warlock {
+      color: var(--classcolor-warlock); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.monk {
+      color: var(--classcolor-monk); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.druid {
+      color: var(--classcolor-druid); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.demonhunter {
+      color: var(--classcolor-demonhunter); }
+    .event-view-container .event-view-boss-container .event-view-boss-info div.deathknight {
+      color: var(--classcolor-deathknight); }
     .event-view-container .event-view-boss-container .event-view-boss-list {
       margin: 0;
       padding: 0;
