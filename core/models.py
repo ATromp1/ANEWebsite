@@ -31,7 +31,7 @@ class Roster(models.Model):
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
     playable_class = models.CharField(max_length=50, null=True, blank=True)
-    role = models.CharField(max_length=20, null=True, blank=True)
+    # role = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -48,7 +48,7 @@ class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField(unique=True)
     roster = models.ManyToManyField(Roster, blank=True, default=True)
-    bosses = models.ManyToManyField(Boss, through='RaidBosses')
+    bosses = models.ManyToManyField(Boss, through='BossPerEvent')
 
     def __str__(self):
         return str(self.date)
@@ -70,23 +70,35 @@ class RaidEvent(models.Model):
             self.save()
 
 
-class RaidBosses(models.Model):
-    # boss_name = models.CharField(max_length=50, null=True, blank=True)
-    raid_event = models.ForeignKey(
-        RaidEvent, on_delete=models.CASCADE, null=True)
+class BossPerEvent(models.Model):
     boss = models.ForeignKey(Boss, on_delete=models.CASCADE, null=True)
-    inherited_roster = models.ManyToManyField(Roster)
+    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
+    # inherited_roster = models.ManyToManyField(Roster, blank=True)
+    tank = models.ManyToManyField(Roster, blank=True, related_name='rel_tank')
+    healer = models.ManyToManyField(Roster, blank=True, related_name='rel_healer')
+    mdps = models.ManyToManyField(Roster, blank=True, related_name='rel_mdps')
+    rdps = models.ManyToManyField(Roster, blank=True, related_name='rel_rdps')
 
     def __str__(self):
         return str(self.raid_event.date)
 
+    def dateDisplay(self):
+        return str(self.raid_event.date)
 
-class RaidInstance(models.Model):
-    name = models.CharField(max_length=40, null=True)
-    bosses = models.ManyToManyField(RaidBosses, blank=True)
+    def bossDisplay(self):
+        return str(self.boss.boss_name)
 
-    def __str__(self):
-        return self.name
+    def ajax_to_tank(self, name):
+        self.tank.add(Roster.objects.get(name=name))
+
+    def ajax_to_healer(self, name):
+        self.healer.add(Roster.objects.get(name=name))
+
+    def ajax_to_mdps(self, name):
+        self.mdps.add(Roster.objects.get(name=name))
+
+    def ajax_to_rdps(self, name):
+        self.rdps.add(Roster.objects.get(name=name))
 
 
 def get_chars_in_roster(current_user_id):

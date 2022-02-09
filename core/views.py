@@ -14,6 +14,7 @@ from core.models import (
     get_guild_roster,
     update_guild_roster_classes,
     Boss,
+    BossPerEvent
 )
 
 
@@ -87,9 +88,30 @@ def events_details_view(request, event_date):
             'playable_class': character.playable_class
         }
 
-    # if request.GET.get('name') is not None:
-    test = request.GET.get('name')
-    print(test)
+    if request.GET.get('data') is not None:
+        role = request.GET.get('data').split()[0]
+        name = request.GET.get('data').split()[1]
+        boss_id = str(int(request.GET.get('boss_id')) + 1)
+
+
+        BossPerEvent.objects.update_or_create(boss=Boss.objects.get(id=boss_id),
+                                              raid_event=RaidEvent.objects.get(date=event_date))
+
+        raid_event = RaidEvent.objects.get(date=event_date)
+        boss = Boss.objects.get(id=boss_id)
+        current_event_and_boss = BossPerEvent.objects.get(raid_event=raid_event, boss=boss)
+        match role:
+            case 'tank':
+                current_event_and_boss.ajax_to_tank(name)
+            case 'healer':
+                current_event_and_boss.ajax_to_healer(name)
+            case 'rdps':
+                current_event_and_boss.ajax_to_rdps(name)
+            case 'mdps':
+                current_event_and_boss.ajax_to_mdps(name)
+
+
+
 
     boss_objects = Boss.objects.all()
     bosses = serializers.serialize("json", boss_objects)
@@ -153,7 +175,6 @@ def get_playable_classes_as_css_classes():
 
 
 def roster_view(request):
-
     context = {
         'roster': Roster.objects.all(),
         'playable_classes': get_playable_classes_as_css_classes(),
