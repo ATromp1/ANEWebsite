@@ -136,18 +136,18 @@ def add_user_to_roster_button(request, event_date):
 
 def get_playable_classes_as_css_classes():
     playable_classes = {
-        'warrior': 'Warrior',
-        'paladin': 'Paladin',
-        'hunter': 'Hunter',
-        'rogue': 'Rogue',
-        'priest': 'Priest',
-        'shaman': 'Shaman',
-        'mage': 'Mage',
-        'warlock': 'Warlock',
-        'monk': 'Monk',
-        'druid': 'Druid',
-        'demonhunter': 'Demon Hunter',
-        'deathknight': 'Death Knight',
+        'Warrior': 'warrior',
+        'Paladin': 'paladin',
+        'Hunter': 'hunter',
+        'Rogue': 'rogue',
+        'Priest': 'priest',
+        'Shaman': 'shaman',
+        'Mage': 'mage',
+        'Warlock': 'warlock',
+        'Monk': 'monk',
+        'Druid': 'druid',
+        'Demon Hunter': 'demonhunter',
+        'Death Knight': 'deathknight',
     }
     return playable_classes
 

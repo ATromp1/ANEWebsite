@@ -279,30 +279,33 @@ body {
     width: 170px; }
   .event-view-container .event-view-boss-container {
     width: 100%; }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.warrior {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.warrior {
       color: var(--classcolor-warrior); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.paladin {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.paladin {
       color: var(--classcolor-paladin); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.hunter {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.hunter {
       color: var(--classcolor-hunter); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.rogue {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.rogue {
       color: var(--classcolor-rogue); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.priest {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.priest {
       color: var(--classcolor-priest); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.shaman {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.shaman {
       color: var(--classcolor-shaman); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.mage {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.mage {
       color: var(--classcolor-mage); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.warlock {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.warlock {
       color: var(--classcolor-warlock); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.monk {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.monk {
       color: var(--classcolor-monk); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.druid {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.druid {
       color: var(--classcolor-druid); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.demonhunter {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.demonhunter {
       color: var(--classcolor-demonhunter); }
-    .event-view-container .event-view-boss-container .event-view-boss-info div.deathknight {
+    .event-view-container .event-view-boss-container .event-view-boss-info td.deathknight {
       color: var(--classcolor-deathknight); }
+    .event-view-container .event-view-boss-container .event-view-boss-info td img {
+      width: 1.5rem;
+      height: 1.5rem; }
     .event-view-container .event-view-boss-container .event-view-boss-list {
       margin: 0;
       padding: 0;
@@ -321,6 +324,8 @@ body {
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn:hover {
           color: var(--white-color);
           background-color: var(--bg-active-color); }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.active {
+          background-color: var(--bs-info); }
       .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-roster-list {
         /*  display: none; */
         margin: 0;
