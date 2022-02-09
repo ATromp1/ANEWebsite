@@ -7,13 +7,15 @@
     <meta charset="UTF-8">
     <title>Events Details</title>
 </head>
+
 <body>
 
 {% block content %}
     <div class="event-view-container">
         <div class="event-view-signups">
             <h2>Sign Ups</h2>
-            <a href="{% url 'opt-out' event.date %}" class="btn btn-danger">Sign Off</a><a href="{% url 'opt-in' event.date %}" class="btn btn-success">Sign In</a>
+            <a href="{% url 'opt-out' event.date %}" class="btn btn-danger">Sign Off</a><a
+                href="{% url 'opt-in' event.date %}" class="btn btn-success">Sign In</a>
             <ul>
                 {% for player in roster %}
                     <li>{{ player }}</li>
@@ -22,14 +24,20 @@
         </div>
         <div class="event-view-boss-container">
             <div class="event-view-boss-list">
-                </div>
-                <div class="event-view-boss-info">
-                </div>
+            </div>
+            <div class="event-view-boss-info">
+                <table class="event-view-available-roster-table">
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                </table>
             </div>
         </div>
-
-            <div class="temp-invis-div">
-            </div>
+        <div class="temp-invis-div">
         </div>
     </div>
 
@@ -39,6 +47,7 @@
         let boss_list = {{bosses | safe}}
         let roster = {{roster_dict | safe}}
         let css_classes = {{css_classes | safe}}
+        let static_url = "{% get_static_prefix %}"
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
 
