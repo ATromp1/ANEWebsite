@@ -23,11 +23,11 @@ let roles_per_class = {
 
 
 let roster_characters = []
-for (i = 0; i < roster.length; i++) {
-    roles = roles_per_class[roster[i].fields.playable_class]
+for (let i in roster) {
+    let roles = roles_per_class[roster[i].playable_class]
     roster_characters.push({
-        'name': roster[i].fields.name,
-        'playable_class': roster[i].fields.playable_class,
+        'name': roster[i].name,
+        'playable_class': roster[i].playable_class,
         'roles': roles,
     })
 }
@@ -49,6 +49,11 @@ class RaidEvent {
             this.roster_per_boss_objects.push(current_roster)
         }
 
+    }
+
+    switch_to_roster(boss_id){
+        console.log("switch_to_roster bossid: " + boss_id)
+        roster_per_boss_objects[boss_id].update_roster_display()
     }
 
 
@@ -75,16 +80,23 @@ class RosterPerBoss {
     update_roster_display(){
         $('.event-view-boss-info').empty();
         HTMLtoAppend = ''
-        roster = raid_event.roster_per_boss_objects[this.boss];
+        let roster = raid_event.roster_per_boss_objects[this.boss];
         HTMLtoAppend = HTMLtoAppend + roster.boss
         for(let char in roster.initial_roster){
-            HTMLtoAppend = HTMLtoAppend +'<p>' + roster.initial_roster[char].name + '</p>';
+            HTMLtoAppend = HTMLtoAppend +'<div class="'+ css_classes[roster.initial_roster[char].playable_class] +'">' + roster.initial_roster[char].name;
+
+            for(let role in roster.initial_roster[char].roles){
+                HTMLtoAppend = HTMLtoAppend + '<div class="event-view-role-icon" id="'+ roster.initial_roster[char].roles[role] +' '+ roster.initial_roster[char].name+'"></div>';
+            }
+
+            HTMLtoAppend = HTMLtoAppend + '</div>';
+
         }
         $('.event-view-boss-info').append(HTMLtoAppend);   
     }
 }
 
-class RosterCharacter{
+class RosterCharacter {
     constructor(name, playable_class, role) {
         this.boss_name = boss_name;
         this.name = name;
@@ -106,24 +118,5 @@ $('.event-view-boss-list').append(HTMLtoAppend);
 // If element with class '.boss-view-btn' gets clicked then get element id and call
 // update_roster_display() with boss id same as button
 $('.boss-view-btn').click(function(){
-    raid_event.roster_per_boss_objects[this.id].update_roster_display()
+    raid_event.switch_to_roster(this.id)  // roster_per_boss_objects[this.id].update_roster_display()
 })
-
-
-  
-/* function update_roster_display(){
-    console.log(this.id)
-
-    $('.event-view-boss-info').empty();
-    HTMLtoAppend = ''
-    roster = raid_event.roster_per_boss_objects[this.id];
-    HTMLtoAppend = HTMLtoAppend + roster.boss
-    for(let char in roster.initial_roster){
-        HTMLtoAppend = HTMLtoAppend +'<p>' + roster.initial_roster[char].name + '</p>';
-    }
-    $('.event-view-boss-info').append(HTMLtoAppend);   
-} */
- 
-
-
-

@@ -7,8 +7,14 @@ from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import render, redirect
 
 from core.forms import Eventform
-from core.models import Roster, RaidEvent, populate_roster_db, get_guild_roster, update_guild_roster_classes, \
-    RaidInstance
+from core.models import (
+    Roster,
+    RaidEvent,
+    populate_roster_db,
+    get_guild_roster,
+    update_guild_roster_classes,
+    Boss,
+)
 
 
 # @login_required(login_url='/accounts/battlenet/login/?process=login&next=%2F')
@@ -72,18 +78,29 @@ def delete_event(request, event_date):
 def events_details_view(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
     roster = event_obj.roster.all()
-    roster_serialized = serializers.serialize("json", roster)
-    boss_objects = RaidInstance.objects.first().bosses.all()
-    itemtest = serializers.serialize("json", boss_objects)
+
+    # TODO: refactor this into a separate function, maybe put similar functions back into utils.py
+    roster_dict = {}
+    for character in roster:
+        roster_dict[character.id] = {
+            'name': character.name,
+            'playable_class': character.playable_class
+        }
+
+    # if request.GET.get('name') is not None:
+    test = request.GET.get('name')
+    print(test)
+
+    boss_objects = Boss.objects.all()
+    bosses = serializers.serialize("json", boss_objects)
 
     context = {
         'event': event_obj,
         'roster': roster,
-        'rostertest': roster_serialized,
-        'bosses': boss_objects,
-        'itemtest': itemtest,
-        'playable_classes_css_class': playable_classes_to_css_class(),
+        'roster_dict': roster_dict,
+        'bosses': bosses,
         'social_user': get_user_display_name(request),
+        'css_classes': get_playable_classes_as_css_classes(),
     }
     return render(request, 'events_details.html', context)
 
@@ -117,10 +134,7 @@ def add_user_to_roster_button(request, event_date):
     return redirect('events-details', event_date=event_obj.date)
 
 
-def playable_classes_to_css_class():
-    '''
-    Returns an array of playable_class from blizzard API to something usable as a CSS class
-    '''
+def get_playable_classes_as_css_classes():
     playable_classes = {
         'warrior': 'Warrior',
         'paladin': 'Paladin',
@@ -135,14 +149,14 @@ def playable_classes_to_css_class():
         'demonhunter': 'Demon Hunter',
         'deathknight': 'Death Knight',
     }
-
     return playable_classes
 
 
 def roster_view(request):
+
     context = {
         'roster': Roster.objects.all(),
-        'playable_classes': playable_classes_to_css_class(),
+        'playable_classes': get_playable_classes_as_css_classes(),
         'social_user': get_user_display_name(request),
     }
     return render(request, 'roster.html', context)

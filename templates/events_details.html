@@ -32,19 +32,50 @@
             </div>
         </div>
     </div>
+
     {% load static %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        let boss_list = {{itemtest | safe}}
-        let roster = {{rostertest | safe}}
+        let boss_list = {{bosses | safe}}
+        let roster = {{roster_dict | safe}}
+        let css_classes = {{css_classes | safe}}
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            $(".testThis").click(function () {
+                console.log($(this)[0].id);
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/events/{{event.date|date:"o-m-d"}}',
+                    data: {
+                        'name': $(this)[0].id,
+                    },
+                    dataType: 'json',
+                    success: function () {
+                        console.log("PRINT SOMETHING")
+                    }
+                })
+            });
+            $(".testbutton").click(function () {
+                console.log($(this));
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/events/{{event.date|date:"o-m-d"}}',
+                    data: {
+                        'name': $(this)[0].id,
+                    },
+                    dataType: 'json',
+                    success: function () {
+                        console.log("PRINT SOMETHING")
+                    }
+                })
+            });
+        });
+    </script>
+
 
 {% endblock %}
-
-
-
 
 </body>
 

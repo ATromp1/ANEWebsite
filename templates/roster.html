@@ -15,11 +15,11 @@
     <div class="roster-container">
         <h1>Guild Roster</h1>
         <div class="roster-grid">
-            {% for class, display_class in playable_classes.items %}
+            {% for display_class, css_class in playable_classes.items %}
             <div class="roster-class-col">
-                <div class="roster-class-col-header {{ class }}">
+                <div class="roster-class-col-header {{ css_class }}">
                     <div class="roster-class-icon">
-                        {% with 'images/classIcons/'|add:class|add:'.png' as class_icon_path %}
+                        {% with 'images/classIcons/'|add:css_class|add:'.png' as class_icon_path %}
                         <img src="{% static class_icon_path %}" alt="Logo">
                         {% endwith %}
                     </div>
