@@ -52,6 +52,11 @@ class RaidEvent {
 
     }
 
+    switch_to_roster(boss_id){
+        console.log("switch_to_roster bossid: " + boss_id)
+        roster_per_boss_objects[boss_id].update_roster_display()
+    }
+
 
     get_bosses() {
         return this.bosses;
@@ -115,6 +120,6 @@ $('.event-view-boss-list').append(HTMLtoAppend);
 // update_roster_display() with boss id same as button
 var boss_id
 $('.boss-view-btn').click(function(){
-    raid_event.roster_per_boss_objects[this.id].update_roster_display()
     boss_id = this.id
+    raid_event.switch_to_roster(this.id)  // roster_per_boss_objects[this.id].update_roster_display()
 })
