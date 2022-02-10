@@ -31,7 +31,6 @@ class Roster(models.Model):
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
     playable_class = models.CharField(max_length=50, null=True, blank=True)
-    # role = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -73,7 +72,6 @@ class RaidEvent(models.Model):
 class BossPerEvent(models.Model):
     boss = models.ForeignKey(Boss, on_delete=models.CASCADE, null=True)
     raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
-    # inherited_roster = models.ManyToManyField(Roster, blank=True)
     tank = models.ManyToManyField(Roster, blank=True, related_name='rel_tank')
     healer = models.ManyToManyField(Roster, blank=True, related_name='rel_healer')
     mdps = models.ManyToManyField(Roster, blank=True, related_name='rel_mdps')
@@ -99,6 +97,18 @@ class BossPerEvent(models.Model):
 
     def ajax_to_rdps(self, name):
         self.rdps.add(Roster.objects.get(name=name))
+
+    def remove_from_tank(self, name):
+        self.tank.remove(Roster.objects.get(name=name))
+
+    def remove_from_healer(self, name):
+        self.healer.remove(Roster.objects.get(name=name))
+
+    def remove_from_rdps(self, name):
+        self.rdps.remove(Roster.objects.get(name=name))
+
+    def remove_from_mdps(self, name):
+        self.mdps.remove(Roster.objects.get(name=name))
 
 
 def get_chars_in_roster(current_user_id):
