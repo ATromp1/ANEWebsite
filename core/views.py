@@ -88,11 +88,10 @@ def events_details_view(request, event_date):
             'playable_class': character.playable_class
         }
 
-    if request.GET.get('data') is not None:
-        role = request.GET.get('data').split()[0]
-        name = request.GET.get('data').split()[1]
+    if request.GET.get('name') is not None:
+        role = request.GET.get('role')
+        name = request.GET.get('name')
         boss_id = str(int(request.GET.get('boss_id')) + 1)
-
 
         BossPerEvent.objects.update_or_create(boss=Boss.objects.get(id=boss_id),
                                               raid_event=RaidEvent.objects.get(date=event_date))
@@ -109,9 +108,6 @@ def events_details_view(request, event_date):
                 current_event_and_boss.ajax_to_rdps(name)
             case 'mdps':
                 current_event_and_boss.ajax_to_mdps(name)
-
-
-
 
     boss_objects = Boss.objects.all()
     bosses = serializers.serialize("json", boss_objects)
@@ -146,7 +142,7 @@ def rem_user_from_roster_button(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_id(request)['sub']
     event_obj.remove_char_from_roster(current_user_id=current_user_account_id)
-    return redirect('events-details', event_date=event_obj.date)
+    return redirect('events')
 
 
 def add_user_to_roster_button(request, event_date):

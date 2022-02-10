@@ -105,7 +105,6 @@ class RosterPerBoss {
 
         // Highlights the button of the currently selected boss
         $('.boss-view-btn#'+this.boss).addClass('active')
-
         let images_path = 'images/roleIcons/'
         for(let char in this.benched_roster){
             let char_name = this.benched_roster[char].name
@@ -114,25 +113,25 @@ class RosterPerBoss {
             let event_view_table_row =  '<tr>'+'<td class="'+char_css_class+'">'+char_name+'</td>'
 
             if(this.benched_roster[char].roles.includes('tank')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'tank.png" alt="Tank"></td>'
+                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'tank.png" alt="Tank" id="tank"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
 
             if(this.benched_roster[char].roles.includes('healer')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'healer.png" alt="Healer"></td>'
+                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'healer.png" alt="Healer" id="healer"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
 
             if(this.benched_roster[char].roles.includes('mdps')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'mdps.png" alt="Melee dps"></td>'
+                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'mdps.png" alt="Melee dps" id="mdps"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
 
             if(this.benched_roster[char].roles.includes('rdps')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'rdps.png" alt="Ranged dps"></td>'
+                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'rdps.png" alt="Ranged dps" id="rdps"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
@@ -162,3 +161,23 @@ $('.boss-view-btn').click(function(){
     raid_event.switch_to_roster(this.id)
     boss_id = this.id
 })
+
+
+$(".event-view-boss-info").on("click", "table.event-view-available-roster-table tr td img", (function () {
+    let name = $(this)[0].parentElement.parentElement.innerText.trimRight('\t')
+    let boss_id = raid_event.currently_selected_boss_roster
+    $.ajax({
+        url: window.location.href,
+        data: {
+            'name': name,
+            'role': $(this)[0].id,
+            'boss_id': boss_id,
+        },
+        dataType: 'json',
+        success: function () {
+            console.log("PRINT SOMETHING")
+        }
+    })
+}));
+
+
