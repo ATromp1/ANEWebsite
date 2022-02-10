@@ -13,15 +13,24 @@
 
     <h1>Events</h1>
     <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary">Add Event</button>
-
+    <div class="event-list">
     <ul>
         {% for event in event_list %}
-            <li><a href="{% url 'events-details' event.date %}" class="btn btn-outline-success">{{ event.date }}</a> ---- <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm">Delete</a>
+            <div class="event-per-date">
+            <li><a href="{% url 'events-details' event.date %}" class="btn btn-outline-success">{{ event.date }}</a>
+
+                <a href="{% url 'opt-out' event.date %}" class="btn btn-danger" id="opt-out">Opt out</a>
+                <a href="{% url 'opt-in' event.date %}" class="btn btn-success" id="opt-in">Opt in</a>
+
+                <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm">Delete</a>
             </li>
-    {% endfor %}
+            </div>
+        {% endfor %}
     </ul>
+    </div>
 
 {% endblock %}
+
 
 </body>
 </html>
