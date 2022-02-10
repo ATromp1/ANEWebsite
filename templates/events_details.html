@@ -9,8 +9,8 @@
 </head>
 
 <body>
-
-{% block content %}
+    {% block content %}
+    {% load static %}
     <div class="event-view-container">
         <div class="event-view-signups">
             <h2>Roster</h2>
@@ -24,22 +24,60 @@
             <div class="event-view-boss-list">
             </div>
             <div class="event-view-boss-info">
-                <table class="event-view-available-roster-table">
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                </table>
+                <div class="event-view-selected-roster">
+
+                    <span class="event-view-selected-roster-totalcount">Total: </span>
+                    <div class="event-view-selected-roster-tank">
+                        <div class="event-view-selected-roster-header">
+                            <img src="{% static 'images/roleIcons/tank.png' %}" alt="Tank Icon" class="event-view-role-icon">
+                            <span>Tank</span>
+                            <span class="event-view-selected-roster-tankcount"></span>
+                        </div>
+                    </div>
+                    <div class="event-view-selected-roster-healer">
+                        <div class="event-view-selected-roster-header">
+                            <img src="{% static 'images/roleIcons/healer.png' %}" alt="Healer Icon" class="event-view-role-icon">
+                            <span>Healer</span>
+                            <span class="event-view-selected-roster-healercount"></span>
+                        </div>
+                    </div>
+                    <div class="event-view-selected-roster-mdps">
+                        <div class="event-view-selected-roster-header">
+                            <img src="{% static 'images/roleIcons/mdps.png' %}" alt="Melee Icon" class="event-view-role-icon">
+                            <span>Melee</span>
+                            <span class="event-view-selected-roster-mdpscount"></span>
+                        </div>
+                    </div>
+                    <div class="event-view-selected-roster-rdps">
+                        <div class="event-view-selected-roster-header">
+                            <img src="{% static 'images/roleIcons/rdps.png' %}" alt="Ranged Icon" class="event-view-role-icon">
+                            <span>Ranged</span>
+                            <span class="event-view-selected-roster-rdpscount"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-view-benched-roster">
+                    <div class="event-view-benched-roster-header">
+                        Bench
+                    </div>
+                    <table class="event-view-benched-roster-table">
+                            <tr>
+                                <th>No Boss Selected</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="temp-invis-div">
         </div>
     </div>
 
-    {% load static %}
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         let boss_list = {{bosses | safe}}
@@ -50,9 +88,7 @@
     <script src="{% static '/js/event_view.js' %}"></script>
 
 
-
-
-{% endblock %}
+    {% endblock %}
 
 </body>
 
