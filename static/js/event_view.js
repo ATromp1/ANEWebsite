@@ -1,3 +1,6 @@
+const IMAGES_PATH_ROLES = 'images/roleIcons/'
+const IMAGES_PATH_CLASS = 'images/classIcons/'
+
 let boss_name_list = []
 for (i = 0; i < boss_list.length; i++) {
     boss_name_list.push({
@@ -64,9 +67,9 @@ class RaidEvent {
         Switches to a different roster(boss) in the info view. Changes 'currently_selected_boss_roster' to the new boss
         */
         if(boss_id != this.currently_selected_boss_roster){
-            console.log("switch_to_roster bossid: " + boss_id)
             this.currently_selected_boss_roster = boss_id
-            this.roster_per_boss_objects[boss_id].update_roster_display()
+            this.roster_per_boss_objects[boss_id].display_benched_roster()
+            this.roster_per_boss_objects[boss_id].display_selected_roster()
         }
     }
 
@@ -80,58 +83,165 @@ class RosterPerBoss {
     constructor(boss, initial_roster) {
         this.boss = boss;
         this.initial_roster = initial_roster
-        this.benched_roster = initial_roster
+        this.benched_roster = initial_roster.slice()
         this.selected_roster = []
+
+    }
+    #remove_char_from_benched_roster(char_name){
+        for(let index in this.benched_roster){
+            let char = this.benched_roster[index]
+            if(char.name == char_name){
+                this.benched_roster.splice(index,1)
+                return index
+            }
+        }
+    }   
+
+    #add_char_to_benched_roster(char_name){
+        for(let index in this.initial_roster){
+            let char = this.initial_roster[index]
+            if(char.name == char_name){
+                this.benched_roster.push(char)
+            }
+        }
+    }
+
+    #remove_char_from_selected_roster(char_name){
+        for(let index in this.selected_roster){
+            let char = this.selected_roster[index]
+            if(char.name == char_name){
+                this.selected_roster.splice(index,1)
+                return index
+            }
+        }
+    }
+
+    #add_char_to_selected_roster(char_name, role){
+        // Assume char is in the benched roster.
+        for(let index in this.benched_roster){
+            let char = this.benched_roster[index]
+            if(char.name == char_name){
+                this.selected_roster.push({
+                    'name': char.name,
+                    'playable_class': char.playable_class,
+                    'role': role,
+                })
+            }
+        }
     }
 
 
+    get_amount_of_role_in_selected_roster(role){
+        let count = 0
+        for(let index in this.selected_roster){
+            let char = this.selected_roster[index]
+            if(char.role == role){
+                count++;
+            }
+        }
+        return count
+    }
 
-    update_roster_display(roster){
+    move_from_bench_to_selected(char_name, role){
+        this.#add_char_to_selected_roster(char_name, role);
+        let char_removed_at_index = this.#remove_char_from_benched_roster(char_name)
+        console.log(char_removed_at_index)
+        this.remove_from_benched_display_at_index(char_removed_at_index)
+        this.display_selected_roster()
+    }
+
+    move_from_selected_to_bench(char_name){
+        this.#add_char_to_benched_roster(char_name)
+        let char_removed_at_index = this.#remove_char_from_selected_roster(char_name);
+        this.display_benched_roster()
+        this.display_selected_roster()
+    }
+
+    remove_from_benched_display_at_index(index){
+        let table_element_row = $('.event-view-benched-roster-table .benched-roster-row').eq(index)
+        console.log(table_element_row)
+        table_element_row.remove()
+    }
+
+    display_selected_roster(){
+        let header_element_tank = $('.event-view-selected-roster-header').eq(0);
+        let header_element_healer = $('.event-view-selected-roster-header').eq(1);
+        let header_element_mdps = $('.event-view-selected-roster-header').eq(2);
+        let header_element_rdps = $('.event-view-selected-roster-header').eq(3);
+
+        
+        $('.event-view-selected-roster-tank, '+
+          '.event-view-selected-roster-healer, '+
+          '.event-view-selected-roster-mdps, '+
+          '.event-view-selected-roster-rdps').empty()
+
+        $('.event-view-selected-roster-tank').append(header_element_tank)
+        $('.event-view-selected-roster-healer').append(header_element_healer)
+        $('.event-view-selected-roster-mdps').append(header_element_mdps)
+        $('.event-view-selected-roster-rdps').append(header_element_rdps)
+
+        $('.event-view-selected-roster-totalcount').text('Total: '+this.selected_roster.length)
+        $('.event-view-selected-roster-tankcount').text(' - ' + this.get_amount_of_role_in_selected_roster('tank'))
+        $('.event-view-selected-roster-healercount').text(' - ' + this.get_amount_of_role_in_selected_roster('healer'))
+        $('.event-view-selected-roster-mdpscount').text(' - ' + this.get_amount_of_role_in_selected_roster('mdps'))
+        $('.event-view-selected-roster-rdpscount').text(' - ' + this.get_amount_of_role_in_selected_roster('rdps'))
+
+
+        for(let index in this.selected_roster){
+            let char = this.selected_roster[index]
+            $('.event-view-selected-roster-'+char.role).append('<div class="'+css_classes[char.playable_class]+' event-view-selected-roster-char">'+
+            '<img src="'+static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png" alt="Tank" class="event-view-role-icon">'+
+            '<span>'+char.name+'</span></div>')
+
+        }
+    }
+
+    display_benched_roster(){
         /*
         This function doesn't change any variables, simply updates the display to this RosterPerBoss class
         It only updates the display
         */
 
-        $('.event-view-available-roster-table').empty();
+        $('.event-view-benched-roster-table').empty();
         // First clear all old buttons
         $('.boss-view-btn').removeClass('active');
 
         // Highlights the button of the currently selected boss
         $('.boss-view-btn#'+this.boss).addClass('active')
 
-        let images_path = 'images/roleIcons/'
+
         for(let char in this.benched_roster){
             let char_name = this.benched_roster[char].name
             let char_css_class = css_classes[this.benched_roster[char].playable_class]
 
-            let event_view_table_row =  '<tr>'+'<td class="'+char_css_class+'">'+char_name+'</td>'
+            let event_view_table_row =  '<tr class="benched-roster-row">'+'<td class="'+char_css_class+'">'+char_name+'</td>'
 
             if(this.benched_roster[char].roles.includes('tank')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'tank.png" alt="Tank"></td>'
+                event_view_table_row = event_view_table_row + '<td id="tank"><img src="'+static_url+IMAGES_PATH_ROLES+'tank.png" alt="Tank" class="event-view-role-icon"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
 
             if(this.benched_roster[char].roles.includes('healer')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'healer.png" alt="Healer"></td>'
+                event_view_table_row = event_view_table_row + '<td id="healer"><img src="'+static_url+IMAGES_PATH_ROLES+'healer.png" alt="Healer" class="event-view-role-icon"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
 
             if(this.benched_roster[char].roles.includes('mdps')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'mdps.png" alt="Melee dps"></td>'
+                event_view_table_row = event_view_table_row + '<td id="mdps"><img src="'+static_url+IMAGES_PATH_ROLES+'mdps.png" alt="Melee dps" class="event-view-role-icon"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
 
             if(this.benched_roster[char].roles.includes('rdps')){
-                event_view_table_row = event_view_table_row + '<td><img src="'+static_url+images_path+'rdps.png" alt="Ranged dps"></td>'
+                event_view_table_row = event_view_table_row + '<td id="rdps"><img src="'+static_url+IMAGES_PATH_ROLES+'rdps.png" alt="Ranged dps" class="event-view-role-icon"></td>'
             }else{
                 event_view_table_row = event_view_table_row + '<td></td>'
             }
 
             event_view_table_row = event_view_table_row + '</tr>';
-            $('.event-view-available-roster-table').append(event_view_table_row);
+            $('.event-view-benched-roster-table').append(event_view_table_row);
         }
     }
 }
@@ -153,3 +263,19 @@ $('.event-view-boss-list').append(HTMLtoAppend);
 $('.boss-view-btn').click(function(){
     raid_event.switch_to_roster(this.id)
 })
+
+/* 
+Sets a click event listener on benched-roster table td elements.
+If it has id then id will be role, char_name will always be the first sibling of type td
+*/
+$('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
+    if(this.id){
+        role = this.id
+        char_name = jQuery(this).siblings('td').first()[0].innerHTML
+        current_boss_id = raid_event.currently_selected_boss_roster
+        raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role)
+
+        //console.log('Name: ' + char_name +'; Role: '+ role + '; ' + 'boss_id: ' + raid_event.currently_selected_boss_roster)
+    }
+})
+
