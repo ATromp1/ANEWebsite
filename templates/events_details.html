@@ -13,9 +13,7 @@
 {% block content %}
     <div class="event-view-container">
         <div class="event-view-signups">
-            <h2>Sign Ups</h2>
-            <a href="{% url 'opt-out' event.date %}" class="btn btn-danger">Sign Off</a><a
-                href="{% url 'opt-in' event.date %}" class="btn btn-success">Sign In</a>
+            <h2>Roster</h2>
             <ul>
                 {% for player in roster %}
                     <li>{{ player }}</li>
@@ -51,21 +49,7 @@
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
 
-    <script>
-        $(".event-view-boss-info").on("click", "div.event-view-role-icon", (function () {
-            $.ajax({
-                url: 'http://127.0.0.1:8000/events/{{event.date|date:"o-m-d"}}',
-                data: {
-                    'data': $(this)[0].id,
-                    'boss_id': boss_id,
-                },
-                dataType: 'json',
-                success: function () {
-                    console.log("PRINT SOMETHING")
-                }
-            })
-        }));
-    </script>
+
 
 
 {% endblock %}
