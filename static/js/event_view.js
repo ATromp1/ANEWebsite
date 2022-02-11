@@ -126,7 +126,6 @@ class RosterPerBoss {
     load_roster_from_db(selected_roster){
         for(let i in selected_roster){
             let char = selected_roster[i]
-            //this.#add_char_to_selected_roster(char.name, role);
             this.move_from_bench_to_selected(char.name,char.role)
         }
 
@@ -195,6 +194,7 @@ class RosterPerBoss {
             this.remove_from_benched_display_at_index(char_removed_at_index)
             this.display_selected_roster()
         }
+        update_boss_buttons_status()
     }
 
     move_from_selected_to_bench(char_name, display_change){
@@ -205,6 +205,7 @@ class RosterPerBoss {
             this.display_benched_roster()
             this.display_selected_roster()
         }
+        update_boss_buttons_status()
     }
 
     remove_from_benched_display_at_index(index){
@@ -268,7 +269,6 @@ class RosterPerBoss {
         // Highlights the button of the currently selected boss
         $('.boss-view-btn#'+this.boss).addClass('active')
 
-
         for(let char in this.benched_roster){
             let char_name = this.benched_roster[char].name
             let char_css_class = css_classes[this.benched_roster[char].playable_class]
@@ -313,12 +313,39 @@ raid_event.load_rosters_from_db(boss_rosters)
 
 
 //Create boss buttons
-let HTMLtoAppend = ''
-for(i = 0; i < boss_name_list.length; i++){
-    HTMLtoAppend = HTMLtoAppend + '<div class="boss-view-btn" id="'+boss_name_list[i].id+'">' + boss_name_list[i].name + '</div>'
+function create_boss_buttons(){
+    let HTMLtoAppend = ''
+    for(i = 0; i < boss_name_list.length; i++){
+        let boss_id = boss_name_list[i].id
+        let boss_name = boss_name_list[i].name
+        HTMLtoAppend = HTMLtoAppend + '<div class="boss-view-btn" id="'+ boss_id +'">' + boss_name + '</div>'
+    }
+    $('.event-view-boss-list').append(HTMLtoAppend);
 }
-$('.event-view-boss-list').append(HTMLtoAppend);
+create_boss_buttons()
 
+// Set the colour depending on the rosters status
+function update_boss_buttons_status(){
+    for(let boss in raid_event.bosses){
+        boss_id = raid_event.bosses[boss].id
+        let boss_btn_element = $('.boss-view-btn').eq(boss_id)
+
+        $(boss_btn_element).removeClass('empty-roster in-progress roster-complete')
+
+        let players_in_boss_roster = raid_event.roster_per_boss_objects[boss_id].selected_roster.length
+        let boss_roster_status = ''
+        if(players_in_boss_roster == 0){
+            boss_roster_status = 'empty-roster'
+        } else if(players_in_boss_roster < 20){
+            boss_roster_status = 'in-progress'
+        } else {
+            boss_roster_status = 'roster-complete'
+        }
+        
+        $(boss_btn_element).addClass(boss_roster_status)
+    }
+}
+update_boss_buttons_status()
 // If element with class '.boss-view-btn' gets clicked then get element id and call
 // RaidEvent.switch_to_roster() with boss id same as button
 $('.boss-view-btn').click(function(){

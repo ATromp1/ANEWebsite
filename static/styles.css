@@ -272,7 +272,7 @@ body {
   justify-content: space-between;
   width: 90%;
   margin: auto;
-  margin-top: 2em; }
+  margin-top: 10px; }
   .event-view-container .event-view-signups {
     width: 170px; }
   .event-view-container .temp-invis-div {
@@ -379,6 +379,12 @@ body {
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.active {
           color: var(--white-color);
           background-color: var(--bg-active-color); }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster {
+          background-color: #34495e; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress {
+          background-color: #f1C40F; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete {
+          background-color: #30CB83; }
       .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-roster-list {
         /*  display: none; */
         margin: 0;
