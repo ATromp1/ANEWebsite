@@ -8,7 +8,7 @@
 
 -- Have event details boss button change depending on if a roster has been selected
 
--- check if user is not logged in as admin account before loading chars into database
+
 
 
 
