@@ -9,14 +9,13 @@ from core.models import (
     populate_roster_db,
     get_guild_roster,
     update_guild_roster_classes,
-    Boss,
-    BossPerEvent
+    Boss
 )
 
 from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
-    get_user_display_name,
+    get_user_display_name, execute_ajax_request, create_init_roster_json, selected_roster_from_db_to_json,
 )
 
 
@@ -61,48 +60,16 @@ def add_event_view(request):
 
 
 def events_details_view(request, event_date):
-    event_obj = RaidEvent.objects.get(date=event_date)
-    roster = event_obj.roster.all()
 
-    # TODO: refactor this into a separate function, maybe put similar functions back into utils.py
-    roster_dict = {}
-    for character in roster:
-        roster_dict[character.id] = {
-            'name': character.name,
-            'playable_class': character.playable_class
-        }
+    roster_dict = create_init_roster_json(event_date)
 
     execute_ajax_request(event_date, request)
 
-    boss_objects = Boss.objects.all()
-    bosses = serializers.serialize("json", boss_objects)
+    bosses = serializers.serialize("json", Boss.objects.all())
 
-    roster_per_boss = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
-    roster_per_boss_dict = {}
-
-    for boss in roster_per_boss:
-        boss_id = str(Boss.objects.get(boss_name=boss.boss).id - 1)
-        roster_per_boss_dict[boss_id] = {}
-        tanks = []
-        for char in boss.tank.all():
-            tanks.append(char.name)
-        roster_per_boss_dict[boss_id]['tank'] = tanks
-        healers = []
-        for char in boss.healer.all():
-            healers.append(char.name)
-        roster_per_boss_dict[boss_id]['healer'] = healers
-        rdps = []
-        for char in boss.rdps.all():
-            rdps.append(char.name)
-        roster_per_boss_dict[boss_id]['rdps'] = rdps
-        mdps = []
-        for char in boss.mdps.all():
-            mdps.append(char.name)
-        roster_per_boss_dict[boss_id]['mdps'] = mdps
+    roster_per_boss_dict = selected_roster_from_db_to_json(event_date)
 
     context = {
-        'event': event_obj,
-        'roster': roster,
         'roster_dict': roster_dict,
         'bosses': bosses,
         'social_user': get_user_display_name(request),
@@ -110,41 +77,6 @@ def events_details_view(request, event_date):
         'selected_roster': roster_per_boss_dict,
     }
     return render(request, 'events_details.html', context)
-
-
-def execute_ajax_request(event_date, request):
-    if request.GET.get('name') is not None:
-        role = request.GET.get('role')
-        name = request.GET.get('name')
-        boss_id = str(int(request.GET.get('boss_id')) + 1)
-
-        BossPerEvent.objects.update_or_create(boss=Boss.objects.get(id=boss_id),
-                                              raid_event=RaidEvent.objects.get(date=event_date))
-
-        raid_event = RaidEvent.objects.get(date=event_date)
-        boss = Boss.objects.get(id=boss_id)
-        selected_current_event_and_boss = BossPerEvent.objects.get(raid_event=raid_event, boss=boss)
-        match role:
-            case 'tank':
-                if selected_current_event_and_boss.tank.all().filter(name=name).exists():
-                    selected_current_event_and_boss.remove_from_tank(name)
-                else:
-                    selected_current_event_and_boss.ajax_to_tank(name)
-            case 'healer':
-                if selected_current_event_and_boss.healer.all().filter(name=name).exists():
-                    selected_current_event_and_boss.remove_from_healer(name)
-                else:
-                    selected_current_event_and_boss.ajax_to_healer(name)
-            case 'rdps':
-                if selected_current_event_and_boss.rdps.all().filter(name=name).exists():
-                    selected_current_event_and_boss.remove_from_rdps(name)
-                else:
-                    selected_current_event_and_boss.ajax_to_rdps(name)
-            case 'mdps':
-                if selected_current_event_and_boss.mdps.all().filter(name=name).exists():
-                    selected_current_event_and_boss.remove_from_mdps(name)
-                else:
-                    selected_current_event_and_boss.ajax_to_mdps(name)
 
 
 def roster_view(request):

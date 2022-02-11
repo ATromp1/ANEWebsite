@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect
 
-from core.models import RaidEvent
+from core.models import RaidEvent, BossPerEvent, Boss
 
 
 def get_playable_classes_as_css_classes():
@@ -148,3 +148,77 @@ def logout_user_button():
 
 def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
+
+
+def execute_ajax_request(event_date, request):
+    if request.GET.get('name') is not None:
+        role = request.GET.get('role')
+        name = request.GET.get('name')
+        boss_id = str(int(request.GET.get('boss_id')) + 1)
+
+        BossPerEvent.objects.update_or_create(boss=Boss.objects.get(id=boss_id),
+                                              raid_event=RaidEvent.objects.get(date=event_date))
+
+        raid_event = RaidEvent.objects.get(date=event_date)
+        boss = Boss.objects.get(id=boss_id)
+        update_selected_roster(boss, name, raid_event, role)
+
+
+def update_selected_roster(boss, name, raid_event, role):
+    selected_current_event_and_boss = BossPerEvent.objects.get(raid_event=raid_event, boss=boss)
+    match role:
+        case 'tank':
+            if selected_current_event_and_boss.tank.all().filter(name=name).exists():
+                selected_current_event_and_boss.remove_from_tank(name)
+            else:
+                selected_current_event_and_boss.ajax_to_tank(name)
+        case 'healer':
+            if selected_current_event_and_boss.healer.all().filter(name=name).exists():
+                selected_current_event_and_boss.remove_from_healer(name)
+            else:
+                selected_current_event_and_boss.ajax_to_healer(name)
+        case 'rdps':
+            if selected_current_event_and_boss.rdps.all().filter(name=name).exists():
+                selected_current_event_and_boss.remove_from_rdps(name)
+            else:
+                selected_current_event_and_boss.ajax_to_rdps(name)
+        case 'mdps':
+            if selected_current_event_and_boss.mdps.all().filter(name=name).exists():
+                selected_current_event_and_boss.remove_from_mdps(name)
+            else:
+                selected_current_event_and_boss.ajax_to_mdps(name)
+
+
+def create_init_roster_json(event_date):
+    roster_dict = {}
+    for character in RaidEvent.objects.get(date=event_date).roster.all():
+        roster_dict[character.id] = {
+            'name': character.name,
+            'playable_class': character.playable_class
+        }
+    return roster_dict
+
+
+def selected_roster_from_db_to_json(event_date):
+    roster_per_boss = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+    roster_per_boss_dict = {}
+    for boss in roster_per_boss:
+        boss_id = str(Boss.objects.get(boss_name=boss.boss).id - 1)
+        roster_per_boss_dict[boss_id] = {}
+        tanks = []
+        for char in boss.tank.all():
+            tanks.append(char.name)
+        roster_per_boss_dict[boss_id]['tank'] = tanks
+        healers = []
+        for char in boss.healer.all():
+            healers.append(char.name)
+        roster_per_boss_dict[boss_id]['healer'] = healers
+        rdps = []
+        for char in boss.rdps.all():
+            rdps.append(char.name)
+        roster_per_boss_dict[boss_id]['rdps'] = rdps
+        mdps = []
+        for char in boss.mdps.all():
+            mdps.append(char.name)
+        roster_per_boss_dict[boss_id]['mdps'] = mdps
+    return roster_per_boss_dict
