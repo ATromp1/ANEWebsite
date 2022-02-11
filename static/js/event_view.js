@@ -1,6 +1,7 @@
 const IMAGES_PATH_ROLES = 'images/roleIcons/'
 const IMAGES_PATH_CLASS = 'images/classIcons/'
 
+// Rework the boss information we get from the DB into a more managable format
 let boss_name_list = []
 for (i = 0; i < boss_list.length; i++) {
     boss_name_list.push({
@@ -26,6 +27,8 @@ let roles_per_class = {
 }
 let class_roles =['tank', 'healer','mdps','rdps']
 
+
+// Rework the roster information we get from the DB into a more managable format
 let roster_characters = []
 for (let i in roster) {
     let roles = roles_per_class[roster[i].playable_class]
@@ -38,6 +41,9 @@ for (let i in roster) {
 
 
 class RaidEvent {
+    /*
+    Contains the information needed to display a roster for each boss
+    */
     constructor(bosses, initial_roster) {
         // Bosses in a raid
         this.bosses = bosses;
@@ -45,15 +51,22 @@ class RaidEvent {
         // Initial roster is the roster we get from DB
         this.initial_roster = initial_roster;
 
-        // instances of class RosterPerBoss in an array to access them
+        // Objects of class RosterPerBoss in an array to access them
         this.roster_per_boss_objects = []
 
         // This should be a boss_id
         this.currently_selected_boss_roster = -1
     }
 
+    load_rosters_from_db(){
+
+    }
+
 
     populate_boss_rosters() {
+        /*
+        Create a new object of RosterPerBoss for each boss in the current RaidEvent
+        */
         for (let boss in this.bosses) {
             this.bosses[boss];
             let current_roster = new RosterPerBoss(this.bosses[boss].id, this.initial_roster)
@@ -72,14 +85,12 @@ class RaidEvent {
             this.roster_per_boss_objects[boss_id].display_selected_roster()
         }
     }
-
-
-    get_bosses() {
-        return this.bosses;
-    }
 }
 
 class RosterPerBoss {
+    /*
+    Contains an array of benched players and selected players and has functions to display them in seperate columns
+    */
     constructor(boss, initial_roster) {
         this.boss = boss;
         this.initial_roster = initial_roster
@@ -145,23 +156,22 @@ class RosterPerBoss {
     move_from_bench_to_selected(char_name, role){
         this.#add_char_to_selected_roster(char_name, role);
         let char_removed_at_index = this.#remove_char_from_benched_roster(char_name)
-        console.log(char_removed_at_index)
         this.remove_from_benched_display_at_index(char_removed_at_index)
         this.display_selected_roster()
     }
 
-    move_from_selected_to_bench(char_name){
+    move_from_selected_to_bench(char_name, role){
         this.#add_char_to_benched_roster(char_name)
-        let char_removed_at_index = this.#remove_char_from_selected_roster(char_name);
+        this.#remove_char_from_selected_roster(char_name);
         this.display_benched_roster()
         this.display_selected_roster()
     }
 
     remove_from_benched_display_at_index(index){
-        let table_element_row = $('.event-view-benched-roster-table .benched-roster-row').eq(index)
-        console.log(table_element_row)
-        table_element_row.remove()
+        let element_to_remove = $('.event-view-benched-roster-table .benched-roster-row').eq(index)
+        element_to_remove.remove()
     }
+
 
     display_selected_roster(){
         let header_element_tank = $('.event-view-selected-roster-header').eq(0);
@@ -288,8 +298,30 @@ $('.event-view-benched-roster').on('click', '.benched-roster-row td', function()
                 console.log("PRINT SOMETHING")
             }
         })
-        //console.log('Name: ' + char_name +'; Role: '+ role + '; ' + 'boss_id: ' + raid_event.currently_selected_boss_roster)
     }
+})
+
+/*
+ Same as above but removes the character from selected instead
+*/
+$('.event-view-selected-roster').on('click','.event-view-selected-roster-char span', function(){
+    char_name = this.innerHTML
+    current_boss_id = raid_event.currently_selected_boss_roster
+    role = this.parentElement.parentElement.id
+    raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role)
+
+    $.ajax({
+        url: window.location.href,
+        data: {
+            'name': char_name,
+            'role': role,
+            'boss_id': current_boss_id,
+        },
+        dataType: 'json',
+        success: function () {
+            console.log("PRINT SOMETHING")
+        }
+    })
 })
 
 
