@@ -10,9 +10,6 @@ for (i = 0; i < boss_list.length; i++) {
     })
 }
 
-
- 
-
 let roles_per_class = {
     'Warrior': ['tank', 'mdps'],
     'Paladin': ['tank', 'mdps', 'healer'],
@@ -40,8 +37,7 @@ for (let i in roster) {
         'roles': roles,
     })
 }
-
-
+ 
 class RaidEvent {
     /*
     Contains the information needed to display a roster for each boss
@@ -59,9 +55,36 @@ class RaidEvent {
         // This should be a boss_id
         this.currently_selected_boss_roster = -1
     }
+    get_playable_class_by_char_name(char_name){
 
-    load_rosters_from_db(){
+        for(let i in this.initial_roster){
+            let char = this.initial_roster[i]
+            if(char.name == char_name){
+                return char.playable_class
+            }
+        }
+        return 'Character not in initial_roster'
+    }
 
+    load_rosters_from_db(boss_rosters){
+        for(let boss in boss_rosters){
+            let boss_id = boss
+            let boss_roster = boss_rosters[boss]
+            let selected_roster_for_boss = []
+
+            for(let role in boss_roster){
+                for(let char in boss_roster[role]){
+                    let char_name = boss_roster[role][char]
+                    let playable_class = this.get_playable_class_by_char_name(char_name)
+                    selected_roster_for_boss.push({
+                        'name': char_name,
+                        'playable_class': playable_class,
+                        'role': role,
+                    })
+                }
+            }
+            this.roster_per_boss_objects[boss_id].load_roster_from_db(selected_roster_for_boss)
+        }
     }
 
 
@@ -98,6 +121,18 @@ class RosterPerBoss {
         this.initial_roster = initial_roster
         this.benched_roster = initial_roster.slice()
         this.selected_roster = []
+    }
+
+    load_roster_from_db(selected_roster){
+        console.log(this.boss)
+        for(let i in selected_roster){
+            let char = selected_roster[i]
+            console.log(char.name)
+            console.log(char.role)
+            //this.#add_char_to_selected_roster(char.name, role);
+            this.move_from_bench_to_selected(char.name,char.role)
+        }
+
 
     }
     #remove_char_from_benched_roster(char_name){
@@ -162,7 +197,7 @@ class RosterPerBoss {
         this.display_selected_roster()
     }
 
-    move_from_selected_to_bench(char_name, role){
+    move_from_selected_to_bench(char_name){
         this.#add_char_to_benched_roster(char_name)
         this.#remove_char_from_selected_roster(char_name);
         this.display_benched_roster()
@@ -261,6 +296,8 @@ class RosterPerBoss {
 
 raid_event = new RaidEvent(boss_name_list, roster_characters)
 raid_event.populate_boss_rosters()
+raid_event.load_rosters_from_db(boss_rosters)
+
 
 
 //Create boss buttons
