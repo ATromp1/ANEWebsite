@@ -272,7 +272,7 @@ body {
   justify-content: space-between;
   width: 90%;
   margin: auto;
-  margin-top: 2em; }
+  margin-top: 10px; }
   .event-view-container .event-view-signups {
     width: 170px; }
   .event-view-container .temp-invis-div {
@@ -283,48 +283,53 @@ body {
       display: flex;
       margin-top: 2rem;
       justify-content: center; }
-      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-header {
-        height: 1.5rem;
-        margin-top: 1rem;
-        margin-bottom: 10px; }
-        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-header span {
-          display: inline-block;
-          vertical-align: middle;
-          font-size: 1.5rem; }
-      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char {
-        margin-left: 2rem; }
-        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char img {
-          height: 1.3rem;
-          cursor: pointer; }
-        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char span {
-          display: inline-block;
-          vertical-align: middle;
-          cursor: pointer; }
-          .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char span:hover {
-            text-decoration: line-through;
-            text-decoration-thickness: 2px;
-            text-decoration-color: #aaa; }
-            .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char span:hover::after {
-              content: '\d7';
-              position: relative;
-              display: inline-block;
-              text-align: center;
-              color: red;
-              width: 1rem;
-              height: 1rem; }
+      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster {
+        min-width: 250px; }
+        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-totalcount.overcapacity {
+          color: var(--bs-danger); }
+        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-header {
+          height: 1.5rem;
+          margin-top: 1rem;
+          margin-bottom: 10px; }
+          .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-header span {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 1.5rem; }
+        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char {
+          margin-left: 2rem; }
+          .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char img {
+            height: 1.3rem; }
+          .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char span {
+            display: inline-block;
+            vertical-align: middle; }
+            .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char span:hover.is-staff {
+              cursor: pointer;
+              text-decoration: line-through;
+              text-decoration-thickness: 2px;
+              text-decoration-color: #aaa; }
+              .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-char span:hover.is-staff::after {
+                content: '\d7';
+                position: relative;
+                display: inline-block;
+                text-align: center;
+                color: red;
+                width: 1rem;
+                height: 1rem; }
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-role-icon {
         height: 1.5rem; }
-      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .event-view-benched-roster-header {
-        font-size: 1.5rem; }
-      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row td {
-        min-width: 1.5rem;
-        min-height: 1px;
-        padding: 3px 5px; }
-        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row td img:hover {
-          transform: scale(1.2, 1.2);
-          cursor: pointer; }
-      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row:hover {
-        outline: 1px solid #aaa; }
+      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster {
+        min-width: 250px; }
+        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .event-view-benched-roster-header {
+          font-size: 1.5rem; }
+        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row td {
+          min-width: 1.5rem;
+          min-height: 1px;
+          padding: 3px 5px; }
+          .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row td img:hover {
+            transform: scale(1.2, 1.2);
+            cursor: pointer; }
+        .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row:hover {
+          outline: 1px solid #aaa; }
       .event-view-container .event-view-boss-container .event-view-boss-info .warrior {
         color: var(--classcolor-warrior); }
       .event-view-container .event-view-boss-container .event-view-boss-info .paladin {
@@ -374,6 +379,12 @@ body {
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.active {
           color: var(--white-color);
           background-color: var(--bg-active-color); }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster {
+          background-color: #34495e; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress {
+          background-color: #f1C40F; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete {
+          background-color: #30CB83; }
       .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-roster-list {
         /*  display: none; */
         margin: 0;
