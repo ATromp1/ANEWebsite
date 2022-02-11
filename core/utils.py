@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect
 
-from core.models import RaidEvent, BossPerEvent, Boss
+from core.models import RaidEvent, BossPerEvent, Boss, CurrentUser
 
 
 def get_playable_classes_as_css_classes():
@@ -90,8 +90,8 @@ def generate_calendar(events):
                     if events[id]['event_date'].day == current_day_of_month:
                         event_name = events[id]['event_name']
 
-                        #    event_status = events[index]['event_status']
-                        event_status = "benched"
+                        event_status = events[id]['event_status']
+                        # event_status = "benched"
                         event_status_cssclass = event_status
 
                         calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
@@ -105,6 +105,11 @@ def generate_calendar(events):
 
 
 def get_user_display_name(request):
+    """
+    Function to display the correct battletag in the top right of all the views
+    """
+    if request.user.is_superuser:
+        return 'God'
     if request.user.is_authenticated:
         if request.user.is_anonymous:
             user = 'Anonymous'
@@ -120,6 +125,10 @@ def get_current_user_id(request):
 
 
 def rem_user_from_roster_button(request, event_date):
+    """
+    removes all characters belonging to the currently logged-in user and remove them from the initial roster
+    sent in the event/details view
+    """
     event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_id(request)['sub']
     event_obj.remove_char_from_roster(current_user_id=current_user_account_id)
@@ -127,6 +136,7 @@ def rem_user_from_roster_button(request, event_date):
 
 
 def add_user_to_roster_button(request, event_date):
+    """Current user can sign himself back in, if signed off before."""
     event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_id(request)['sub']
     event_obj.sign_in(current_user_account_id)
@@ -134,6 +144,9 @@ def add_user_to_roster_button(request, event_date):
 
 
 def delete_event(request, event_date):
+    """
+    Deletes an event in the /events page and redirects back to the same page
+    """
     event_obj = RaidEvent.objects.get(date=event_date)
     if request.user.is_staff:
         event_obj.delete()
@@ -151,6 +164,12 @@ def login_user_button(request):
 
 
 def execute_ajax_request(event_date, request):
+    """
+    Overarching function that takes in the ajax request when a role button is clicked in frontend.
+    If no roster exists for that particular boss on that date, a new object will be created or otherwise updated.
+    After creating/updating the object, the update_selected_roster method is called to update the selected player in
+    the database.
+    """
     if request.GET.get('name') is not None:
         role = request.GET.get('role')
         name = request.GET.get('name')
@@ -165,6 +184,10 @@ def execute_ajax_request(event_date, request):
 
 
 def update_selected_roster(boss, name, raid_event, role):
+    """
+    Upon clicking a tank/healer/melee/ranged icon while creating the active roster for a boss in the front end,
+    the back end will be updated with the selected player name and will therefore either be removed or added.
+    """
     selected_current_event_and_boss = BossPerEvent.objects.get(raid_event=raid_event, boss=boss)
     match role:
         case 'tank':
@@ -190,6 +213,9 @@ def update_selected_roster(boss, name, raid_event, role):
 
 
 def create_init_roster_json(event_date):
+    """
+    Creates a json dictionary containing the default roster (everyone) and class except players that have signed off
+    """
     roster_dict = {}
     for character in RaidEvent.objects.get(date=event_date).roster.all():
         roster_dict[character.id] = {
@@ -200,6 +226,10 @@ def create_init_roster_json(event_date):
 
 
 def selected_roster_from_db_to_json(event_date):
+    """
+    Queries all selected players corresponding to all bosses in a single event date and pushes them to a
+    json file that serves as context in the event-details view
+    """
     roster_per_boss = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
     roster_per_boss_dict = {}
     for boss in roster_per_boss:
@@ -222,3 +252,33 @@ def selected_roster_from_db_to_json(event_date):
             mdps.append(char.name)
         roster_per_boss_dict[boss_id]['mdps'] = mdps
     return roster_per_boss_dict
+
+
+def user_attendance_status(event, request):
+    global status
+    user_characters = CurrentUser.objects.filter(account_id=get_current_user_id(request)['id'])
+    for user_char in user_characters:
+        if not RaidEvent.objects.get(date=event.date).roster.all().filter(name=user_char).exists():
+            status = 'absent'
+            break
+        else:
+            for boss in BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event.date)):
+                if boss.tank.filter(name=user_char).exists():
+                    status = 'selected'
+                    break
+                if boss.healer.filter(name=user_char).exists():
+                    status = 'selected'
+                    break
+                if boss.rdps.filter(name=user_char).exists():
+                    status = 'selected'
+                    break
+                if boss.mdps.filter(name=user_char).exists():
+                    status = 'selected'
+                    break
+                else:
+                    status = 'benched'
+                    break
+            else:
+                continue
+            break
+    return status

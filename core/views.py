@@ -16,6 +16,7 @@ from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
     get_user_display_name, execute_ajax_request, create_init_roster_json, selected_roster_from_db_to_json,
+    user_attendance_status,
 )
 
 
@@ -60,7 +61,6 @@ def add_event_view(request):
 
 
 def events_details_view(request, event_date):
-
     roster_dict = create_init_roster_json(event_date)
 
     execute_ajax_request(event_date, request)
@@ -97,11 +97,13 @@ def calendar_view(request):
         except AttributeError:
             event_name = "Raid"
 
+        status = user_attendance_status(event, request)
+
         events_dict.update({event.id: {
             'event_name': event_name,
             'event_date': event.date,
             'event_id': event.id,
-            # 'currentUser_status': currentUser_status,
+            'event_status': status,
 
         }})
 

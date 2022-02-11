@@ -132,10 +132,11 @@ def post_login(sender, user, request, **kwargs):
     If new user logs in via battlenet, their characters will be fetched by API and
     stored in CurrentUser.
     """
-    account_id = SocialAccount.objects.get(user=request.user).extra_data['id']
-    if not CurrentUser.objects.filter(account_id=account_id).exists():
-        api_profiles = get_profile_summary(request)
-        populate_char_db(api_profiles)
+    if not user.is_superuser:
+        account_id = SocialAccount.objects.get(user=request.user).extra_data['id']
+        if not CurrentUser.objects.filter(account_id=account_id).exists():
+            api_profiles = get_profile_summary(request)
+            populate_char_db(api_profiles)
 
 
 def populate_char_db(char_json):
