@@ -8,6 +8,8 @@ for (i = 0; i < boss_list.length; i++) {
         'id': i
     })
 }
+
+
  
 
 let roles_per_class = {
@@ -291,5 +293,6 @@ $('.event-view-benched-roster').on('click', '.benched-roster-row td', function()
         //console.log('Name: ' + char_name +'; Role: '+ role + '; ' + 'boss_id: ' + raid_event.currently_selected_boss_roster)
     }
 })
+
 
 
