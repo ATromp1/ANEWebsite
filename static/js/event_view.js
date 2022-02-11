@@ -267,6 +267,7 @@ $('.boss-view-btn').click(function(){
 /* 
 Sets a click event listener on benched-roster table td elements.
 If it has id then id will be role, char_name will always be the first sibling of type td
+Sends ajax request to the server to sync up the database
 */
 $('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
     if(this.id){
