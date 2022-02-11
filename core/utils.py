@@ -212,7 +212,7 @@ def update_selected_roster(boss, name, raid_event, role):
                 selected_current_event_and_boss.ajax_to_mdps(name)
 
 
-def create_init_roster_json(event_date):
+def create_initial_roster_json(event_date):
     """
     Creates a json dictionary containing the default roster (everyone) and class except players that have signed off
     """

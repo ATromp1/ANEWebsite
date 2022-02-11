@@ -30,7 +30,7 @@ class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
-    account_id = models.IntegerField(null=True)
+    account_id = models.IntegerField(null=True, blank=True)
     playable_class = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
@@ -59,7 +59,6 @@ class RaidEvent(models.Model):
 
     def remove_char_from_roster(self, current_user_id):
         current_user_characters = Roster.objects.filter(account_id=current_user_id)
-
         for item in current_user_characters:
             self.roster.remove(Roster.objects.get(name=item.name))
             self.save()
