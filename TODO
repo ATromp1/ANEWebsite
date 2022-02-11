@@ -2,6 +2,9 @@
 
 -- Player summary on an event on the event homepage
 
+-- Add a list containing players who selected Late
+-- Implement late button. Perhaps make it popup a screen where players can fill in minutes.
+    This data will be shown to officers when making the roster
 
 
 
@@ -9,3 +12,14 @@
 BUGS
 
 -- Fix display when loading from loading roster from database
+
+-- Players will get removed from the selected roster as well when they sign off from a raid. Do we want to keep
+    that functionality?
+
+
+
+
+PRODUCTION
+
+-- Some urls are still coded to localhost
+-- Change some of the cdns to their production version
