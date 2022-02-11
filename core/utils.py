@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect
 
-from core.models import RaidEvent, BossPerEvent, Boss, CurrentUser
+from core.models import RaidEvent, BossPerEvent, Boss, CurrentUser, Roster
 
 
 def get_playable_classes_as_css_classes():
@@ -255,30 +255,20 @@ def selected_roster_from_db_to_json(event_date):
 
 
 def user_attendance_status(event, request):
-    global status
-    user_characters = CurrentUser.objects.filter(account_id=get_current_user_id(request)['id'])
+    user_characters = Roster.objects.filter(account_id=get_current_user_id(request)['id'])
     for user_char in user_characters:
         if not RaidEvent.objects.get(date=event.date).roster.all().filter(name=user_char).exists():
-            status = 'absent'
-            break
+            return 'absent'
         else:
             for boss in BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event.date)):
                 if boss.tank.filter(name=user_char).exists():
-                    status = 'selected'
-                    break
+                    return 'selected'
                 if boss.healer.filter(name=user_char).exists():
-                    status = 'selected'
-                    break
+                    return 'selected'
                 if boss.rdps.filter(name=user_char).exists():
-                    status = 'selected'
-                    break
+                    return 'selected'
                 if boss.mdps.filter(name=user_char).exists():
-                    status = 'selected'
-                    break
-                else:
-                    status = 'benched'
-                    break
-            else:
-                continue
-            break
-    return status
+                    return 'selected'
+
+    return 'benched'
+

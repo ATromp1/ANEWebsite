@@ -26,3 +26,5 @@ PRODUCTION
 
 -- Some urls are still coded to localhost
 -- Change some of the cdns to their production version
+
+-- WSGI + gunicorn or uwsgi on linux

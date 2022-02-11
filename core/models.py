@@ -30,6 +30,7 @@ class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
+    account_id = models.IntegerField(null=True)
     playable_class = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
@@ -203,10 +204,10 @@ def update_guild_roster_classes():
     """
     for character in Roster.objects.all():
         if CurrentUser.objects.filter(character_id=character.character_id).exists():
-            playable_class = CurrentUser.objects.get(
-                character_id=character.character_id).playable_class
-            Roster.objects.filter(character_id=character.character_id).update(
-                playable_class=playable_class)
+            playable_class = CurrentUser.objects.get(character_id=character.character_id).playable_class
+            account_id = CurrentUser.objects.get(character_id=character.character_id).account_id
+            Roster.objects.filter(character_id=character.character_id).update(playable_class=playable_class,
+                                                                              account_id=account_id)
 
 
 def get_guild_roster(request):
