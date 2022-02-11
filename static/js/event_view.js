@@ -124,11 +124,8 @@ class RosterPerBoss {
     }
 
     load_roster_from_db(selected_roster){
-        console.log(this.boss)
         for(let i in selected_roster){
             let char = selected_roster[i]
-            console.log(char.name)
-            console.log(char.role)
             //this.#add_char_to_selected_roster(char.name, role);
             this.move_from_bench_to_selected(char.name,char.role)
         }
@@ -343,25 +340,26 @@ $('.event-view-benched-roster').on('click', '.benched-roster-row td', function()
 /*
  Same as above but removes the character from selected instead
 */
-$('.event-view-selected-roster').on('click','.event-view-selected-roster-char span', function(){
-    char_name = this.innerHTML
-    current_boss_id = raid_event.currently_selected_boss_roster
-    role = this.parentElement.parentElement.id
-    raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role)
+if(is_staff){
+    $('.event-view-selected-roster').on('click','.event-view-selected-roster-char span', function(){
+        char_name = this.innerHTML
+        current_boss_id = raid_event.currently_selected_boss_roster
+        role = this.parentElement.parentElement.id
+        raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role)
 
-    $.ajax({
-        url: window.location.href,
-        data: {
-            'name': char_name,
-            'role': role,
-            'boss_id': current_boss_id,
-        },
-        dataType: 'json',
-        success: function () {
-            console.log("PRINT SOMETHING")
-        }
+        $.ajax({
+            url: window.location.href,
+            data: {
+                'name': char_name,
+                'role': role,
+                'boss_id': current_boss_id,
+            },
+            dataType: 'json',
+            success: function () {
+                console.log("PRINT SOMETHING")
+            }
+        })
     })
-})
-
+}
 
 

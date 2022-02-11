@@ -12,14 +12,6 @@
     {% block content %}
     {% load static %}
     <div class="event-view-container">
-        <div class="event-view-signups">
-            <h2>Roster</h2>
-            <ul>
-                {% for player in roster %}
-                    <li>{{ player }}</li>
-                {% endfor %}
-            </ul>
-        </div>
         <div class="event-view-boss-container">
             <div class="event-view-boss-list">
             </div>
@@ -56,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-
+                {% if user.is_staff %}
                 <div class="event-view-benched-roster">
                     <div class="event-view-benched-roster-header">
                         Bench
@@ -71,9 +63,8 @@
                             </tr>
                     </table>
                 </div>
+                {% endif %}
             </div>
-        </div>
-        <div class="temp-invis-div">
         </div>
     </div>
 
@@ -85,6 +76,7 @@
         let css_classes = {{css_classes | safe}}
         let static_url = "{% get_static_prefix %}"
         let boss_rosters = {{ selected_roster|safe }}
+        let is_staff = {{ user.is_staff|yesno:"true,false" }}
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
 
