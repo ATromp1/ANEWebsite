@@ -22,13 +22,10 @@ from core.views import (
     calendar_view,
     events_view,
     events_details_view,
-    rem_user_from_roster_button,
-    add_user_to_roster_button,
-    add_event,
-    login_user_button,
-    logout_user_button,
-    delete_event,
+    add_event_view,
 )
+from core.utils import rem_user_from_roster_button, add_user_to_roster_button, delete_event, logout_user_button, \
+    login_user_button
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,7 +37,7 @@ urlpatterns = [
     path('calendar/', calendar_view, name='calendar'),
     path('events/', events_view, name='events'),
     path('events/<slug:event_date>/', events_details_view, name='events-details'),
-    path('add_event', add_event, name='add-event'),
+    path('add_event', add_event_view, name='add-event'),
     path('delete_event/<event_date>', delete_event, name='delete-event'),
     path('sign_off_user/<event_date>/*', rem_user_from_roster_button, name='opt-out'),
     path('sign_in_user/<event_date>/*', add_user_to_roster_button, name='opt-in'),
