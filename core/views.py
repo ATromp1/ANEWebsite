@@ -112,6 +112,8 @@ def events_details_view(request, event_date):
     boss_objects = Boss.objects.all()
     bosses = serializers.serialize("json", boss_objects)
 
+    boss_per_event_obj = BossPerEvent.objects.all()
+
     context = {
         'event': event_obj,
         'roster': roster,
@@ -119,19 +121,9 @@ def events_details_view(request, event_date):
         'bosses': bosses,
         'social_user': get_user_display_name(request),
         'css_classes': get_playable_classes_as_css_classes(),
+        'test_obj': boss_per_event_obj,
     }
     return render(request, 'events_details.html', context)
-
-
-def boss_view(request, event_date, boss_name):
-    # event_obj = RaidEvent.objects.get(date=event_date)
-    # boss_context_name = RaidInstance.objects.first().bosses.get(boss_name=boss_name)
-    context = {
-        # 'event': event_obj,
-        # 'boss': boss_context_name,
-        'social_user': get_user_display_name(request)
-    }
-    return render(request, 'boss_detail.html', context)
 
 
 def get_current_user_id(request):
