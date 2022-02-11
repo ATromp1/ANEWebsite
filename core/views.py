@@ -16,7 +16,7 @@ from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
     get_user_display_name, execute_ajax_request, create_init_roster_json, selected_roster_from_db_to_json,
-    user_calendar_attendance_status,
+    user_attendance_status,
 )
 
 
@@ -97,7 +97,7 @@ def calendar_view(request):
         except AttributeError:
             event_name = "Raid"
 
-        status = user_calendar_attendance_status(event, request)
+        status = user_attendance_status(event, request)
 
         events_dict.update({event.id: {
             'event_name': event_name,

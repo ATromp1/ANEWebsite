@@ -6,6 +6,9 @@
 -- Implement late button. Perhaps make it popup a screen where players can fill in minutes.
     This data will be shown to officers when making the roster
 
+-- Have event details boss button change depending on if a roster has been selected
+
+-- check if user is not logged in as admin account before loading chars into database
 
 
 
