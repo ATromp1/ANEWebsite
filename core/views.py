@@ -112,7 +112,27 @@ def events_details_view(request, event_date):
     boss_objects = Boss.objects.all()
     bosses = serializers.serialize("json", boss_objects)
 
-    boss_per_event_obj = BossPerEvent.objects.all()
+    roster_per_boss = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+    roster_per_boss_dict = {}
+    for boss in roster_per_boss:
+        roster_per_boss_dict[str(Boss.objects.get(boss_name=boss.boss).id - 1)] = {}
+        tanks = []
+        for char in boss.tank.all():
+            tanks.append(char.name)
+        roster_per_boss_dict[str(Boss.objects.get(boss_name=boss.boss).id - 1)]['tank'] = tanks
+        healers = []
+        for char in boss.healer.all():
+            healers.append(char.name)
+        roster_per_boss_dict[str(Boss.objects.get(boss_name=boss.boss).id - 1)]['healer'] = healers
+        rdps = []
+        for char in boss.rdps.all():
+            rdps.append(char.name)
+        roster_per_boss_dict[str(Boss.objects.get(boss_name=boss.boss).id - 1)]['rdps'] = rdps
+        mdps = []
+        for char in boss.mdps.all():
+            mdps.append(char.name)
+        roster_per_boss_dict[str(Boss.objects.get(boss_name=boss.boss).id - 1)]['mdps'] = mdps
+
 
     context = {
         'event': event_obj,
@@ -121,7 +141,7 @@ def events_details_view(request, event_date):
         'bosses': bosses,
         'social_user': get_user_display_name(request),
         'css_classes': get_playable_classes_as_css_classes(),
-        'test_obj': boss_per_event_obj,
+        'selected_roster': roster_per_boss_dict,
     }
     return render(request, 'events_details.html', context)
 

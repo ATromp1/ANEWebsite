@@ -9,6 +9,8 @@ for (i = 0; i < boss_list.length; i++) {
         'id': i
     })
 }
+
+
  
 
 let roles_per_class = {
@@ -323,5 +325,6 @@ $('.event-view-selected-roster').on('click','.event-view-selected-roster-char sp
         }
     })
 })
+
 
 
