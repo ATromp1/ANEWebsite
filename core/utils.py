@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect
 
-from core.models import RaidEvent, BossPerEvent, Boss
+from core.models import RaidEvent, BossPerEvent, Boss, CurrentUser
 
 
 def get_playable_classes_as_css_classes():
@@ -90,8 +90,8 @@ def generate_calendar(events):
                     if events[id]['event_date'].day == current_day_of_month:
                         event_name = events[id]['event_name']
 
-                        #    event_status = events[index]['event_status']
-                        event_status = "benched"
+                        event_status = events[id]['event_status']
+                        # event_status = "benched"
                         event_status_cssclass = event_status
 
                         calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
@@ -250,3 +250,15 @@ def selected_roster_from_db_to_json(event_date):
             mdps.append(char.name)
         roster_per_boss_dict[boss_id]['mdps'] = mdps
     return roster_per_boss_dict
+
+
+def user_calendar_attendance_status(event, request):
+    global status
+    user_characters = CurrentUser.objects.filter(account_id=get_current_user_id(request)['id'])
+    for char in user_characters:
+        if RaidEvent.objects.get(date=event.date).roster.all().filter(name=char).exists():
+            status = 'selected'
+            break
+        else:
+            status = 'absent'
+    return status
