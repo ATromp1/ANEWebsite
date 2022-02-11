@@ -58,15 +58,16 @@ class RaidEvent(models.Model):
             self.roster.add(Roster.objects.get(name=character))
 
     def remove_char_from_roster(self, current_user_id):
-        user_chars_in_roster = get_chars_in_roster(current_user_id)
-        for item in user_chars_in_roster:
-            self.roster.remove(Roster.objects.get(name=item))
+        current_user_characters = Roster.objects.filter(account_id=current_user_id)
+
+        for item in current_user_characters:
+            self.roster.remove(Roster.objects.get(name=item.name))
             self.save()
 
-    def sign_in(self, current_user_id):
-        user_chars_in_roster = get_chars_in_roster(current_user_id)
-        for item in user_chars_in_roster:
-            self.roster.add(Roster.objects.get(name=item))
+    def attend_raid(self, current_user_id):
+        current_user_characters = Roster.objects.filter(account_id=current_user_id)
+        for item in current_user_characters:
+            self.roster.add(Roster.objects.get(name=item.name))
             self.save()
 
 
@@ -112,21 +113,6 @@ class BossPerEvent(models.Model):
         self.mdps.remove(Roster.objects.get(name=name))
 
 
-def get_chars_in_roster(current_user_id):
-    """
-    Cross-referencing characters that exist in both de Roster database and the CurrentUser database
-    :return: a list of characters
-    """
-    roster = []
-    for character in Roster.objects.all():
-        roster.append(character.name)
-    user_chars = []
-    for character in CurrentUser.objects.filter(account_id=current_user_id):
-        user_chars.append(character.name)
-    user_chars_in_roster = set(roster).intersection(set(user_chars))
-    return user_chars_in_roster
-
-
 @receiver(user_logged_in)
 def post_login(sender, user, request, **kwargs):
     """
@@ -142,23 +128,23 @@ def post_login(sender, user, request, **kwargs):
 
 def populate_char_db(char_json):
     """
-    Updates the current user's characters filtered by realm = tarrenmill and level = 60
+    Updates the current user's characters corresponding to those in the roster
     """
     for i in range(len(char_json['wow_accounts'])):
         for j in range(len(char_json['wow_accounts'][i]['characters'])):
-            realm_id = char_json['wow_accounts'][i]['characters'][j]['realm']['id']
-            character_level = char_json['wow_accounts'][i]['characters'][j]['level']
-            if realm_id == 1306 and character_level == 60:
-                account_id = char_json['id']
-                char_name = char_json['wow_accounts'][i]['characters'][j]['name']
-                char_id = char_json['wow_accounts'][i]['characters'][j]['id']
-                playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
+            account_id = char_json['id']
+            char_name = char_json['wow_accounts'][i]['characters'][j]['name']
+            char_id = char_json['wow_accounts'][i]['characters'][j]['id']
+            playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
+
+            if Roster.objects.filter(name=char_name).exists():
+                rank = Roster.objects.get(name=char_name).rank
                 try:
                     CurrentUser.objects.update_or_create(name=char_name,
                                                          account_id=account_id,
                                                          character_id=char_id,
                                                          playable_class=playable_class,
-                                                         rank='7')
+                                                         rank=rank)
                 except IntegrityError:
                     pass
 
@@ -190,7 +176,6 @@ def populate_roster_db(api_roster):
         rank = member['rank']
         name = member['character']['name']
         character_id = member['character']['id']
-        CurrentUser.objects.filter(name=name).update(rank=rank)
         if rank in raider_ranks:
             Roster.objects.filter(name=name).update_or_create(name=name,
                                                               rank=rank,
