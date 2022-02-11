@@ -108,6 +108,8 @@ def get_user_display_name(request):
     """
     Function to display the correct battletag in the top right of all the views
     """
+    if request.user.is_superuser:
+        return 'God'
     if request.user.is_authenticated:
         if request.user.is_anonymous:
             user = 'Anonymous'
