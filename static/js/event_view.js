@@ -187,18 +187,24 @@ class RosterPerBoss {
         return count
     }
 
-    move_from_bench_to_selected(char_name, role){
+    move_from_bench_to_selected(char_name, role, display_change){
+        display_change = false || display_change
         this.#add_char_to_selected_roster(char_name, role);
         let char_removed_at_index = this.#remove_char_from_benched_roster(char_name)
-        this.remove_from_benched_display_at_index(char_removed_at_index)
-        this.display_selected_roster()
+        if(display_change){
+            this.remove_from_benched_display_at_index(char_removed_at_index)
+            this.display_selected_roster()
+        }
     }
 
-    move_from_selected_to_bench(char_name){
+    move_from_selected_to_bench(char_name, display_change){
+        display_change = false || display_change
         this.#add_char_to_benched_roster(char_name)
         this.#remove_char_from_selected_roster(char_name);
-        this.display_benched_roster()
-        this.display_selected_roster()
+        if(display_change){
+            this.display_benched_roster()
+            this.display_selected_roster()
+        }
     }
 
     remove_from_benched_display_at_index(index){
@@ -224,18 +230,27 @@ class RosterPerBoss {
         $('.event-view-selected-roster-mdps').append(header_element_mdps)
         $('.event-view-selected-roster-rdps').append(header_element_rdps)
 
+        if(this.selected_roster.length > 20){
+            $('.event-view-selected-roster-totalcount').addClass('overcapacity')
+        }else{
+            $('.event-view-selected-roster-totalcount').removeClass('overcapacity')
+        }
         $('.event-view-selected-roster-totalcount').text('Total: '+this.selected_roster.length)
         $('.event-view-selected-roster-tankcount').text(' - ' + this.get_amount_of_role_in_selected_roster('tank'))
         $('.event-view-selected-roster-healercount').text(' - ' + this.get_amount_of_role_in_selected_roster('healer'))
         $('.event-view-selected-roster-mdpscount').text(' - ' + this.get_amount_of_role_in_selected_roster('mdps'))
         $('.event-view-selected-roster-rdpscount').text(' - ' + this.get_amount_of_role_in_selected_roster('rdps'))
 
-
+        let additional_staff_info = ''
+        if(is_staff){
+            additional_staff_info = ' class="is-staff"'
+        }
         for(let index in this.selected_roster){
+
             let char = this.selected_roster[index]
             $('.event-view-selected-roster-'+char.role).append('<div class="'+css_classes[char.playable_class]+' event-view-selected-roster-char">'+
             '<img src="'+static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png" alt="Tank" class="event-view-role-icon">'+
-            '<span>'+char.name+'</span></div>')
+            '<span'+additional_staff_info+'>'+char.name+'</span></div>')
 
         }
     }
@@ -320,7 +335,7 @@ $('.event-view-benched-roster').on('click', '.benched-roster-row td', function()
         role = this.id
         char_name = jQuery(this).siblings('td').first()[0].innerHTML
         current_boss_id = raid_event.currently_selected_boss_roster
-        raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role)
+        raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
 
         $.ajax({
             url: window.location.href,
@@ -345,7 +360,7 @@ if(is_staff){
         char_name = this.innerHTML
         current_boss_id = raid_event.currently_selected_boss_roster
         role = this.parentElement.parentElement.id
-        raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role)
+        raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role, true)
 
         $.ajax({
             url: window.location.href,

@@ -11,10 +11,11 @@
 
 BUGS
 
--- Fix display when loading from loading roster from database
-
 -- Players will get removed from the selected roster as well when they sign off from a raid. Do we want to keep
     that functionality?
+    
+    @malp
+        Probably, if they're not going to show up to raid then they shouldn't be on the roster for that raid
 
 
 
