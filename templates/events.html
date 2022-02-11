@@ -19,8 +19,8 @@
             <div class="event-per-date">
             <li><a href="{% url 'events-details' event.date %}" class="btn btn-outline-success">{{ event.date }}</a>
 
-                <a href="{% url 'opt-out' event.date %}" class="btn btn-danger" id="opt-out">Opt out</a>
-                <a href="{% url 'opt-in' event.date %}" class="btn btn-success" id="opt-in">Opt in</a>
+                <a href="{% url 'opt-out' event.date %}" class="btn btn-danger" id="opt-out">Decline</a>
+                <a href="{% url 'opt-in' event.date %}" class="btn btn-success" id="opt-in">Attend</a>
 
                 <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm">Delete</a>
             </li>
