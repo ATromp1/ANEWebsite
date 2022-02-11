@@ -140,7 +140,7 @@ def add_user_to_roster_button(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_id(request)['sub']
     event_obj.attend_raid(current_user_account_id)
-    return redirect('events-details', event_date=event_obj.date)
+    return redirect('events')
 
 
 def delete_event(request, event_date):

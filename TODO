@@ -3,18 +3,14 @@
 -- Player summary on an event on the event homepage
 
 -- Add a list containing players who selected Late
+
 -- Implement late button. Perhaps make it popup a screen where players can fill in minutes.
     This data will be shown to officers when making the roster
-
--- Have event details boss button change depending on if a roster has been selected
-
 
 
 
 
 BUGS
-
--- Fix display when loading from loading roster from database
 
 -- Players will get removed from the selected roster as well when they sign off from a raid. Do we want to keep
     that functionality?
