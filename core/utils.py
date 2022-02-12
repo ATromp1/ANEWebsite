@@ -124,6 +124,19 @@ def get_current_user_id(request):
     return SocialAccount.objects.filter(user=request.user).first().extra_data
 
 
+def set_user_late(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
+    current_user_account_id = get_current_user_id(request)['sub']
+    event_obj.add_late_user(current_user_account_id=current_user_account_id)
+    return redirect('events')
+
+def remove_user_late(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
+    current_user_account_id = get_current_user_id(request)['sub']
+    event_obj.rem_late_user(current_user_account_id=current_user_account_id)
+    return redirect('events')
+
+
 def rem_user_from_roster_button(request, event_date):
     """
     removes all characters belonging to the currently logged-in user and remove them from the initial roster
@@ -217,11 +230,13 @@ def create_initial_roster_json(event_date):
     Creates a json dictionary containing the default roster (everyone) and class except players that have signed off
     """
     roster_dict = {}
-    for character in RaidEvent.objects.get(date=event_date).roster.all():
-        roster_dict[character.id] = {
-            'name': character.name,
-            'playable_class': character.playable_class
-        }
+    roster_at_date = RaidEvent.objects.get(date=event_date).roster
+    for character in roster_at_date.all():
+        if roster_at_date.get(name=character).playable_class is not None:
+            roster_dict[character.id] = {
+                'name': character.name,
+                'playable_class': character.playable_class
+            }
     return roster_dict
 
 
@@ -271,4 +286,3 @@ def user_attendance_status(event, request):
                     return 'selected'
 
     return 'benched'
-

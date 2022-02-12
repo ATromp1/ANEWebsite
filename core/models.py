@@ -37,11 +37,18 @@ class Boss(models.Model):
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField(unique=True)
-    roster = models.ManyToManyField(Roster, blank=True, default=True)
+    roster = models.ManyToManyField(Roster, blank=True, default=True, related_name='roster')
     bosses = models.ManyToManyField(Boss, through='BossPerEvent')
+    late_users = models.ManyToManyField(SocialAccount, blank=True, related_name='late_users')
 
     def __str__(self):
         return str(self.date)
+
+    def add_late_user(self, current_user_account_id):
+        self.late_users.add(SocialAccount.objects.get(uid=current_user_account_id))
+
+    def rem_late_user(self, current_user_account_id):
+        self.late_users.remove(SocialAccount.objects.get(uid=current_user_account_id))
 
     def populate_roster(self):
         for character in Roster.objects.all():

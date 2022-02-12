@@ -23,9 +23,10 @@ from core.views import (
     events_view,
     events_details_view,
     add_event_view,
+
 )
 from core.utils import rem_user_from_roster_button, add_user_to_roster_button, delete_event, logout_user_button, \
-    login_user_button
+    login_user_button, set_user_late, remove_user_late
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -45,5 +46,6 @@ urlpatterns = [
 
     path('sign_off_user/<event_date>/*', rem_user_from_roster_button, name='opt-out'),
     path('sign_in_user/<event_date>/*', add_user_to_roster_button, name='opt-in'),
-
+    path('late/<event_date>', set_user_late, name='late-user'),
+    path('notlate/<event_date>', remove_user_late, name='rem-late-user')
 ]
