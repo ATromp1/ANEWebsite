@@ -1,6 +1,7 @@
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from core.forms import Eventform
 from core.models import (
@@ -28,12 +29,13 @@ def home_view(request):
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_view(request):
-    global status
     events = RaidEvent.objects.all()
+    status = []
+    if events.exists():
+        for event in events:
+            status.append(user_attendance_status(event, request))
 
-    for event in events:
-        status = user_attendance_status(event, request)
-
+    print(status)
     context = {
         'event_list': events,
         'social_user': get_user_display_name(request),
@@ -43,6 +45,9 @@ def events_view(request):
 
 
 def add_event_view(request):
+    if request.user.is_superuser:
+        messages.warning(request, "You're trying to create an event as superuser!")
+        return redirect('add-event')
     submitted = False
     if request.method == "POST":
         form = Eventform(request.POST)
@@ -74,12 +79,15 @@ def events_details_view(request, event_date):
 
     roster_per_boss_dict = selected_roster_from_db_to_json(event_date)
 
+    late_users = RaidEvent.objects.get(date=event_date).late_users.all()
+
     context = {
         'roster_dict': roster_dict,
         'bosses': bosses,
         'social_user': get_user_display_name(request),
         'css_classes': get_playable_classes_as_css_classes(),
         'selected_roster': roster_per_boss_dict,
+        'late_users': late_users,
     }
     return render(request, 'events_details.html', context)
 
@@ -120,3 +128,5 @@ def calendar_view(request):
         'social_user': get_user_display_name(request),
     }
     return render(request, 'calendar.html', context)
+
+
