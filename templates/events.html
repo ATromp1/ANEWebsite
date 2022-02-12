@@ -12,7 +12,10 @@
 {% block content %}
 
     <h1>Events</h1>
-    <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary">Add Event</button>
+    {% if user.is_staff %}
+        <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary">Add Event</button>
+    {% endif %}
+
     <div class="event-list">
     <ul>
         {% for event in event_list %}

@@ -1,5 +1,5 @@
 from django.core import serializers
-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from core.forms import Eventform
@@ -26,6 +26,7 @@ def home_view(request):
     return render(request, 'home.html', context)
 
 
+@login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_view(request):
     global status
     events = RaidEvent.objects.all()
@@ -92,6 +93,7 @@ def roster_view(request):
     return render(request, 'roster.html', context)
 
 
+@login_required(login_url='/accounts/battlenet/login/?process=login')
 def calendar_view(request):
     events = RaidEvent.objects.all()
     events_dict = {}
