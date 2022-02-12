@@ -46,10 +46,14 @@ body {
     background-color: var(--bg-active-color);
     border-color: var(--bg-active-color); }
 
-.material-icons {
-  margin-right: 1em;
-  color: var(--bg-active-color);
-  font-size: 10px; }
+/* /.................// Global Styling //................./ */
+.page-header {
+  margin-bottom: 1em; }
+  .page-header .material-icons {
+    font-size: 2.5em; }
+  .page-header .page-header-text {
+    text-size-adjust: none;
+    font-size: 2.5em; }
 
 /* /.................// Navbar //................./ */
 .navbar {
@@ -140,12 +144,11 @@ body {
 /* /.................// Calendar //................./ */
 .calendar-grid-container {
   margin: auto;
+  margin-top: 1em;
   max-width: 950px;
   width: 90%;
   height: 70vh;
   max-height: 450px; }
-  .calendar-grid-container h1 {
-    margin: 1rem 0; }
   .calendar-grid-container .calendar-grid {
     width: 100%;
     height: 100%;
@@ -212,9 +215,8 @@ body {
 /* /.................// Roster //................./ */
 .roster-container {
   width: 90%;
-  margin: auto; }
-  .roster-container h1 {
-    margin: 0.5em 0 1em 0; }
+  margin: auto;
+  margin-top: 1em; }
   .roster-container .roster-grid {
     width: 100%;
     display: grid;
@@ -267,7 +269,13 @@ body {
       text-align: center;
       margin-top: 10px; }
 
-/* /.................// Event View //................./ */
+/* /.................// Event List View //................./ */
+.events-list-container {
+  width: 80%;
+  margin: auto;
+  margin-top: 1em; }
+
+/* /.................// Event Detail View //................./ */
 .event-view-container {
   display: flex;
   justify-content: space-between;

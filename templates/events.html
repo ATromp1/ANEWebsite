@@ -10,8 +10,8 @@
 <body>
 
 {% block content %}
-
-    <h1>Events</h1>
+<div class="events-list-container">
+    <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">event_available</span><span class="page-header-text">Events</span></div>
     {% if user.is_staff %}
         <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary">Add Event</button>
     {% endif %}
@@ -34,6 +34,7 @@
         {% endfor %}
     </ul>
     </div>
+</div>
 
 {% endblock %}
 
