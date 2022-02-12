@@ -1,8 +1,9 @@
 import requests
 from allauth.socialaccount.models import SocialAccount, SocialToken
+from allauth.account.signals import user_logged_in
 from django.contrib.auth.models import User
-from django.contrib.auth.signals import user_logged_in
-from django.db import models, IntegrityError
+
+from django.db import models
 from django.dispatch import receiver
 
 
@@ -13,17 +14,6 @@ class Rank(models.IntegerChoices):
     RAIDER = 3, "Raider"
     SECOND_MAIN = 4, 'Second Main'
     TRIAL = 5, "Trial"
-
-
-class CurrentUser(models.Model):
-    account_id = models.IntegerField()
-    character_id = models.IntegerField(unique=True)
-    name = models.CharField(max_length=20)
-    playable_class = models.CharField(max_length=30, null=True, blank=True)
-    rank = models.IntegerField(choices=Rank.choices, null=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Roster(models.Model):
@@ -116,45 +106,37 @@ class BossPerEvent(models.Model):
 def post_login(sender, user, request, **kwargs):
     """
     If new user logs in via battlenet, their characters will be fetched by API and
-    stored in CurrentUser.
+    their class and account_id will be linked in Roster.
     """
     if not user.is_superuser:
-        account_id = SocialAccount.objects.get(user=request.user).extra_data['id']
-        if not CurrentUser.objects.filter(account_id=account_id).exists():
-            api_profiles = get_profile_summary(request)
-            populate_char_db(api_profiles)
+        all_user_characters = get_user_profile_data(request)
+        set_account_id_and_class(all_user_characters)
 
 
-def populate_char_db(char_json):
+def set_account_id_and_class(char_json):
     """
-    Updates the current user's characters corresponding to those in the roster
+    Updates the account id and playable class in the Roster with the data received from the API after someone logs in
     """
     for i in range(len(char_json['wow_accounts'])):
         for j in range(len(char_json['wow_accounts'][i]['characters'])):
             account_id = char_json['id']
             char_name = char_json['wow_accounts'][i]['characters'][j]['name']
-            char_id = char_json['wow_accounts'][i]['characters'][j]['id']
             playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
-
+            char_id = char_json['wow_accounts'][i]['characters'][j]['id']
             if Roster.objects.filter(name=char_name).exists():
-                rank = Roster.objects.get(name=char_name).rank
-                try:
-                    CurrentUser.objects.update_or_create(name=char_name,
-                                                         account_id=account_id,
-                                                         character_id=char_id,
-                                                         playable_class=playable_class,
-                                                         rank=rank)
-                except IntegrityError:
-                    pass
+                res = Roster.objects.get(character_id=char_id)
+                res.account_id = account_id
+                res.playable_class = playable_class
+                res.save()
 
 
-def get_profile_summary(request):
+def get_user_profile_data(request):
     """
     API calls to the blizzard endpoint that returns all
     characters that belong to the logged-in user
     """
-    current_user = SocialAccount.objects.filter(user=request.user).first()
-    access_token = SocialToken.objects.filter(account=current_user).first()
+    current_user = SocialAccount.objects.get(user=request.user)
+    access_token = SocialToken.objects.get(account=current_user)
     header = {
         'Authorization': 'Bearer %s' % access_token,
     }
@@ -179,19 +161,6 @@ def populate_roster_db(api_roster):
             Roster.objects.filter(name=name).update_or_create(name=name,
                                                               rank=rank,
                                                               character_id=character_id)
-
-
-def update_guild_roster_classes():
-    """
-    Pulls class data from Current user and cross-references it to characters in Roster to fill/update their respective
-    character classes
-    """
-    for character in Roster.objects.all():
-        if CurrentUser.objects.filter(character_id=character.character_id).exists():
-            playable_class = CurrentUser.objects.get(character_id=character.character_id).playable_class
-            account_id = CurrentUser.objects.get(character_id=character.character_id).account_id
-            Roster.objects.filter(character_id=character.character_id).update(playable_class=playable_class,
-                                                                              account_id=account_id)
 
 
 def get_guild_roster(request):

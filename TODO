@@ -8,15 +8,13 @@
     This data will be shown to officers when making the roster
 
 
+-- remove all characters from bench when one is selected ( all characters with same account id)
 
 
 BUGS
 
--- Players will get removed from the selected roster as well when they sign off from a raid. Do we want to keep
-    that functionality?
-    
-    @malp
-        Probably, if they're not going to show up to raid then they shouldn't be on the roster for that raid
+-- Boss nav bar will not show if someone in the roster does not have a class. Lets make it skip that person if it has
+no selected class so it still renders.
 
 
 
