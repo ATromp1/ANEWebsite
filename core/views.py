@@ -28,11 +28,11 @@ def home_view(request):
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_view(request):
-    global status
     events = RaidEvent.objects.all()
-
-    for event in events:
-        status = user_attendance_status(event, request)
+    if events.exists():
+        global status
+        for event in events:
+            status = user_attendance_status(event, request)
 
     context = {
         'event_list': events,

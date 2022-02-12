@@ -217,11 +217,13 @@ def create_initial_roster_json(event_date):
     Creates a json dictionary containing the default roster (everyone) and class except players that have signed off
     """
     roster_dict = {}
-    for character in RaidEvent.objects.get(date=event_date).roster.all():
-        roster_dict[character.id] = {
-            'name': character.name,
-            'playable_class': character.playable_class
-        }
+    roster_at_date = RaidEvent.objects.get(date=event_date).roster
+    for character in roster_at_date.all():
+        if roster_at_date.get(name=character).playable_class is not None:
+            roster_dict[character.id] = {
+                'name': character.name,
+                'playable_class': character.playable_class
+            }
     return roster_dict
 
 
