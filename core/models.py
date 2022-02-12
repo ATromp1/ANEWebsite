@@ -16,17 +16,6 @@ class Rank(models.IntegerChoices):
     TRIAL = 5, "Trial"
 
 
-class CurrentUser(models.Model):
-    account_id = models.IntegerField()
-    character_id = models.IntegerField(unique=True)
-    name = models.CharField(max_length=20)
-    playable_class = models.CharField(max_length=30, null=True, blank=True)
-    rank = models.IntegerField(choices=Rank.choices, null=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
@@ -120,7 +109,7 @@ def post_login(sender, user, request, **kwargs):
     their class and account_id will be linked in Roster.
     """
     if not user.is_superuser:
-        all_user_characters = get_profile_summary(request)
+        all_user_characters = get_user_profile_data(request)
         set_account_id_and_class(all_user_characters)
 
 
@@ -141,7 +130,7 @@ def set_account_id_and_class(char_json):
                 res.save()
 
 
-def get_profile_summary(request):
+def get_user_profile_data(request):
     """
     API calls to the blizzard endpoint that returns all
     characters that belong to the logged-in user
@@ -172,19 +161,6 @@ def populate_roster_db(api_roster):
             Roster.objects.filter(name=name).update_or_create(name=name,
                                                               rank=rank,
                                                               character_id=character_id)
-
-
-def update_guild_roster_classes():
-    """
-    Pulls class data from Current user and cross-references it to characters in Roster to fill/update their respective
-    character classes
-    """
-    for character in Roster.objects.all():
-        if CurrentUser.objects.filter(character_id=character.character_id).exists():
-            playable_class = CurrentUser.objects.get(character_id=character.character_id).playable_class
-            account_id = CurrentUser.objects.get(character_id=character.character_id).account_id
-            Roster.objects.filter(character_id=character.character_id).update(playable_class=playable_class,
-                                                                              account_id=account_id)
 
 
 def get_guild_roster(request):

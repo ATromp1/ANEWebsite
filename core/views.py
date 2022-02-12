@@ -8,7 +8,6 @@ from core.models import (
     RaidEvent,
     populate_roster_db,
     get_guild_roster,
-    update_guild_roster_classes,
     Boss
 )
 
@@ -28,10 +27,16 @@ def home_view(request):
 
 
 def events_view(request):
-    event_list = RaidEvent.objects.all()
+    global status
+    events = RaidEvent.objects.all()
+
+    for event in events:
+        status = user_attendance_status(event, request)
+
     context = {
-        'event_list': event_list,
+        'event_list': events,
         'social_user': get_user_display_name(request),
+        'status': status,
     }
     return render(request, 'events.html', context)
 
@@ -44,7 +49,6 @@ def add_event_view(request):
             form.save()
             api_roster = get_guild_roster(request)
             populate_roster_db(api_roster)
-            update_guild_roster_classes()
             date = request.POST['date']
             RaidEvent.objects.get(date=date).populate_roster()
             return redirect('events')

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect
 
-from core.models import RaidEvent, BossPerEvent, Boss, CurrentUser, Roster
+from core.models import RaidEvent, BossPerEvent, Boss, Roster
 
 
 def get_playable_classes_as_css_classes():
