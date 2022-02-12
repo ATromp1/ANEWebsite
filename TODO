@@ -23,5 +23,6 @@ PRODUCTION
 
 -- Some urls are still coded to localhost
 -- Change some of the cdns to their production version
+-- add site domain to "Sites" in admin and bnet application
 
 -- WSGI + gunicorn or uwsgi on linux
