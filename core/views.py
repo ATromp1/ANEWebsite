@@ -30,16 +30,14 @@ def home_view(request):
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_view(request):
     events = RaidEvent.objects.all()
-    status = []
+
     if events.exists():
         for event in events:
-            status.append(user_attendance_status(event, request))
+            event.status = user_attendance_status(event, request)
 
-    print(status)
     context = {
         'event_list': events,
         'social_user': get_user_display_name(request),
-        'status': status,
     }
     return render(request, 'events.html', context)
 

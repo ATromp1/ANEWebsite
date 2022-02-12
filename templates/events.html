@@ -18,14 +18,41 @@
 
     <div class="event-list">
     <ul>
+
         {% for event in event_list %}
             <div class="event-per-date">
                 <li><a href="{% url 'events-details' event.date %}" class="btn btn-outline-success">{{ event.date }}</a>
-                    {% if status == 'absent' %}
+                    {% if event.status == 'absent' %}
                         <a href="{% url 'opt-in' event.date %}" class="btn btn-success" id="opt-in">Attend</a>
                         {% else %}
                         <a href="{% url 'opt-out' event.date %}" class="btn btn-danger" id="opt-out">Decline</a>
                     {% endif %}
+                    <a href="{% url 'late-user' event.date %}" class="btn btn-danger" id="late-test">LATE TEST</a>
+                    <a href="{% url 'rem-late-user' event.date %}" class="btn btn-danger" id="rem-late-test">REMOVE LATE TEST</a>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Late
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">How late in minutes?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {{form}}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {% if user.is_staff %}
                         <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm">Delete</a>
                     {% endif %}
@@ -36,7 +63,14 @@
     </div>
 
 {% endblock %}
+<script>
+var myModal = document.getElementById('myModal')
+var myInput = document.getElementById('myInput')
 
+myModal.addEventListener('shown.bs.modal', function () {
+    myInput.focus()
+})
+</script>
 
 </body>
 </html>
