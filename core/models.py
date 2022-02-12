@@ -39,16 +39,9 @@ class RaidEvent(models.Model):
     date = models.DateField(unique=True)
     roster = models.ManyToManyField(Roster, blank=True, default=True, related_name='roster')
     bosses = models.ManyToManyField(Boss, through='BossPerEvent')
-    late_users = models.ManyToManyField(SocialAccount, blank=True, related_name='late_users')
 
     def __str__(self):
         return str(self.date)
-
-    def add_late_user(self, current_user_account_id):
-        self.late_users.add(SocialAccount.objects.get(uid=current_user_account_id))
-
-    def rem_late_user(self, current_user_account_id):
-        self.late_users.remove(SocialAccount.objects.get(uid=current_user_account_id))
 
     def populate_roster(self):
         for character in Roster.objects.all():
@@ -67,6 +60,14 @@ class RaidEvent(models.Model):
             self.save()
 
 
+class MyUser(SocialAccount):
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return self.extra_data['battletag']
+
+
 class BossPerEvent(models.Model):
     boss = models.ForeignKey(Boss, on_delete=models.CASCADE, null=True)
     raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
@@ -74,6 +75,7 @@ class BossPerEvent(models.Model):
     healer = models.ManyToManyField(Roster, blank=True, related_name='rel_healer')
     mdps = models.ManyToManyField(Roster, blank=True, related_name='rel_mdps')
     rdps = models.ManyToManyField(Roster, blank=True, related_name='rel_rdps')
+    late = models.ManyToManyField(MyUser, through='LateUser')
 
     def __str__(self):
         return str(self.raid_event.date)
@@ -107,6 +109,12 @@ class BossPerEvent(models.Model):
 
     def remove_from_mdps(self, name):
         self.mdps.remove(Roster.objects.get(name=name))
+
+
+class LateUser(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    boss_per_event = models.ForeignKey(BossPerEvent, on_delete=models.CASCADE)
+    minutes_late = models.IntegerField()
 
 
 @receiver(user_logged_in)
