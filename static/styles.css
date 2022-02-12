@@ -76,7 +76,8 @@ body {
         background-color: var(--bg-active-color); }
       .navbar .navbar-content-container .navbar-btn.active {
         color: var(--white-color);
-        background-color: var(--bg-active-color); }
+        background-color: var(--bg-active-color);
+        outline: 2px solid #0d6efd; }
     .navbar .navbar-content-container .navbar-ane {
       width: 10%;
       color: var(--white-color); }
@@ -364,17 +365,17 @@ body {
       display: flex;
       flex-wrap: wrap; }
       .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
+        flex: 1 0 15%;
         cursor: pointer;
         text-decoration: none;
         background-color: var(--bg-hover-color);
         color: var(--white-color);
         padding: 1rem 1.5rem;
-        margin: 0.5rem 0;
+        margin: 0.5rem 1rem;
         border-radius: 0.25rem;
         min-width: 150px;
         text-align: center; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.active {
-          box-sizing: border-box;
           outline: 2px solid #0d6efd; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster {
           background-color: #364d63; }
