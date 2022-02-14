@@ -123,7 +123,7 @@ class BossPerEvent(models.Model):
         self.mdps.remove(Roster.objects.get(name=name))
 
 
-# @receiver(user_logged_in)
+@receiver(user_logged_in)
 def post_login(sender, user, request, **kwargs):
     """
     If new user logs in via battlenet, their characters will be fetched by API and

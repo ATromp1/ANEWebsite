@@ -47,10 +47,10 @@ def events_view(request):
 
 
 def is_user_absent(event, request):
-    user_chars_by_name = Roster.objects.filter(account_id=get_current_user_id(request)['id']).first().account_id
-    if event.roster.filter(account_id=user_chars_by_name).exists():
+    if event.roster.filter(account_id=Roster.objects.filter(account_id=get_current_user_id(request)['id']).first().account_id).exists():
         return True
-    else: return False
+    else:
+        return False
 
 
 def add_event_view(request):
