@@ -16,7 +16,7 @@ from core.models import (
 from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
-    get_user_display_name, execute_ajax_request, create_initial_roster_json, selected_roster_from_db_to_json,
+    get_user_display_name, event_details_ajax, create_initial_roster_json, selected_roster_from_db_to_json,
     user_attendance_status, get_current_user_id,
 )
 
@@ -36,11 +36,18 @@ def events_view(request):
         for event in events:
             event.status = user_attendance_status(event, request)
 
-    if request.method == "POST":
-        minutes_late = request.POST.get('minutes_late')
-        event_date = request.POST.get('date')
+    if request.GET.get('date') is not None:
+        date = request.GET.get('date')
+        minutes_late = request.GET.get('minutes_late')
+
+        print(date)
         print(minutes_late)
-        print(event_date)
+
+    # if request.method == "POST":
+    #     minutes_late = request.POST.get('minutes_late')
+    #     event_date = request.POST.get('date')
+    #     print(minutes_late)
+    #     print(event_date)
 
         # if LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date)).exists():
         #     print("DATE EXISTS")
@@ -89,7 +96,7 @@ def add_event_view(request):
 def events_details_view(request, event_date):
     roster_dict = create_initial_roster_json(event_date)
 
-    execute_ajax_request(event_date, request)
+    event_details_ajax(event_date, request)
 
     bosses = serializers.serialize("json", Boss.objects.all())
 

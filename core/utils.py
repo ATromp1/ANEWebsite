@@ -176,7 +176,7 @@ def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
 
 
-def execute_ajax_request(event_date, request):
+def event_details_ajax(event_date, request):
     """
     Overarching function that takes in the ajax request when a role button is clicked in frontend.
     If no roster exists for that particular boss on that date, a new object will be created or otherwise updated.
