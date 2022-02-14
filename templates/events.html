@@ -51,10 +51,12 @@
 
 
                     <!-- Button trigger modal -->
-                    <button type="button" id="{{event}}" class="events_modal_open_btn" >
-                        Late
-                        <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" data-source="test" -->
-                    </button>
+                    {% if event.absent == True %}
+                        <button type="button" id="{{event}}" class="events_modal_open_btn" >
+                            Late
+                            <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" data-source="test" -->
+                        </button>
+                    {% endif %}
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

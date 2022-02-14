@@ -16,7 +16,7 @@ from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
     get_user_display_name, event_details_ajax, create_initial_roster_json, selected_roster_from_db_to_json,
-    user_attendance_status, even_view_late_to_db,
+    user_attendance_status, even_view_late_to_db, get_current_user_id,
 )
 
 
@@ -35,6 +35,8 @@ def events_view(request):
         for event in events:
             event.status = user_attendance_status(event, request)
 
+            if is_user_absent(event, request):
+                event.absent = True
     even_view_late_to_db(request)
 
     context = {
@@ -42,6 +44,13 @@ def events_view(request):
         'social_user': get_user_display_name(request),
     }
     return render(request, 'events.html', context)
+
+
+def is_user_absent(event, request):
+    user_chars_by_name = Roster.objects.filter(account_id=get_current_user_id(request)['id']).first().account_id
+    if event.roster.filter(account_id=user_chars_by_name).exists():
+        return True
+    else: return False
 
 
 def add_event_view(request):
