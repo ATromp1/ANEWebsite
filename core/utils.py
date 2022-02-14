@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect
 
-from core.models import RaidEvent, BossPerEvent, Boss, Roster
+from core.models import RaidEvent, BossPerEvent, Boss, Roster, LateUser, MyUser
 
 
 def get_playable_classes_as_css_classes():
@@ -130,6 +130,7 @@ def set_user_late(request, event_date):
     event_obj.add_late_user(current_user_account_id=current_user_account_id)
     return redirect('events')
 
+
 def remove_user_late(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_id(request)['sub']
@@ -174,6 +175,27 @@ def logout_user_button():
 
 def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
+
+
+def even_view_late_to_db(request):
+    """
+    Reacts to ajax get request from event view. Minutes late gets stored into db after the button is pressed and
+    submitted.
+    """
+    if request.GET.get('date') is not None:
+        date = request.GET.get('date')
+        minutes_late = request.GET.get('minutes_late')
+
+        if LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=date)).exists():
+            print("DATE ALREADY EXISTS")
+            obj = LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date))
+            obj.minutes_late = minutes_late
+            obj.save()
+
+        else:
+            LateUser.objects.create(raid_event=RaidEvent.objects.get(date=date),
+                                    minutes_late=minutes_late,
+                                    user=MyUser.objects.get(user=request.user))
 
 
 def event_details_ajax(event_date, request):

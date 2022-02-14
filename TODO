@@ -10,6 +10,7 @@
 
 -- remove all characters from bench when one is selected ( all characters with same account id)
 
+-- Remove player from late when he declines it instead
 
 BUGS
 
