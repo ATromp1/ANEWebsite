@@ -8,12 +8,12 @@ $('.hamburger-menu-toggle-button').click(function(){
 });
 
 $(document).ready(function(){
-    let navbar_buttons = $('.navbar-links .nav-item a')
+
 
     function strip_href_string(str){
         return str.split('/',2).join('/')
     }
-
+    let navbar_buttons = $('.navbar-links .nav-item a')
     for(i = 0; i<navbar_buttons.length;i++){
         href = strip_href_string($(navbar_buttons[i]).attr('href'))
         window_location = strip_href_string(window.location.pathname)
