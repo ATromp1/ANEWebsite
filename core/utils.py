@@ -124,6 +124,19 @@ def get_current_user_id(request):
     return SocialAccount.objects.filter(user=request.user).first().extra_data
 
 
+def set_user_late(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
+    current_user_account_id = get_current_user_id(request)['sub']
+    event_obj.add_late_user(current_user_account_id=current_user_account_id)
+    return redirect('events')
+
+def remove_user_late(request, event_date):
+    event_obj = RaidEvent.objects.get(date=event_date)
+    current_user_account_id = get_current_user_id(request)['sub']
+    event_obj.rem_late_user(current_user_account_id=current_user_account_id)
+    return redirect('events')
+
+
 def rem_user_from_roster_button(request, event_date):
     """
     removes all characters belonging to the currently logged-in user and remove them from the initial roster
@@ -273,4 +286,3 @@ def user_attendance_status(event, request):
                     return 'selected'
 
     return 'benched'
-

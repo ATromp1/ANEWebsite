@@ -67,6 +67,10 @@
             </div>
         </div>
     </div>
+        LATE USERS
+{% for late_user in late_users %}
+    {{ late_user.extra_data.battletag }}
+{% endfor %}
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

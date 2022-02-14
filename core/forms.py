@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from .models import RaidEvent
 
+
 class Eventform(ModelForm):
     class Meta:
         model = RaidEvent
@@ -12,6 +13,6 @@ class Eventform(ModelForm):
         }
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Event name'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Event name'}),
             'date': forms.DateInput(attrs=dict(type='date'))
         }
