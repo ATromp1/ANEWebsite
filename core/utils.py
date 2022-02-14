@@ -141,12 +141,19 @@ def remove_user_late(request, event_date):
 def rem_user_from_roster_button(request, event_date):
     """
     removes all characters belonging to the currently logged-in user and remove them from the initial roster
-    sent in the event/details view
+    sent in the event/details view. Also removes the user from Late list if it exists.
     """
     event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_id(request)['sub']
-    event_obj.remove_char_from_roster(current_user_id=current_user_account_id)
+    current_user_account_id = get_current_user_id(request)
+    event_obj.remove_char_from_roster(current_user_id=current_user_account_id['sub'])
+    remove_late_user_if_declined(event_date)
     return redirect('events')
+
+
+def remove_late_user_if_declined(event_date):
+    late_user_obj = LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+    if late_user_obj.exists():
+        late_user_obj.delete()
 
 
 def add_user_to_roster_button(request, event_date):
