@@ -13,10 +13,10 @@
     {% load static %}
 
     <div class="roster-container">
-        <div class="page-header">
-            <span class="material-icons" style="vertical-align:-8px; margin-right:5px;">groups</span>
+{% comment %}         <div class="page-header">
             <span class="page-header-text">Guild Roster</span>
-        </div>
+            <span class="material-icons" style="vertical-align:-10px; margin-left:5px;">groups</span>
+        </div> {% endcomment %}
         <div class="roster-grid">
             {% for display_class, css_class in playable_classes.items %}
             <div class="roster-class-col">

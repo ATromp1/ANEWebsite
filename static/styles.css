@@ -144,7 +144,7 @@ body {
 /* /.................// Calendar //................./ */
 .calendar-grid-container {
   margin: auto;
-  margin-top: 1em;
+  margin-top: 5em;
   max-width: 950px;
   width: 90%;
   height: 70vh;
@@ -216,7 +216,7 @@ body {
 .roster-container {
   width: 90%;
   margin: auto;
-  margin-top: 1em; }
+  margin-top: 5em; }
   .roster-container .roster-grid {
     width: 100%;
     display: grid;
