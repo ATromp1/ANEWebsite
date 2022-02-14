@@ -13,7 +13,10 @@
     {% load static %}
 
     <div class="roster-container">
-        <h1>Guild Roster</h1>
+{% comment %}         <div class="page-header">
+            <span class="page-header-text">Guild Roster</span>
+            <span class="material-icons" style="vertical-align:-10px; margin-left:5px;">groups</span>
+        </div> {% endcomment %}
         <div class="roster-grid">
             {% for display_class, css_class in playable_classes.items %}
             <div class="roster-class-col">
@@ -38,7 +41,7 @@
             <div class="roster-view unsorted">
                 {% for char in roster %}
                 {% if char.playable_class == None %}
-                <p>{{ char.name }}</p>
+                <p><b>Character has no class saved in db</b><br> {{ char.name }}</p>
                 {% endif %}
                 {% endfor %}
             </div>

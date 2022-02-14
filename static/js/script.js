@@ -7,6 +7,21 @@ $('.hamburger-menu-toggle-button').click(function(){
     $('.navbar-hamburger-menu').toggleClass('open');
 });
 
+$(document).ready(function(){
+
+
+    function strip_href_string(str){
+        return str.split('/',2).join('/')
+    }
+    let navbar_buttons = $('.navbar-links .nav-item a')
+    for(i = 0; i<navbar_buttons.length;i++){
+        href = strip_href_string($(navbar_buttons[i]).attr('href'))
+        window_location = strip_href_string(window.location.pathname)
+        if(href == window_location){
+            $(navbar_buttons[i]).addClass('active')
+        }
+    }
+})
 
 
 

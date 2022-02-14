@@ -10,15 +10,36 @@
 <body>
 
 {% block content %}
+{% load static %}
+{% csrf_token %}
+<!-- Modal -->
+<div class="events-late-modal">
+    <div class="events-modal-container">
+        <div class="events-modal-header">
+            <span>Report Late for <span id="events-modal-header-date">'date'</span></span>
+        </div>
 
-    <h1>Events</h1>
+        <select class="events-modal-dropdown" id="events-modal-mins-late-dropdown">
+            <option value="15" selected="selected">15min</option>
+            <option value="30">30min</option>
+            <option value="45">45min</option>
+            <option value="60">1hour</option>
+        </select>
+
+        <span class="events-modal-btn close-btn">Cancel</span>
+        <span class="events-modal-btn submit-btn">Submit</span>
+    </div>
+</div>
+<div class="events-list-container">
+    <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">event_available</span><span class="page-header-text">Events</span></div>
     {% if user.is_staff %}
         <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary">Add Event</button>
     {% endif %}
 
+
+
     <div class="event-list">
     <ul>
-        {% csrf_token %}
         {% for event in event_list %}
             <div class="event-per-date">
                 <li><a href="{% url 'events-details' event.date %}" class="btn btn-outline-success">{{ event.date }}</a>
@@ -30,8 +51,9 @@
 
 
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-source="test">
+                    <button type="button" id="{{event}}" class="events_modal_open_btn" >
                         Late
+                        <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" data-source="test" -->
                     </button>
 
                     <!-- Modal -->
@@ -47,7 +69,7 @@
                                         <form method="POST">
                                             <label for="min-late-text">Minutes late:</label>
                                             <input type="text" id="min-late-text" name="minutes_late">
-                                            <input type="hidden" name="date" value="{{ event }}">
+                                            <input type="text" name="date" value="{{ event }}">
                                         </form>
                                     </div>
                                 </div>
@@ -67,25 +89,13 @@
         {% endfor %}
     </ul>
     </div>
+</div>
 
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script>
-    $('#exampleModal').on('show.bs.modal', function (event) {
-        console.log("MODAL OPENED")
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var recipient = button.data('whatever') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        modal.find('.modal-title').text('New message to ' + recipient)
-        modal.find('.modal-body input').val(recipient)
-    })
-</script>
-
-
+<script src="{% static '/js/new.js' %}"></script>
 
 {% endblock %}
 
