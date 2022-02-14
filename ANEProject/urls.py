@@ -23,12 +23,12 @@ from core.views import (
     events_view,
     events_details_view,
     add_event_view,
-
 )
 from core.utils import rem_user_from_roster_button, add_user_to_roster_button, delete_event, logout_user_button, \
     login_user_button, set_user_late, remove_user_late
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
     path('accounts/', include('allauth.urls')),

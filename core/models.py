@@ -34,11 +34,20 @@ class Boss(models.Model):
         return self.boss_name
 
 
+class MyUser(SocialAccount):
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return self.extra_data['battletag']
+
+
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField(unique=True)
     roster = models.ManyToManyField(Roster, blank=True, default=True, related_name='roster')
     bosses = models.ManyToManyField(Boss, through='BossPerEvent')
+    late = models.ManyToManyField(MyUser, through='LateUser')
 
     def __str__(self):
         return str(self.date)
@@ -60,12 +69,16 @@ class RaidEvent(models.Model):
             self.save()
 
 
-class MyUser(SocialAccount):
-    class Meta:
-        proxy = True
+class LateUser(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
+    minutes_late = models.IntegerField()
 
     def __str__(self):
-        return self.extra_data['battletag']
+        return str(self.user.extra_data['battletag'])
+
+    def date(self):
+        return str(self.raid_event.date)
 
 
 class BossPerEvent(models.Model):
@@ -75,10 +88,9 @@ class BossPerEvent(models.Model):
     healer = models.ManyToManyField(Roster, blank=True, related_name='rel_healer')
     mdps = models.ManyToManyField(Roster, blank=True, related_name='rel_mdps')
     rdps = models.ManyToManyField(Roster, blank=True, related_name='rel_rdps')
-    late = models.ManyToManyField(MyUser, through='LateUser')
 
-    def __str__(self):
-        return str(self.raid_event.date)
+    # def __str__(self):
+    #     return str(self.raid_event.date)
 
     def dateDisplay(self):
         return str(self.raid_event.date)
@@ -111,13 +123,7 @@ class BossPerEvent(models.Model):
         self.mdps.remove(Roster.objects.get(name=name))
 
 
-class LateUser(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    boss_per_event = models.ForeignKey(BossPerEvent, on_delete=models.CASCADE)
-    minutes_late = models.IntegerField()
-
-
-@receiver(user_logged_in)
+# @receiver(user_logged_in)
 def post_login(sender, user, request, **kwargs):
     """
     If new user logs in via battlenet, their characters will be fetched by API and
@@ -183,8 +189,8 @@ def get_guild_roster(request):
     API calls to the blizzard endpoint that returns all
     characters that exist in A Necessary Evil
 """
-    current_user = SocialAccount.objects.filter(user=request.user).first()
-    access_token = SocialToken.objects.filter(account=current_user).first()
+    current_user = SocialAccount.objects.get(user=request.user)
+    access_token = SocialToken.objects.get(account=current_user)
     header = {
         'Authorization': 'Bearer %s' % access_token,
     }

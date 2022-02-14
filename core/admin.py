@@ -14,7 +14,7 @@ class BossPerEventAdmin(admin.ModelAdmin):
     list_display = ['dateDisplay', 'bossDisplay']
 
 class LateUserAdmin(admin.ModelAdmin):
-    list_display = ['user', 'minutes_late']
+    list_display = ['user', 'date', 'minutes_late']
 
 
 admin.site.register(LateUser, LateUserAdmin)

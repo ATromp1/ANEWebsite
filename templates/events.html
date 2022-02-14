@@ -18,7 +18,7 @@
 
     <div class="event-list">
     <ul>
-
+        {% csrf_token %}
         {% for event in event_list %}
             <div class="event-per-date">
                 <li><a href="{% url 'events-details' event.date %}" class="btn btn-outline-success">{{ event.date }}</a>
@@ -27,23 +27,29 @@
                         {% else %}
                         <a href="{% url 'opt-out' event.date %}" class="btn btn-danger" id="opt-out">Decline</a>
                     {% endif %}
-                    <a href="{% url 'late-user' event.date %}" class="btn btn-danger" id="late-test">LATE TEST</a>
-                    <a href="{% url 'rem-late-user' event.date %}" class="btn btn-danger" id="rem-late-test">REMOVE LATE TEST</a>
+
+
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-source="test">
                         Late
                     </button>
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-sm">
+                        <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">How late in minutes?</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    {{form}}
+                                    <div class="form-group">
+                                        <form method="POST">
+                                            <label for="min-late-text">Minutes late:</label>
+                                            <input type="text" id="min-late-text" name="minutes_late">
+                                            <input type="hidden" name="date" value="{{ event }}">
+                                        </form>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -62,15 +68,27 @@
     </ul>
     </div>
 
-{% endblock %}
-<script>
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
 
-myModal.addEventListener('shown.bs.modal', function () {
-    myInput.focus()
-})
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $('#exampleModal').on('show.bs.modal', function (event) {
+        console.log("MODAL OPENED")
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+    })
 </script>
+
+
+
+{% endblock %}
+
 
 </body>
 </html>
