@@ -399,7 +399,7 @@ body {
 .events-late-modal {
   display: none;
   position: fixed;
-  z-index: 1;
+  z-index: 101;
   left: 0;
   top: 0;
   width: 100%;
@@ -579,6 +579,8 @@ body {
 @media screen and (max-width: 600px) {
   .events-list-container {
     width: 90%; }
+  .event-view-container {
+    width: 100%; }
   /* calendar-grid-container */
   .calendar-grid-container {
     max-height: 370px;
