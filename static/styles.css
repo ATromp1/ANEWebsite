@@ -46,7 +46,6 @@ body {
 .event-view-container,
 .calendar-grid-container,
 .events-list-container {
-  z-index: 1;
   width: 90%;
   min-height: 90vh;
   background-color: rgba(53, 56, 64, 0.95);
@@ -64,7 +63,6 @@ body {
   background-attachment: fixed;
   z-index: -1;
   opacity: 40;
-  user-select: none;
   aspect-ratio: 16/9; }
 
 /* /.................// Navbar //................./ */
@@ -378,7 +376,7 @@ body {
             border-color: #28c995; }
 
 .late-status-alert {
-  position: absolute;
+  position: fixed;
   width: 150px;
   margin: auto;
   top: 0px;
