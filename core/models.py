@@ -72,7 +72,7 @@ class RaidEvent(models.Model):
 class LateUser(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
-    minutes_late = models.IntegerField()
+    minutes_late = models.CharField(max_length=20)
 
     def __str__(self):
         return str(self.user.extra_data['battletag'])
