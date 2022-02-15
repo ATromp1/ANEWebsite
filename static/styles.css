@@ -391,7 +391,8 @@ body {
   border-radius: var(--border-radius-size);
   transition: all 200ms ease-in-out;
   user-select: none;
-  pointer-events: none; }
+  pointer-events: none;
+  z-index: 102; }
   .late-status-alert.active {
     opacity: 100;
     top: 70px; }
