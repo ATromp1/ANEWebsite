@@ -195,16 +195,17 @@ def even_view_late_to_db(request):
         date = request.GET.get('date')
         minutes_late = request.GET.get('minutes_late')
 
-        if LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=date)).exists():
-            print("DATE ALREADY EXISTS")
-            obj = LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date))
-            obj.minutes_late = minutes_late
-            obj.save()
-
-        else:
+        try:
+            LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date))
+            print("EXISTS ALREADY")
+        except LateUser.DoesNotExist:
+            print("DOES NOT EXISTS, CREATING")
             LateUser.objects.create(raid_event=RaidEvent.objects.get(date=date),
                                     minutes_late=minutes_late,
                                     user=MyUser.objects.get(user=request.user))
+        else:
+            print("UPDATING")
+            LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=date)).update(minutes_late=minutes_late)
 
 
 def event_details_ajax(event_date, request):
@@ -343,4 +344,3 @@ def set_officer_staff(request):
             request.user.is_staff = True
             request.user.save()
             break
-

@@ -2,8 +2,9 @@ import requests
 from allauth.socialaccount.models import SocialAccount, SocialToken
 
 from django.contrib.auth.models import User
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models import Model
 
 
 class Rank(models.IntegerChoices):
@@ -167,9 +168,13 @@ def populate_roster_db(api_roster):
         name = member['character']['name']
         character_id = member['character']['id']
         if rank in raider_ranks:
-            Roster.objects.filter(name=name).update_or_create(name=name,
-                                                              rank=rank,
-                                                              character_id=character_id)
+            try:
+                Roster.objects.get(name=name)
+            except Roster.DoesNotExist:
+                Roster.objects.create(name=name, rank=rank, character_id=character_id)
+            else:
+                Roster.objects.filter(name=name).update(rank=rank,
+                                                        character_id=character_id)
 
 
 def get_guild_roster(request):
