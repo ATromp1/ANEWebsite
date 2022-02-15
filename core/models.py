@@ -175,6 +175,9 @@ def populate_roster_db(api_roster):
             else:
                 Roster.objects.filter(name=name).update(rank=rank,
                                                         character_id=character_id)
+        else:
+            demoted_player = Roster.objects.filter(name=name)
+            demoted_player.delete()
 
 
 def get_guild_roster(request):
