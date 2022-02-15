@@ -274,6 +274,75 @@ body {
   width: 80%;
   margin: auto;
   margin-top: 1em; }
+  .events-list-container .event-list {
+    display: flex; }
+    .events-list-container .event-list ul .event-per-date {
+      display: flex;
+      min-height: 100px;
+      max-height: 200px;
+      min-width: 350px;
+      height: 10%;
+      border-bottom: 1px solid var(--main-text-color);
+      align-items: center; }
+      .events-list-container .event-list ul .event-per-date a,
+      .events-list-container .event-list ul .event-per-date button {
+        height: fit-content;
+        text-decoration: none;
+        border: none; }
+      .events-list-container .event-list ul .event-per-date .event-list-date {
+        font-size: 1.5em;
+        line-height: 60px;
+        border: none;
+        border-radius: 0px;
+        height: 60%;
+        padding-left: 7px;
+        border-left: 5px solid #0d6efd;
+        flex-basis: 70%; }
+        .events-list-container .event-list ul .event-per-date .event-list-date.benched {
+          border-color: #ffc107; }
+        .events-list-container .event-list ul .event-per-date .event-list-date.absent {
+          border-color: #c9283e; }
+        .events-list-container .event-list ul .event-per-date .event-list-date.selected {
+          border-color: #28c995; }
+        .events-list-container .event-list ul .event-per-date .event-list-date a {
+          color: var(--white-color);
+          position: relative;
+          padding: 1rem 8rem 1rem 0; }
+          .events-list-container .event-list ul .event-per-date .event-list-date a::after {
+            position: absolute;
+            font-family: 'Material Icons';
+            display: inline;
+            content: 'navigate_next';
+            width: 0px;
+            opacity: 0;
+            user-select: none;
+            transition: all 200ms ease-in-out; }
+          .events-list-container .event-list ul .event-per-date .event-list-date a:hover::after {
+            opacity: 100;
+            width: 20px;
+            font-size: 1.7em; }
+      .events-list-container .event-list ul .event-per-date .event-list-user-options {
+        height: 60%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around; }
+        .events-list-container .event-list ul .event-per-date .event-list-user-options a,
+        .events-list-container .event-list ul .event-per-date .event-list-user-options button {
+          display: inline-block;
+          text-align: center;
+          width: 70px;
+          border-radius: var(--border-radius-size);
+          color: white; }
+        .events-list-container .event-list ul .event-per-date .event-list-user-options .event-list-opt-out {
+          height: 45%;
+          background-color: #c9283e; }
+        .events-list-container .event-list ul .event-per-date .event-list-user-options .events_modal_open_btn {
+          height: 45%;
+          background-color: #ffc107; }
+        .events-list-container .event-list ul .event-per-date .event-list-user-options .event-list-opt-in {
+          height: 70%;
+          line-height: 40px;
+          background-color: #28c995; }
 
 .events-late-modal {
   display: none;
@@ -316,15 +385,27 @@ body {
         background-color: var(--bg-active-color); }
 
 /* /.................// Event Detail View //................./ */
+.event-view-bg-image {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 68px;
+  z-index: -1;
+  opacity: 40;
+  user-select: none; }
+
 .event-view-container {
+  width: 90%;
+  min-height: 90vh;
+  background-color: rgba(53, 56, 64, 0.95);
+  border-radius: var(--border-radius-size);
+  backdrop-filter: brightness(50%) blur(2px);
+  position: relative;
   display: flex;
   justify-content: space-between;
-  width: 90%;
   margin: auto;
   margin-top: 10px; }
   .event-view-container .event-view-signups {
-    width: 170px; }
-  .event-view-container .temp-invis-div {
     width: 170px; }
   .event-view-container .event-view-boss-container {
     width: 100%; }
