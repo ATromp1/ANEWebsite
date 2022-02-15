@@ -193,6 +193,8 @@ def even_view_late_to_db(request):
     """
     if request.GET.get('date') is not None:
         date = request.GET.get('date')
+        if request.GET.get('delete') == 'True':
+            return LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date)).delete()
         minutes_late = request.GET.get('minutes_late')
 
         try:

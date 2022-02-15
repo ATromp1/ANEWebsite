@@ -30,9 +30,10 @@
             <option value="60">1h</option>
             <option value="75">1h15m</option>
             <option value="90">1h30m</option>
-            <option value="-1">After Break</option>
+            <option value="After Break">After Break</option>
         </select>
         <div class="events-modal-action-btns">
+            <span class="events-modal-btn delete-btn">Delete</span>
             <span class="events-modal-btn close-btn">Cancel</span>
             <span class="events-modal-btn submit-btn">Submit</span>
         </div>
@@ -40,7 +41,7 @@
 </div>
 <div class="events-list-container">
     <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">event_available</span><span class="page-header-text">Raids</span></div>
-    {% if user.is_staff %}
+    {% if user.is_staff and not user.is_superuser %}
         <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary events-list-add-event">Add Event</button>
     {% endif %}
 
