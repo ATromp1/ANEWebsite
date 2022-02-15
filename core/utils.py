@@ -185,9 +185,6 @@ def logout_user_button():
 def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
 
-def event_view_delete_late(request):
-    if request.GET.get('delete') is not None:
-        LateUser.objects
 
 def even_view_late_to_db(request):
     """
@@ -231,7 +228,6 @@ def event_details_ajax(event_date, request):
         raid_event = RaidEvent.objects.get(date=event_date)
         boss = Boss.objects.get(id=boss_id)
         update_selected_roster(boss, name, raid_event, role)
-
 
 
 def update_selected_roster(boss, name, raid_event, role):
