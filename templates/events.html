@@ -41,7 +41,7 @@
 </div>
 <div class="events-list-container">
     <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">event_available</span><span class="page-header-text">Events</span></div>
-    {% if user.is_staff %}
+    {% if user.is_staff and not user.is_superuser %}
         <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary events-list-add-event">Add Event</button>
     {% endif %}
 
