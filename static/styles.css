@@ -62,7 +62,6 @@ body {
   background-size: cover;
   background-attachment: fixed;
   z-index: -1;
-  opacity: 40;
   aspect-ratio: 16/9; }
 
 /* /.................// Navbar //................./ */
@@ -377,7 +376,7 @@ body {
 
 .late-status-alert {
   position: fixed;
-  width: 150px;
+  width: 175px;
   margin: auto;
   top: 0px;
   left: 0;
@@ -423,7 +422,7 @@ body {
     .events-late-modal .events-modal-container .events-modal-action-btns {
       margin-top: 1em;
       display: flex;
-      justify-content: flex-end; }
+      justify-content: space-between; }
     .events-late-modal .events-modal-container .events-modal-dropdown {
       background-color: var(--bg-hover-color);
       color: var(--white-color);
@@ -432,15 +431,18 @@ body {
       cursor: pointer;
       text-decoration: none;
       border-radius: var(--border-radius-size);
-      min-width: 150px;
+      min-width: 30%;
       text-align: center; }
+      .events-late-modal .events-modal-container .events-modal-btn.delete-btn {
+        background-color: var(--bs-danger);
+        color: var(--white-color);
+        padding: 0.5rem 1rem; }
       .events-late-modal .events-modal-container .events-modal-btn.close-btn {
         max-width: 30%;
         background-color: var(--bg-hover-color);
         color: var(--white-color);
         padding: 0.5rem 1rem; }
       .events-late-modal .events-modal-container .events-modal-btn.submit-btn {
-        margin-left: 1em;
         background-color: var(--bs-info);
         color: var(--white-color);
         padding: 0.5rem 1.5rem; }
@@ -578,6 +580,9 @@ body {
 @media screen and (max-width: 600px) {
   .events-list-container {
     width: 90%; }
+  .event-view-benched-roster,
+  .event-view-late-users {
+    display: none; }
   .event-view-container {
     width: 100%; }
   /* calendar-grid-container */
@@ -684,5 +689,8 @@ body {
     .calendar-grid-container .calendar-grid {
       width: 100%;
       column-gap: 0; }
+  .event-view-container {
+    width: 100%;
+    margin-top: 3px; }
   .events-list-container {
     width: 100%; } }

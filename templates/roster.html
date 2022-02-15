@@ -11,12 +11,7 @@
 <body>
     {% block content %}
     {% load static %}
-    {% comment %} <img src="{% static 'images/bossImages/Sepulcher/SepulcherBG.jpg' %}" class="bg-image"> {% endcomment %}
     <div class="roster-container">
-{% comment %}         <div class="page-header">
-            <span class="page-header-text">Guild Roster</span>
-            <span class="material-icons" style="vertical-align:-10px; margin-left:5px;">groups</span>
-        </div> {% endcomment %}
         <div class="roster-grid">
             {% for display_class, css_class in playable_classes.items %}
             <div class="roster-class-col">
@@ -38,12 +33,14 @@
                 </div>
             </div>
             {% endfor %}
-            <div class="roster-view unsorted">
-                {% for char in roster %}
-                {% if char.playable_class == None %}
-                <p><b>Character has no class saved in db</b><br> {{ char.name }}</p>
+            {% if user.is_staff %}
+                <div class="roster-view unsorted">
+                    {% for char in roster %}
+                        {% if char.playable_class == None %}
+                            <p><b>Character has no class saved in db</b><br> {{ char.name }}</p>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
-                {% endfor %}
             </div>
         </div>
     </div>

@@ -6,7 +6,7 @@
 
 -- remove all characters from bench when one is selected ( all characters with same account id)
 
--- Sort events in /events/ by date instead of order of creation
+-- Change button colours per boss in event-view by the users status if not staff member (benched (yellow), selected (green))
 
 BUGS
 

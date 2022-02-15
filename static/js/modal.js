@@ -38,19 +38,20 @@ $(events_modal_close_btn).click(function(){
 $(events_modal_delete_btn).click(function(){
     send_late_ajax(event_date, 0, delete_current='True')
     toggle_events_modal()
+    time_saved_alert(2000, "Late Time Deleted")
 })
 
 $(events_modal_submit_btn).click(function(){
     let selected_value = $('#events-modal-mins-late-dropdown :selected').val()
     send_late_ajax(event_date, selected_value, delete_current='False')
     toggle_events_modal()
-    time_saved_alert(2000)
+    time_saved_alert(2000, "Late Time Saved")
 })
 
-function time_saved_alert(time_to_display){
+function time_saved_alert(time_to_display, text){
     e = $('.late-status-alert')
     $(e).toggleClass('active')
-
+    $(e).first().text(text)
     setTimeout(function(){
         $(e).toggleClass('active')
     }, time_to_display)
