@@ -25,7 +25,7 @@ from core.views import (
     add_event_view,
 )
 from core.utils import rem_user_from_roster_button, add_user_to_roster_button, delete_event, logout_user_button, \
-    login_user_button, set_user_late, remove_user_late
+    login_user_button, set_user_late, remove_user_late, sync_bnet
 
 urlpatterns = [
 
@@ -35,6 +35,7 @@ urlpatterns = [
 
     path('login_user/', login_user_button, name='login-user-button'),
     path('accounts/logout/', logout_user_button, name='logout-user-button'),
+    path('sync/', sync_bnet, name='sync-bnet'),
 
     path('roster/', roster_view, name='roster'),
     path('calendar/', calendar_view, name='calendar'),

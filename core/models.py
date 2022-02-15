@@ -1,10 +1,9 @@
 import requests
 from allauth.socialaccount.models import SocialAccount, SocialToken
-from allauth.account.signals import user_logged_in
+
 from django.contrib.auth.models import User
 
 from django.db import models
-from django.dispatch import receiver
 
 
 class Rank(models.IntegerChoices):
@@ -121,17 +120,6 @@ class BossPerEvent(models.Model):
 
     def remove_from_mdps(self, name):
         self.mdps.remove(Roster.objects.get(name=name))
-
-
-@receiver(user_logged_in)
-def post_login(sender, user, request, **kwargs):
-    """
-    If new user logs in via battlenet, their characters will be fetched by API and
-    their class and account_id will be linked in Roster.
-    """
-    if not user.is_superuser:
-        all_user_characters = get_user_profile_data(request)
-        set_account_id_and_class(all_user_characters)
 
 
 def set_account_id_and_class(char_json):

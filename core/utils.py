@@ -2,8 +2,10 @@ from datetime import datetime, timedelta
 
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect
+from django.contrib.auth.models import Group
 
-from core.models import RaidEvent, BossPerEvent, Boss, Roster, LateUser, MyUser
+from core.models import RaidEvent, BossPerEvent, Boss, Roster, LateUser, MyUser, get_user_profile_data, \
+    set_account_id_and_class
 
 
 def get_playable_classes_as_css_classes():
@@ -114,26 +116,26 @@ def get_user_display_name(request):
         if request.user.is_anonymous:
             user = 'Anonymous'
         else:
-            user = get_current_user_id(request)['battletag']
+            user = get_current_user_data(request)['battletag']
     else:
         user = ''
     return user
 
 
-def get_current_user_id(request):
+def get_current_user_data(request):
     return SocialAccount.objects.filter(user=request.user).first().extra_data
 
 
 def set_user_late(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_id(request)['sub']
+    current_user_account_id = get_current_user_data(request)['sub']
     event_obj.add_late_user(current_user_account_id=current_user_account_id)
     return redirect('events')
 
 
 def remove_user_late(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_id(request)['sub']
+    current_user_account_id = get_current_user_data(request)['sub']
     event_obj.rem_late_user(current_user_account_id=current_user_account_id)
     return redirect('events')
 
@@ -144,7 +146,7 @@ def rem_user_from_roster_button(request, event_date):
     sent in the event/details view. Also removes the user from Late list if it exists.
     """
     event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_id(request)
+    current_user_account_id = get_current_user_data(request)
     event_obj.remove_char_from_roster(current_user_id=current_user_account_id['sub'])
     remove_late_user_if_declined(event_date)
     return redirect('events')
@@ -159,7 +161,7 @@ def remove_late_user_if_declined(event_date):
 def add_user_to_roster_button(request, event_date):
     """Current user can sign himself back in, if signed off before."""
     event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_id(request)['sub']
+    current_user_account_id = get_current_user_data(request)['sub']
     event_obj.attend_raid(current_user_account_id)
     return redirect('events')
 
@@ -299,7 +301,7 @@ def selected_roster_from_db_to_json(event_date):
 
 
 def user_attendance_status(event, request):
-    user_characters = Roster.objects.filter(account_id=get_current_user_id(request)['id'])
+    user_characters = Roster.objects.filter(account_id=get_current_user_data(request)['id'])
     for user_char in user_characters:
         if not RaidEvent.objects.get(date=event.date).roster.all().filter(name=user_char).exists():
             return 'absent'
@@ -315,3 +317,30 @@ def user_attendance_status(event, request):
                     return 'selected'
 
     return 'benched'
+
+
+def sync_bnet(request):
+    """
+    If new user logs in via battlenet, their characters will be fetched by API and
+    their class and account_id will be linked in Roster.
+    """
+    all_user_characters = get_user_profile_data(request)
+    set_account_id_and_class(all_user_characters)
+
+    set_officer_staff(request)
+
+    return redirect('home')
+
+
+def set_officer_staff(request):
+    account_id = get_current_user_data(request)['id']
+    officer_ranks = [0, 1]
+    user_characters = Roster.objects.filter(account_id=account_id)
+    for character in user_characters:
+        if character.rank in officer_ranks:
+            group = Group.objects.get(name='Officers')
+            request.user.groups.add(group)
+            request.user.is_staff = True
+            request.user.save()
+            break
+
