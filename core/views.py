@@ -29,7 +29,7 @@ def home_view(request):
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_view(request):
-    events = RaidEvent.objects.all()
+    events = RaidEvent.objects.all().order_by('date')
 
     if events.exists():
         for event in events:
