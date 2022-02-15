@@ -33,20 +33,6 @@ body {
   background-color: var(--main-bg-color);
   color: var(--main-text-color); }
 
-/* .list-group {
-    width: max(400px, 30%); 
-
-} */
-.list-group-item {
-  background-color: var(--main-text-color);
-  color: var(--white-color); }
-  .list-group-item:hover {
-    background-color: var(--bg-hover-color);
-    color: var(--white-color); }
-  .list-group-item.active {
-    background-color: var(--bg-active-color);
-    border-color: var(--bg-active-color); }
-
 /* /.................// Global Styling //................./ */
 .page-header {
   margin-bottom: 1em; }
@@ -56,12 +42,38 @@ body {
     text-size-adjust: none;
     font-size: 2.5em; }
 
+.roster-container,
+.event-view-container,
+.calendar-grid-container,
+.events-list-container {
+  z-index: 1;
+  width: 90%;
+  min-height: 90vh;
+  background-color: rgba(53, 56, 64, 0.95);
+  border-radius: var(--border-radius-size);
+  backdrop-filter: brightness(50%) blur(2px);
+  position: relative;
+  margin: auto;
+  margin-top: 1em; }
+
+body {
+  background-image: url("images/bossImages/Sepulcher/SepulcherBG.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  z-index: -1;
+  opacity: 40;
+  user-select: none;
+  aspect-ratio: 16/9; }
+
 /* /.................// Navbar //................./ */
 .navbar {
   display: block;
   width: 100%;
   position: sticky;
-  top: 0; }
+  top: 0;
+  z-index: 100; }
   .navbar .navbar-hamburger-menu {
     /* Only used on smaller screens - displayed in mediaqueries @600px */
     display: none; }
@@ -143,12 +155,12 @@ body {
 
 /* /.................// Calendar //................./ */
 .calendar-grid-container {
-  margin: auto;
-  margin-top: 5em;
-  max-width: 950px;
+  padding: 3em;
+  max-width: 1000px;
   width: 90%;
   height: 70vh;
-  max-height: 450px; }
+  min-height: 0px;
+  max-height: 500px; }
   .calendar-grid-container .calendar-grid {
     width: 100%;
     height: 100%;
@@ -214,11 +226,10 @@ body {
 
 /* /.................// Roster //................./ */
 .roster-container {
-  width: 90%;
-  margin: auto;
-  margin-top: 5em; }
+  padding-top: 1em; }
   .roster-container .roster-grid {
-    width: 100%;
+    width: 95%;
+    margin: auto;
     display: grid;
     grid-template-columns: repeat(6, minmax(150px, 1fr));
     row-gap: 10%;
@@ -271,7 +282,7 @@ body {
 
 /* /.................// Event List View //................./ */
 .events-list-container {
-  width: 80%;
+  width: 60%;
   margin: auto;
   margin-top: 1em;
   display: flex;
@@ -439,26 +450,9 @@ body {
         background-color: var(--bg-active-color); }
 
 /* /.................// Event Detail View //................./ */
-.event-view-bg-image {
-  position: fixed;
-  width: 100%;
-  left: 0;
-  top: 68px;
-  z-index: -1;
-  opacity: 40;
-  user-select: none; }
-
 .event-view-container {
-  width: 90%;
-  min-height: 90vh;
-  background-color: rgba(53, 56, 64, 0.95);
-  border-radius: var(--border-radius-size);
-  backdrop-filter: brightness(50%) blur(2px);
-  position: relative;
   display: flex;
-  justify-content: space-between;
-  margin: auto;
-  margin-top: 10px; }
+  justify-content: space-between; }
   .event-view-container .event-view-signups {
     width: 170px; }
   .event-view-container .event-view-boss-container {
@@ -583,10 +577,13 @@ body {
 /* /.................// Mediaquery @600px //................./ */
 /* Navbar (Hamburger menu) -- Calendar  */
 @media screen and (max-width: 600px) {
+  .events-list-container {
+    width: 90%; }
   /* calendar-grid-container */
   .calendar-grid-container {
     max-height: 370px;
-    width: 95%; }
+    width: 95%;
+    padding: 1em; }
     .calendar-grid-container .calendar-grid {
       column-gap: 0; }
   .navbar {
@@ -680,8 +677,11 @@ body {
 /* /.................// Mediaquery @420px //................./ */
 @media screen and (max-width: 420px) {
   .calendar-grid-container {
-    max-height: 370px; }
+    max-height: 370px;
+    width: 100%;
+    padding: 1em 0 1em 0; }
     .calendar-grid-container .calendar-grid {
+      width: 100%;
       column-gap: 0; }
   .events-list-container {
     width: 100%; } }
