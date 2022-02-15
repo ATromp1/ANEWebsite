@@ -147,7 +147,7 @@ def rem_user_from_roster_button(request, event_date):
     """
     event_obj = RaidEvent.objects.get(date=event_date)
     current_user_account_id = get_current_user_data(request)
-    event_obj.remove_char_from_roster(current_user_id=current_user_account_id['sub'])
+    event_obj.decline_raid(current_user_id=current_user_account_id['sub'])
     remove_late_user_if_declined(event_date)
     return redirect('events')
 

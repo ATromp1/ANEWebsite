@@ -56,7 +56,7 @@ class RaidEvent(models.Model):
         for character in Roster.objects.all():
             self.roster.add(Roster.objects.get(name=character))
 
-    def remove_char_from_roster(self, current_user_id):
+    def decline_raid(self, current_user_id):
         current_user_characters = Roster.objects.filter(account_id=current_user_id)
         for item in current_user_characters:
             self.roster.remove(Roster.objects.get(name=item.name))
