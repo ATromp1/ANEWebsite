@@ -16,7 +16,7 @@ from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
     get_user_display_name, event_details_ajax, create_initial_roster_json, selected_roster_from_db_to_json,
-    user_attendance_status, even_view_late_to_db, get_current_user_id,
+    user_attendance_status, even_view_late_to_db, get_current_user_data,
 )
 
 
@@ -29,7 +29,7 @@ def home_view(request):
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_view(request):
-    events = RaidEvent.objects.all()
+    events = RaidEvent.objects.all().order_by('date')
 
     if events.exists():
         for event in events:
@@ -47,7 +47,7 @@ def events_view(request):
 
 
 def is_user_absent(event, request):
-    if event.roster.filter(account_id=Roster.objects.filter(account_id=get_current_user_id(request)['id']).first().account_id).exists():
+    if event.roster.filter(account_id=Roster.objects.filter(account_id=get_current_user_data(request)['id']).first().account_id).exists():
         return True
     else:
         return False

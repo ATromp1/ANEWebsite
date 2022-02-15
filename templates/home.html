@@ -19,6 +19,13 @@
         You're not logged in
     {% endif %}
 
+    <div>
+    {% if request.user.is_authenticated %}
+        <a class="btn btn-primary" href="{% url 'sync-bnet' %}">Sync Bnet Data</a>
+    </div>
+    {% endif %}
+
+
 {% endblock %}
 
 </body>

@@ -1,10 +1,10 @@
 import requests
 from allauth.socialaccount.models import SocialAccount, SocialToken
-from allauth.account.signals import user_logged_in
-from django.contrib.auth.models import User
 
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.dispatch import receiver
+from django.db.models import Model
 
 
 class Rank(models.IntegerChoices):
@@ -56,7 +56,7 @@ class RaidEvent(models.Model):
         for character in Roster.objects.all():
             self.roster.add(Roster.objects.get(name=character))
 
-    def remove_char_from_roster(self, current_user_id):
+    def decline_raid(self, current_user_id):
         current_user_characters = Roster.objects.filter(account_id=current_user_id)
         for item in current_user_characters:
             self.roster.remove(Roster.objects.get(name=item.name))
@@ -123,17 +123,6 @@ class BossPerEvent(models.Model):
         self.mdps.remove(Roster.objects.get(name=name))
 
 
-@receiver(user_logged_in)
-def post_login(sender, user, request, **kwargs):
-    """
-    If new user logs in via battlenet, their characters will be fetched by API and
-    their class and account_id will be linked in Roster.
-    """
-    if not user.is_superuser:
-        all_user_characters = get_user_profile_data(request)
-        set_account_id_and_class(all_user_characters)
-
-
 def set_account_id_and_class(char_json):
     """
     Updates the account id and playable class in the Roster with the data received from the API after someone logs in
@@ -179,9 +168,16 @@ def populate_roster_db(api_roster):
         name = member['character']['name']
         character_id = member['character']['id']
         if rank in raider_ranks:
-            Roster.objects.filter(name=name).update_or_create(name=name,
-                                                              rank=rank,
-                                                              character_id=character_id)
+            try:
+                Roster.objects.get(name=name)
+            except Roster.DoesNotExist:
+                Roster.objects.create(name=name, rank=rank, character_id=character_id)
+            else:
+                Roster.objects.filter(name=name).update(rank=rank,
+                                                        character_id=character_id)
+        else:
+            demoted_player = Roster.objects.filter(name=name)
+            demoted_player.delete()
 
 
 def get_guild_roster(request):
