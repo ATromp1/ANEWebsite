@@ -12,6 +12,10 @@
 {% block content %}
 {% load static %}
 {% csrf_token %}
+<!-- Alert message -->
+<div class="late-status-alert">
+    <span>Late Time Saved</span>
+</div>
 <!-- Modal -->
 <div class="events-late-modal">
     <div class="events-modal-container">
@@ -21,19 +25,23 @@
 
         <select class="events-modal-dropdown" id="events-modal-mins-late-dropdown">
             <option value="15" selected="selected">15min</option>
-            <option value="30">30min</option>
-            <option value="45">45min</option>
-            <option value="60">1hour</option>
+            <option value="30">30m</option>
+            <option value="45">45m</option>
+            <option value="60">1h</option>
+            <option value="75">1h15m</option>
+            <option value="90">1h30m</option>
+            <option value="-1">After Break</option>
         </select>
-
-        <span class="events-modal-btn close-btn">Cancel</span>
-        <span class="events-modal-btn submit-btn">Submit</span>
+        <div class="events-modal-action-btns">
+            <span class="events-modal-btn close-btn">Cancel</span>
+            <span class="events-modal-btn submit-btn">Submit</span>
+        </div>
     </div>
 </div>
 <div class="events-list-container">
     <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">event_available</span><span class="page-header-text">Events</span></div>
     {% if user.is_staff %}
-        <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary">Add Event</button>
+        <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary events-list-add-event">Add Event</button>
     {% endif %}
 
 
@@ -41,53 +49,28 @@
     <div class="event-list">
     <ul>
         {% for event in event_list %}
-            <div class="event-per-date">
-                <li><a href="{% url 'events-details' event.date %}" class="btn btn-outline-success">{{ event.date }}</a>
+            <li class="event-per-date">
+                <div class="event-list-date {{event.status}}">
+                <a href="{% url 'events-details' event.date %}" class="">{{ event.date|date:'M j' }}</a>
+                </div>
+                <div class="event-list-user-options">
                     {% if event.status == 'absent' %}
-                        <a href="{% url 'opt-in' event.date %}" class="btn btn-success" id="opt-in">Attend</a>
+                        <a href="{% url 'opt-in' event.date %}" class="event-list-opt-in" id="opt-in">Attend</a>
                         {% else %}
-                        <a href="{% url 'opt-out' event.date %}" class="btn btn-danger" id="opt-out">Decline</a>
+                        <a href="{% url 'opt-out' event.date %}" class="event-list-opt-out" id="opt-out">Decline</a>
                     {% endif %}
-
-
-                    <!-- Button trigger modal -->
+                    <!-- Button open modal -->
                     {% if event.absent == True %}
                         <button type="button" id="{{event}}" class="events_modal_open_btn" >
                             Late
-                            <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" data-source="test" -->
                         </button>
                     {% endif %}
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <form method="POST">
-                                            <label for="min-late-text">Minutes late:</label>
-                                            <input type="text" id="min-late-text" name="minutes_late">
-                                            <input type="text" name="date" value="{{ event }}">
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-
-                    {% if user.is_staff %}
-                        <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                    <!-- Delete event // Only if staff member (officer) -->
+                      {% if user.is_staff %}
+                        <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm delete-event-btn">Delete</a>
                     {% endif %}
-                </li>
-            </div>
+            </li>
         {% endfor %}
     </ul>
     </div>
@@ -97,7 +80,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script src="{% static '/js/new.js' %}"></script>
+<script src="{% static '/js/modal.js' %}"></script>
 
 {% endblock %}
 

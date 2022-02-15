@@ -2,7 +2,7 @@ import requests
 from allauth.socialaccount.models import SocialAccount, SocialToken
 
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+
 from django.db import models
 from django.db.models import Model
 
