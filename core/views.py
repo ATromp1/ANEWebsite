@@ -9,7 +9,7 @@ from core.models import (
     populate_roster_db,
     get_guild_roster,
     Boss,
-    LateUser
+    LateUser, MyUser
 )
 
 from core.utils import (
@@ -80,6 +80,7 @@ def add_event_view(request):
     return render(request, 'add_event.html', context)
 
 
+@login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):
     roster_dict = create_initial_roster_json(event_date)
 
