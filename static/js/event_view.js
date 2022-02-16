@@ -446,12 +446,17 @@ function save_roster_template(template_name){
     if(typeof(Storage) !== "undefined"){
         // Quick name validation, must be between 1 and 25 chars
         if(template_name.length<1 || template_name.length>25){
-            status_alert(2000, "Invalid Name", "warning")
+            status_alert(2000, "Cannot Save: Invalid Name", "warning")
             return
         }
 
         let boss_id = raid_event.currently_selected_boss_roster
         let roster_to_save = raid_event.roster_per_boss_objects[boss_id].selected_roster
+        // Check if roster contains characters
+        if(roster_to_save.length<1){
+            status_alert(2000, "Cannot Save: Roster is Empty", "danger")
+            return
+        }
         let jsonified_roster = JSON.stringify(roster_to_save)
         localStorage.setItem(template_name, jsonified_roster)
 
@@ -488,5 +493,6 @@ function load_roster_template(template_name){
             'boss_id': boss_id,
         },
         dataType: 'json',
+        contentType: "application/json",
     })
 }
