@@ -200,14 +200,11 @@ def even_view_late_to_db(request, ajax_data):
 
         try:
             LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date))
-            print("EXISTS ALREADY")
         except LateUser.DoesNotExist:
-            print("DOES NOT EXISTS, CREATING")
             LateUser.objects.create(raid_event=RaidEvent.objects.get(date=date),
                                     minutes_late=minutes_late,
                                     user=MyUser.objects.get(user=request.user))
         else:
-            print("UPDATING")
             LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=date)).update(minutes_late=minutes_late)
 
 
