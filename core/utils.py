@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 
 from allauth.socialaccount.models import SocialAccount
@@ -185,16 +186,17 @@ def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
 
 
-def even_view_late_to_db(request):
+def even_view_late_to_db(request, ajax_data):
     """
     Reacts to ajax get request from event view. Minutes late gets stored into db after the button is pressed and
     submitted.
+    :param ajax_data:
     """
-    if request.GET.get('date') is not None:
-        date = request.GET.get('date')
-        if request.GET.get('delete') == 'True':
+    if ajax_data.get('date') is not None:
+        date = ajax_data.get('date')
+        if ajax_data.get('delete') == 'True':
             return LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date)).delete()
-        minutes_late = request.GET.get('minutes_late')
+        minutes_late = ajax_data.get('minutes_late')
 
         try:
             LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date))
@@ -209,17 +211,18 @@ def even_view_late_to_db(request):
             LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=date)).update(minutes_late=minutes_late)
 
 
-def event_details_ajax(event_date, request):
+def event_details_ajax(event_date, request, ajax_data):
     """
     Overarching function that takes in the ajax request when a role button is clicked in frontend.
     If no roster exists for that particular boss on that date, a new object will be created or otherwise updated.
     After creating/updating the object, the update_selected_roster method is called to update the selected player in
     the database.
+    :param ajax_data:
     """
-    if request.GET.get('name') is not None:
-        role = request.GET.get('role')
-        name = request.GET.get('name')
-        boss_id = str(int(request.GET.get('boss_id')) + 1)
+    if ajax_data.get('name') is not None:
+        role = ajax_data.get('role')
+        name = ajax_data.get('name')
+        boss_id = str(int(ajax_data.get('boss_id')) + 1)
 
         BossPerEvent.objects.update_or_create(boss=Boss.objects.get(id=boss_id),
                                               raid_event=RaidEvent.objects.get(date=event_date))
@@ -345,3 +348,31 @@ def set_officer_staff(request):
             request.user.is_staff = True
             request.user.save()
             break
+
+
+def load_roster_template(ajax_data, event_date):
+    if ajax_data.get('saved_setup') is not None:
+        boss_id = str(int(ajax_data.get('boss_id')) + 1)
+        roster_to_save = ajax_data.get('saved_setup')
+        json_to_object = json.loads(roster_to_save)
+        tanks = [x for x in json_to_object if x['role'] == 'tank']
+        healers = [x for x in json_to_object if x['role'] == 'healer']
+        rdps = [x for x in json_to_object if x['role'] == 'rdps']
+        mdps = [x for x in json_to_object if x['role'] == 'mdps']
+        try:
+            obj = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date)).get(
+                boss=Boss.objects.get(id=boss_id))
+            obj.delete()
+        except BossPerEvent.DoesNotExist:
+            pass
+
+        obj = BossPerEvent.objects.create(boss=Boss.objects.get(id=boss_id),
+                                          raid_event=RaidEvent.objects.get(date=event_date))
+        for character in tanks:
+            obj.ajax_to_tank(character['name'])
+        for character in healers:
+            obj.ajax_to_healer(character['name'])
+        for character in rdps:
+            obj.ajax_to_rdps(character['name'])
+        for character in mdps:
+            obj.ajax_to_mdps(character['name'])

@@ -16,7 +16,7 @@ from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
     get_user_display_name, event_details_ajax, create_initial_roster_json, selected_roster_from_db_to_json,
-    user_attendance_status, even_view_late_to_db, get_current_user_data,
+    user_attendance_status, even_view_late_to_db, get_current_user_data, load_roster_template,
 )
 
 
@@ -37,7 +37,8 @@ def events_view(request):
 
             if is_user_absent(event, request):
                 event.absent = True
-    even_view_late_to_db(request)
+    ajax_data = request.GET
+    even_view_late_to_db(request, ajax_data)
 
     context = {
         'event_list': events,
@@ -47,7 +48,8 @@ def events_view(request):
 
 
 def is_user_absent(event, request):
-    if event.roster.filter(account_id=Roster.objects.filter(account_id=get_current_user_data(request)['id']).first().account_id).exists():
+    if event.roster.filter(account_id=Roster.objects.filter(
+            account_id=get_current_user_data(request)['id']).first().account_id).exists():
         return True
     else:
         return False
@@ -81,7 +83,10 @@ def add_event_view(request):
 def events_details_view(request, event_date):
     roster_dict = create_initial_roster_json(event_date)
 
-    event_details_ajax(event_date, request)
+    ajax_data = request.GET
+    load_roster_template(ajax_data, event_date)
+
+    event_details_ajax(event_date, request, ajax_data)
 
     bosses = serializers.serialize("json", Boss.objects.all())
 
