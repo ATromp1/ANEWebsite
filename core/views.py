@@ -81,23 +81,19 @@ def add_event_view(request):
     return render(request, 'add_event.html', context)
 
 
+@login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):
     roster_dict = create_initial_roster_json(event_date)
 
     ajax_data = request.GET
     load_roster_template(ajax_data, event_date)
-
     event_details_ajax(event_date, request, ajax_data)
 
     bosses = serializers.serialize("json", Boss.objects.all())
-
     roster_per_boss_dict = selected_roster_from_db_to_json(event_date)
-
     late_users = LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
-    
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
-                                                        raid_event=RaidEvent.objects.get(date=event_date)).exists()
-
+                                                       raid_event=RaidEvent.objects.get(date=event_date)).exists()
     context = {
         'roster_dict': roster_dict,
         'bosses': bosses,

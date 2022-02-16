@@ -200,14 +200,11 @@ def even_view_late_to_db(request, ajax_data):
 
         try:
             LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date))
-            print("EXISTS ALREADY")
         except LateUser.DoesNotExist:
-            print("DOES NOT EXISTS, CREATING")
             LateUser.objects.create(raid_event=RaidEvent.objects.get(date=date),
                                     minutes_late=minutes_late,
                                     user=MyUser.objects.get(user=request.user))
         else:
-            print("UPDATING")
             LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=date)).update(minutes_late=minutes_late)
 
 
@@ -321,13 +318,20 @@ def user_attendance_status(event, request):
                 if boss.mdps.filter(name=user_char).exists():
                     return 'selected'
 
+    boss_obj = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event.date))
+    for boss in boss_obj:
+        total_roster_count = boss.tank.count() + boss.healer.count() + boss.rdps.count() + boss.mdps.count()
+        if 0 < total_roster_count < 20:
+            return 'Pending'
+
     return 'benched'
 
 
 def sync_bnet(request):
     """
     If new user logs in via battlenet, their characters will be fetched by API and
-    their class and account_id will be linked in Roster.
+    their class and account_id will be linked in Roster. Officers will be added to a django admin group and
+    given staff status.
     """
     all_user_characters = get_user_profile_data(request)
     set_account_id_and_class(all_user_characters)
