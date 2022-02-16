@@ -371,12 +371,16 @@ function update_boss_buttons_status(){
         let boss_roster_status = ''
         if(players_in_boss_roster == 0){
             boss_roster_status = 'empty-roster'
+
         } else if(players_in_boss_roster < 20){
             boss_roster_status = 'in-progress'
         } else {
             boss_roster_status = 'roster-complete'
         }
         
+        if(is_staff){
+            boss_roster_status = boss_roster_status+'-staff'
+        }
         $(boss_btn_element).addClass(boss_roster_status)
     }
 }
@@ -465,6 +469,14 @@ $('#template-modal-load').click(function(){
     load_roster_template(selected_value)
 })
 
+$('#template-modal-delete').click(function(){
+    let selected_value = $('#event-view-template-modal-dropdown :selected').val()
+    let confirm_delete = confirm("Remove Template: " + selected_value+"?")
+    if(confirm_delete){
+        delete_roster_template(selected_value)
+    }
+})
+
 function toggle_template_load_modal(){
     fill_template_modal_dropdown()
     $('#event-view-template-modal').toggleClass('open')
@@ -486,6 +498,7 @@ function fill_template_modal_dropdown(){
 function save_roster_template(template_name){
     if(typeof(Storage) !== "undefined"){
         // Quick name validation, must be between 1 and 25 chars
+        if(template_name == null){return}
         if(template_name.length<1 || template_name.length>25){
             status_alert(2000, "Cannot Save: Invalid Name", "warning")
             return
@@ -536,4 +549,17 @@ function load_roster_template(template_name){
         dataType: 'json',
         contentType: "application/json",
     })
+}
+
+function delete_roster_template(template_name){
+    // Overwrite existing storage containing our templates
+    available_templates = get_available_templates()
+    let item_index = available_templates.indexOf(template_name) 
+    available_templates.splice(item_index, 1)
+    localStorage.setItem("saved_roster_template_list", JSON.stringify(available_templates))
+
+    localStorage.removeItem(template_name)
+    fill_template_modal_dropdown()
+
+    status_alert(2000, "Template deleted", "success")
 }

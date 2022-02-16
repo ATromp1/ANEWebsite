@@ -9,7 +9,8 @@ from core.models import (
     populate_roster_db,
     get_guild_roster,
     Boss,
-    LateUser
+    LateUser,
+    MyUser
 )
 
 from core.utils import (
@@ -93,6 +94,9 @@ def events_details_view(request, event_date):
     roster_per_boss_dict = selected_roster_from_db_to_json(event_date)
 
     late_users = LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+    
+    check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
+                                                        raid_event=RaidEvent.objects.get(date=event_date)).exists()
 
     context = {
         'roster_dict': roster_dict,
@@ -102,6 +106,7 @@ def events_details_view(request, event_date):
         'selected_roster': roster_per_boss_dict,
         'late_users': late_users,
         'event_date': event_date,
+        'user_is_late': check_user_in_late_users,
     }
     return render(request, 'events_details.html', context)
 

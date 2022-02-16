@@ -26,6 +26,7 @@
             </select>
             <div class="input-modal-action-btns">
                 <span class="input-modal-btn close-btn" id="template-modal-close">Cancel</span>
+                <span class="input-modal-btn delete-btn" id="template-modal-delete">Delete Selected</span>
                 <span class="input-modal-btn submit-btn" id="template-modal-load">Load</span>
             </div>
         </div>
@@ -38,7 +39,7 @@
 
             <div class="event-view-info-header">
                 <div class="event-view-header-date">{{ event_date }}</div>
-                <div class="event-view-header-bossname">Boss Name</div>
+                <div class="event-view-header-bossname">No Boss Selected</div>
                 {% if user.is_staff %}
                 <div class="event-view-template-buttons">
                     <div class="event-view-save-template template-button">
@@ -49,8 +50,14 @@
                     </div>
                 </div>
                 {% else %}
-                    <div class="invis-positioning-div">
+                {% if user_is_late %}
+                    <div class="event-header-right-div">
+                        <p class="event-header-late-warning">You are marked late for this event</p>
                     </div>
+                {% else %}
+                <div class="invis-positioning-div">
+                </div>
+                {% endif %}
                 {% endif %}
             </div>
             <div class="event-view-boss-info">

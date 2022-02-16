@@ -467,9 +467,11 @@ body {
       min-width: 30%;
       text-align: center; }
       .input-modal .input-modal-container .input-modal-btn.delete-btn {
-        background-color: var(--bs-danger);
+        background-color: var(--danger-bg-color);
         color: var(--white-color);
         padding: 0.5rem 1rem; }
+        .input-modal .input-modal-container .input-modal-btn.delete-btn:hover {
+          background-color: var(--danger-bg-hover); }
       .input-modal .input-modal-container .input-modal-btn.close-btn {
         max-width: 30%;
         background-color: var(--bg-hover-color);
@@ -501,6 +503,13 @@ body {
       width: 90%;
       margin: auto;
       border-bottom: 1px solid #aaa; }
+      .event-view-container .event-view-boss-container .event-view-info-header .event-header-late-warning {
+        float: right;
+        margin: 0;
+        line-height: 36px;
+        background-color: var(--danger-bg-color);
+        border-radius: 0.25rem;
+        padding: 2px 4px; }
       .event-view-container .event-view-boss-container .event-view-info-header div {
         flex: 1; }
       .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-bossname {
@@ -623,7 +632,9 @@ body {
         margin: 0.5rem 0.5rem;
         border-radius: var(--border-radius-size);
         height: 80px;
-        width: 8%; }
+        width: 8%;
+        /* If logged in user is staff member then show empty or in progress rosters
+                For normal user only display finished rosters */ }
         @media screen and (max-width: 1650px) {
           .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
             width: 15%; } }
@@ -639,16 +650,27 @@ body {
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.active {
           outline: 3px solid #0d6efd; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster {
+          display: none;
           background-color: #364d63; }
           .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster:hover {
             background-color: #486684; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster-staff {
+          background-color: #364d63; }
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster-staff:hover {
+            background-color: #486684; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress {
+          display: none; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress-staff {
           background-color: #917508; }
-          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress:hover {
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress-staff:hover {
             background-color: #c19c0b; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete {
           background-color: #22915d; }
           .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete:hover {
+            background-color: #2cba77; }
+        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete-staff {
+          background-color: #22915d; }
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete-staff:hover {
             background-color: #2cba77; }
       .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-roster-list {
         /*  display: none; */
