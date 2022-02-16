@@ -35,17 +35,28 @@
         <div class="event-view-boss-container">
             <div class="event-view-boss-list">
             </div>
-            {% if user.is_staff %}
-            <div class="event-view-template-buttons">
-                <div class="event-view-save-template template-buttons">
-                    Save as Template
+
+            <div class="event-view-info-header">
+                <div class="event-view-header-date">{{ event_date }}</div>
+                <div class="event-view-header-bossname">Boss Name</div>
+                {% if user.is_staff %}
+                <div class="event-view-template-buttons">
+                    <div class="event-view-save-template template-button">
+                        Save as Template
+                    </div>
+                    <div class="event-view-load-template template-button">
+                        Load a Template
+                    </div>
                 </div>
-                <div class="event-view-load-template template-buttons">
-                    Load a Template
-                </div>
+                {% else %}
+                    <div class="invis-positioning-div">
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
             <div class="event-view-boss-info">
+                <div class="boss-image-div">
+                    <img src="{% static 'images/bossImages/Sepulcher/anduin.png' %}"  class="boss-image">
+                </div>
                 <div class="event-view-selected-roster">
                     <span class="event-view-selected-roster-totalcount">Total: </span>
                     <div class="event-view-selected-roster-tank" id="tank">
@@ -77,7 +88,7 @@
                         </div>
                     </div>
                 </div>
-                {% if user.is_staff %}
+
                 <div class="event-view-benched-roster">
                     <div class="event-view-benched-roster-header">
                         Bench
@@ -92,6 +103,7 @@
                             </tr>
                     </table>
                 </div>
+                {% if user.is_staff %}
                 {% if late_users|length > 0 %}
                 <div class="event-view-late-users">
                     <p>LATE USERS</p>
