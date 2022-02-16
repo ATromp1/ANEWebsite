@@ -85,13 +85,10 @@ def events_details_view(request, event_date):
 
     ajax_data = request.GET
     load_roster_template(ajax_data, event_date)
-
     event_details_ajax(event_date, request, ajax_data)
 
     bosses = serializers.serialize("json", Boss.objects.all())
-
     roster_per_boss_dict = selected_roster_from_db_to_json(event_date)
-
     late_users = LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
 
     context = {
