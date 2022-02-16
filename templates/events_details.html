@@ -11,13 +11,42 @@
 <body>
     {% block content %}
     {% load static %}
+    <!-- Alert message -->
+    <div class="status-alert">
+        <span>Late Time Saved</span>
+    </div>
+    <!-- Modal -->
+    <div class="input-modal" id="event-view-template-modal">
+        <div class="input-modal-container">
+            <div class="input-modal-header">
+                <span>Select Template To Load</span>
+            </div>
+
+            <select class="input-modal-dropdown" id="event-view-template-modal-dropdown">
+            </select>
+            <div class="input-modal-action-btns">
+                <span class="input-modal-btn close-btn" id="template-modal-close">Cancel</span>
+                <span class="input-modal-btn submit-btn" id="template-modal-load">Load</span>
+            </div>
+        </div>
+    </div>
+
     <div class="event-view-container">
         <div class="event-view-boss-container">
             <div class="event-view-boss-list">
             </div>
+            {% if user.is_staff %}
+            <div class="event-view-template-buttons">
+                <div class="event-view-save-template template-buttons">
+                    Save as Template
+                </div>
+                <div class="event-view-load-template template-buttons">
+                    Load a Template
+                </div>
+            </div>
+            {% endif %}
             <div class="event-view-boss-info">
                 <div class="event-view-selected-roster">
-
                     <span class="event-view-selected-roster-totalcount">Total: </span>
                     <div class="event-view-selected-roster-tank" id="tank">
                         <div class="event-view-selected-roster-header">
@@ -63,13 +92,14 @@
                             </tr>
                     </table>
                 </div>
-
+                {% if late_users|length > 0 %}
                 <div class="event-view-late-users">
                     <p>LATE USERS</p>
                     {% for late_user in late_users %}
                         {{ late_user.user }} -- {{ late_user.minutes_late }}
                     {% endfor %}
                 </div>
+                {% endif %}
                 {% endif %}
             </div>
         </div>

@@ -13,17 +13,17 @@
 {% load static %}
 {% csrf_token %}
 <!-- Alert message -->
-<div class="late-status-alert">
+<div class="status-alert">
     <span>Late Time Saved</span>
 </div>
 <!-- Modal -->
-<div class="events-late-modal">
-    <div class="events-modal-container">
-        <div class="events-modal-header">
-            <span>Report Late for <span id="events-modal-header-date">'date'</span></span>
+<div class="input-modal" id="events-late-modal">
+    <div class="input-modal-container">
+        <div class="input-modal-header">
+            <span>Report Late for <span id="input-modal-header-date">'date'</span></span>
         </div>
 
-        <select class="events-modal-dropdown" id="events-modal-mins-late-dropdown">
+        <select class="input-modal-dropdown" id="events-modal-mins-late-dropdown">
             <option value="15m" selected="selected">15min</option>
             <option value="30m">30m</option>
             <option value="45m">45m</option>
@@ -32,10 +32,10 @@
             <option value="1h30m">1h30m</option>
             <option value="After Break">After Break</option>
         </select>
-        <div class="events-modal-action-btns">
-            <span class="events-modal-btn close-btn">Cancel</span>
-            <span class="events-modal-btn delete-btn">Delete</span>
-            <span class="events-modal-btn submit-btn">Submit</span>
+        <div class="input-modal-action-btns">
+            <span class="input-modal-btn close-btn">Cancel</span>
+            <span class="input-modal-btn delete-btn">Delete</span>
+            <span class="input-modal-btn submit-btn">Submit</span>
         </div>
     </div>
 </div>
@@ -52,7 +52,7 @@
         {% for event in event_list %}
             <li class="event-per-date">
                 <div class="event-list-date {{event.status}}">
-                <a href="{% url 'events-details' event.date %}" class="">{{ event.date|date:'M j' }}</a>
+                <a href="{% url 'events-details' event.date %}" class=""><p>{{ event.date|date:'M j' }}</p><p>{{ event.date|date:'Y' }}</p></a>
                 </div>
                 <div class="event-list-user-options">
                     {% if event.status == 'absent' %}
@@ -68,7 +68,7 @@
                     {% endif %}
                     </div>
                     <!-- Delete event // Only if staff member (officer) -->
-                      {% if user.is_staff %}
+                    {% if user.is_staff %}
                         <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm delete-event-btn">Delete</a>
                     {% endif %}
             </li>

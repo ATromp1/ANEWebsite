@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-dupe-class-members */
+/* eslint-disable no-undef */
 const IMAGES_PATH_ROLES = 'images/roleIcons/'
 const IMAGES_PATH_CLASS = 'images/classIcons/'
 
@@ -24,7 +27,6 @@ let roles_per_class = {
     'Demon Hunter': ['tank', 'mdps'],
     'Death Knight': ['tank', 'mdps']
 }
-let class_roles =['tank', 'healer','mdps','rdps']
 
 
 // Rework the roster information we get from the DB into a more managable format
@@ -83,7 +85,7 @@ class RaidEvent {
                     })
                 }
             }
-            this.roster_per_boss_objects[boss_id].load_roster_from_db(selected_roster_for_boss)
+            this.roster_per_boss_objects[boss_id].load_roster_from_roster_list(selected_roster_for_boss)
         }
     }
 
@@ -123,13 +125,11 @@ class RosterPerBoss {
         this.selected_roster = []
     }
 
-    load_roster_from_db(selected_roster){
+    load_roster_from_roster_list(selected_roster){
         for(let i in selected_roster){
             let char = selected_roster[i]
             this.move_from_bench_to_selected(char.name,char.role)
         }
-
-
     }
     #remove_char_from_benched_roster(char_name){
         for(let index in this.benched_roster){
@@ -356,6 +356,7 @@ $('.boss-view-btn').click(function(){
 Sets a click event listener on benched-roster table td elements.
 If it has id then id will be role, char_name will always be the first sibling of type td
 Sends ajax request to the server to sync up the database
+Doesnt need a staff check as it is not displayed unless you're staff member
 */
 $('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
     if(this.id){
@@ -364,18 +365,7 @@ $('.event-view-benched-roster').on('click', '.benched-roster-row td', function()
         current_boss_id = raid_event.currently_selected_boss_roster
         raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
 
-        $.ajax({
-            url: window.location.href,
-            data: {
-                'name': char_name,
-                'role': role,
-                'boss_id': current_boss_id,
-            },
-            dataType: 'json',
-            success: function () {
-                console.log("PRINT SOMETHING")
-            }
-        })
+        char_moved_ajax(char_name, role, current_boss_id)
     }
 })
 
@@ -389,19 +379,114 @@ if(is_staff){
         role = this.parentElement.parentElement.id
         raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role, true)
 
-        $.ajax({
-            url: window.location.href,
-            data: {
-                'name': char_name,
-                'role': role,
-                'boss_id': current_boss_id,
-            },
-            dataType: 'json',
-            success: function () {
-                console.log("PRINT SOMETHING")
-            }
-        })
+        char_moved_ajax(char_name, role, current_boss_id)
+    })
+}
+
+function char_moved_ajax(char_name, role, current_boss_id){
+    $.ajax({
+        url: window.location.href,
+        data: {
+            'name': char_name,
+            'role': role,
+            'boss_id': current_boss_id,
+        },
+        dataType: 'json',
     })
 }
 
 
+/* /.................// Roster Templates //................./ */
+
+$('.event-view-save-template').click(function(){
+    if(raid_event.currently_selected_boss_roster == -1){
+        status_alert(2000, "Needs a Selected Boss", "warning")
+        return
+    }
+    let template_name = prompt("Name of Template: ")
+    save_roster_template(template_name)
+})
+
+$('.event-view-load-template').click(function(){
+    if(raid_event.currently_selected_boss_roster == -1){
+        status_alert(2000, "Needs a Selected Boss", "warning")
+        return
+    }
+    toggle_template_load_modal()
+})
+
+$('#template-modal-close').click(function(){toggle_template_load_modal()})
+
+
+$('#template-modal-load').click(function(){
+    let selected_value = $('#event-view-template-modal-dropdown :selected').val()
+    toggle_template_load_modal()
+    load_roster_template(selected_value)
+})
+
+function toggle_template_load_modal(){
+    fill_template_modal_dropdown()
+    $('#event-view-template-modal').toggleClass('open')
+}
+
+function fill_template_modal_dropdown(){
+    let available_templates = get_available_templates()
+    let dropdown_element = $('#event-view-template-modal-dropdown')
+    $(dropdown_element).empty()
+    jQuery.each(available_templates, function(){
+        $('<option/>', {
+            'value': this,
+            'text': this
+        }).appendTo(dropdown_element);
+    });
+    
+}
+/* Saves the roster for the currently selected boss */
+function save_roster_template(template_name){
+    if(typeof(Storage) !== "undefined"){
+        // Quick name validation, must be between 1 and 25 chars
+        if(template_name.length<1 || template_name.length>25){
+            status_alert(2000, "Invalid Name", "warning")
+            return
+        }
+
+        let boss_id = raid_event.currently_selected_boss_roster
+        let roster_to_save = raid_event.roster_per_boss_objects[boss_id].selected_roster
+        let jsonified_roster = JSON.stringify(roster_to_save)
+        localStorage.setItem(template_name, jsonified_roster)
+
+
+        let saved_roster_template_list = get_available_templates()
+        saved_roster_template_list.push(template_name)
+        let jsonified_list = JSON.stringify(saved_roster_template_list)
+        localStorage.setItem("saved_roster_template_list", jsonified_list)
+
+        status_alert(2000, "Template Saved As: " + template_name, "success")
+    } else{
+        status_alert(2000, "You don't have LocalStorage on your browser", "danger")
+    }
+}
+
+function get_available_templates(){
+    return JSON.parse(localStorage.getItem("saved_roster_template_list")) || []
+}
+
+function load_roster_template(template_name){
+    let roster_from_localstorage = localStorage.getItem(template_name)
+    let parsed_roster = JSON.parse(roster_from_localstorage)
+
+    let boss_id = raid_event.currently_selected_boss_roster
+    raid_event.roster_per_boss_objects[boss_id].load_roster_from_roster_list(parsed_roster)
+    raid_event.roster_per_boss_objects[boss_id].display_selected_roster()
+    raid_event.roster_per_boss_objects[boss_id].display_benched_roster()
+    status_alert(2000, "Template Loaded: " + template_name, "success")
+
+    $.ajax({
+        url: window.location.href,
+        data: {
+            'saved_setup': roster_from_localstorage,
+            'boss_id': boss_id,
+        },
+        dataType: 'json',
+    })
+}

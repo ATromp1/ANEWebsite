@@ -8,8 +8,6 @@ $('.hamburger-menu-toggle-button').click(function(){
 });
 
 $(document).ready(function(){
-
-
     function strip_href_string(str){
         return str.split('/',2).join('/')
     }
@@ -23,5 +21,15 @@ $(document).ready(function(){
     }
 })
 
+
+function status_alert(time_to_display, text, status_type){
+    status_type = status_type || "info"
+    e = $('.status-alert')
+    $(e).toggleClass('active ' + status_type)
+    $(e).first().text(text)
+    setTimeout(function(){
+        $(e).toggleClass('active ' + status_type)
+    }, time_to_display)
+}
 
 

@@ -8,6 +8,15 @@
   --main-text-color: #ddd;
   --text-disabled-color: #aaa;
   --white-color: #fff;
+  --danger-bg-color: #aa2234;
+  --danger-bg-hover: #d52a41;
+  --success-bg-color: #22915d;
+  --success-bg-hover: #2cba77;
+  --warning-bg-color: #917508;
+  --warning-bg-hover: #c19c0b;
+  --info-bg-color: #0d6dfd;
+  --info-bg-hover: #3f8bfd;
+  --active-border-color: #0d6efd;
   /* Class colors WoW */
   --classcolor-warrior: #C69B6D;
   --classcolor-warlock: #8788EE;
@@ -205,25 +214,33 @@ body {
     text-align: center; }
     .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn {
       display: none; }
-    @media screen and (min-width: 960px) and (min-height: 350px) {
+    @media screen and (min-width: 960px) and (min-height: 420px) {
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn {
         cursor: pointer;
         text-decoration: none;
         color: var(--main-text-color);
         display: block;
         border-radius: var(--border-radius-size);
-        padding: 5% 0;
-        color: var(--bg-navbar-color); }
+        padding: 10px 0;
+        margin-bottom: 3px;
+        color: var(--white-color);
+        transition: background-color 150ms ease-in; }
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.selected {
-        background-color: #28c995; }
+        background-color: var(--success-bg-color); }
+        .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.selected:hover {
+          background-color: var(--success-bg-hover); }
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.benched {
-        background-color: #ffc107; }
+        background-color: var(--warning-bg-color); }
+        .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.benched:hover {
+          background-color: var(--warning-bg-hover); }
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.absent {
-        background-color: #c9283e; } }
+        background-color: var(--danger-bg-color); }
+        .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.absent:hover {
+          background-color: var(--danger-bg-hover); } }
 
 /* /.................// Roster //................./ */
 .roster-container {
-  padding-top: 1em; }
+  padding-top: 2em; }
   .roster-container .roster-grid {
     width: 95%;
     margin: auto;
@@ -293,10 +310,9 @@ body {
       padding-left: 0px; }
       .events-list-container .event-list ul .event-per-date {
         display: flex;
-        min-height: 100px;
+        min-height: 125px;
         max-height: 200px;
         min-width: 350px;
-        height: 10%;
         padding: 10px;
         border-bottom: 1px solid var(--main-text-color);
         align-items: center; }
@@ -310,43 +326,44 @@ body {
           border: none; }
         .events-list-container .event-list ul .event-per-date .event-list-date {
           font-size: 1.5em;
-          line-height: 60px;
           border: none;
           border-radius: 0px;
-          height: 100%;
+          height: 80px;
           padding-left: 7px;
           border-left: 5px solid #0d6efd;
           flex-basis: 70%;
-          transition: background-color 200ms ease-in-out; }
+          transition: background-color 200ms ease-in-out;
+          transition-property: background-color, border-color; }
           .events-list-container .event-list ul .event-per-date .event-list-date:hover {
             border-radius: 0 var(--border-radius-size) var(--border-radius-size) 0;
             background-color: #494d50; }
+            .events-list-container .event-list ul .event-per-date .event-list-date:hover.benched {
+              border-color: var(--warning-bg-hover); }
+            .events-list-container .event-list ul .event-per-date .event-list-date:hover.absent {
+              border-color: var(--danger-bg-hover); }
+            .events-list-container .event-list ul .event-per-date .event-list-date:hover.selected {
+              border-color: var(--success-bg-hover); }
           .events-list-container .event-list ul .event-per-date .event-list-date.benched {
-            border-color: #ffc107; }
+            border-color: var(--warning-bg-color); }
           .events-list-container .event-list ul .event-per-date .event-list-date.absent {
-            border-color: #c9283e; }
+            border-color: var(--danger-bg-color); }
           .events-list-container .event-list ul .event-per-date .event-list-date.selected {
-            border-color: #28c995; }
+            border-color: var(--success-bg-color); }
           .events-list-container .event-list ul .event-per-date .event-list-date a {
             color: var(--white-color);
             position: relative;
-            padding: 18px 140px 33px 0;
-            vertical-align: middle; }
+            /* Extend links clickable area */ }
+            .events-list-container .event-list ul .event-per-date .event-list-date a p {
+              margin-bottom: 0px; }
             .events-list-container .event-list ul .event-per-date .event-list-date a::after {
+              content: '';
               position: absolute;
-              font-family: 'Material Icons';
-              display: inline;
-              content: 'navigate_next';
-              width: 0px;
-              opacity: 0;
-              user-select: none;
-              transition: all 200ms ease-in-out; }
-            .events-list-container .event-list ul .event-per-date .event-list-date a:hover::after {
-              opacity: 100;
-              width: 20px;
-              font-size: 1.7em; }
+              top: -50%;
+              left: -7px;
+              width: 200px;
+              height: 80px; }
         .events-list-container .event-list ul .event-per-date .event-list-user-options {
-          height: 100%;
+          height: 80px;
           display: flex;
           flex-direction: column;
           justify-content: space-around; }
@@ -357,24 +374,31 @@ body {
             width: 70px;
             border-radius: var(--border-radius-size);
             color: white;
-            border: 1px solid #aaa;
-            background-color: var(--bg-hover-color); }
+            border: 2px solid #aaa;
+            background-color: var(--bg-hover-color);
+            transition: all 100ms ease-in-out; }
             .events-list-container .event-list ul .event-per-date .event-list-user-options a:hover,
             .events-list-container .event-list ul .event-per-date .event-list-user-options button:hover {
               background-color: var(--bg-active-color); }
           .events-list-container .event-list ul .event-per-date .event-list-user-options .event-list-opt-out {
             height: 45%;
             line-height: 35px;
-            border-color: #c9283e; }
+            border-color: var(--danger-bg-color); }
+            .events-list-container .event-list ul .event-per-date .event-list-user-options .event-list-opt-out:hover {
+              border-color: var(--danger-bg-hover); }
           .events-list-container .event-list ul .event-per-date .event-list-user-options .events_modal_open_btn {
             height: 45%;
-            border-color: #ffc107; }
+            border-color: var(--info-bg-color); }
+            .events-list-container .event-list ul .event-per-date .event-list-user-options .events_modal_open_btn:hover {
+              border-color: var(--info-bg-hover); }
           .events-list-container .event-list ul .event-per-date .event-list-user-options .event-list-opt-in {
             height: 70%;
             line-height: 53px;
-            border-color: #28c995; }
+            border-color: var(--success-bg-color); }
+            .events-list-container .event-list ul .event-per-date .event-list-user-options .event-list-opt-in:hover {
+              border-color: var(--success-bg-hover); }
 
-.late-status-alert {
+.status-alert {
   position: fixed;
   width: 175px;
   margin: auto;
@@ -390,11 +414,19 @@ body {
   user-select: none;
   pointer-events: none;
   z-index: 102; }
-  .late-status-alert.active {
+  .status-alert.active {
     opacity: 100;
     top: 70px; }
+  .status-alert.info {
+    background-color: var(--info-bg-color); }
+  .status-alert.danger {
+    background-color: var(--danger-bg-color); }
+  .status-alert.success {
+    background-color: var(--success-bg-color); }
+  .status-alert.warning {
+    background-color: var(--warning-bg-color); }
 
-.events-late-modal {
+.input-modal {
   display: none;
   position: fixed;
   z-index: 101;
@@ -404,9 +436,9 @@ body {
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.4); }
-  .events-late-modal.open {
+  .input-modal.open {
     display: block; }
-  .events-late-modal .events-modal-container {
+  .input-modal .input-modal-container {
     background-color: var(--bg-navbar-color);
     margin: 10% auto;
     padding: 2em;
@@ -416,37 +448,39 @@ body {
     border-radius: var(--border-radius-size);
     display: flex;
     flex-direction: column; }
-    .events-late-modal .events-modal-container .events-modal-header {
+    .input-modal .input-modal-container .input-modal-header {
       font-size: 1.3em;
       margin-bottom: 1em; }
-    .events-late-modal .events-modal-container .events-modal-action-btns {
+    .input-modal .input-modal-container .input-modal-action-btns {
       margin-top: 1em;
       display: flex;
       justify-content: space-between; }
-    .events-late-modal .events-modal-container .events-modal-dropdown {
+    .input-modal .input-modal-container .input-modal-dropdown {
       background-color: var(--bg-hover-color);
       color: var(--white-color);
       border-radius: var(--border-radius-size); }
-    .events-late-modal .events-modal-container .events-modal-btn {
+    .input-modal .input-modal-container .input-modal-btn {
       cursor: pointer;
       text-decoration: none;
       border-radius: var(--border-radius-size);
       min-width: 30%;
       text-align: center; }
-      .events-late-modal .events-modal-container .events-modal-btn.delete-btn {
+      .input-modal .input-modal-container .input-modal-btn.delete-btn {
         background-color: var(--bs-danger);
         color: var(--white-color);
         padding: 0.5rem 1rem; }
-      .events-late-modal .events-modal-container .events-modal-btn.close-btn {
+      .input-modal .input-modal-container .input-modal-btn.close-btn {
         max-width: 30%;
         background-color: var(--bg-hover-color);
         color: var(--white-color);
         padding: 0.5rem 1rem; }
-      .events-late-modal .events-modal-container .events-modal-btn.submit-btn {
-        background-color: var(--bs-info);
+      .input-modal .input-modal-container .input-modal-btn.submit-btn {
+        background-color: var(--info-bg-color);
         color: var(--white-color);
         padding: 0.5rem 1.5rem; }
-      .events-late-modal .events-modal-container .events-modal-btn:hover {
+        .input-modal .input-modal-container .input-modal-btn.submit-btn:hover {
+          background-color: var(--info-bg-hover); }
+      .input-modal .input-modal-container .input-modal-btn:hover {
         color: var(--white-color);
         background-color: var(--bg-active-color); }
 
@@ -458,6 +492,30 @@ body {
     width: 170px; }
   .event-view-container .event-view-boss-container {
     width: 100%; }
+    .event-view-container .event-view-boss-container .event-view-template-buttons {
+      width: 150px;
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      bottom: 0; }
+      @media screen and (max-width: 850px) {
+        .event-view-container .event-view-boss-container .event-view-template-buttons {
+          width: 125px; } }
+      .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons {
+        cursor: pointer;
+        color: var(--white-color);
+        margin: 0.5em 0 5px 5px;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius-size);
+        text-align: center; }
+        .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-save-template {
+          background-color: var(--success-bg-color); }
+          .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-save-template:hover {
+            background-color: var(--success-bg-hover); }
+        .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-load-template {
+          background-color: var(--info-bg-color); }
+          .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-load-template:hover {
+            background-color: var(--info-bg-hover); }
     .event-view-container .event-view-boss-container .event-view-boss-info {
       display: flex;
       margin-top: 2rem;
