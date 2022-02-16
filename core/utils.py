@@ -93,13 +93,12 @@ def generate_calendar(events):
                         event_name = events[id]['event_name']
 
                         event_status = events[id]['event_status']
-                        # event_status = "benched"
                         event_status_cssclass = event_status
 
                         calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
                         calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (
                             events[id]['event_date'],
-                            event_status_cssclass, event_status)
+                            event_status_cssclass, event_status.capitalize())
 
         calendarhtml += "</div></div>"
 
