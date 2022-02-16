@@ -101,6 +101,7 @@ def events_details_view(request, event_date):
         'css_classes': get_playable_classes_as_css_classes(),
         'selected_roster': roster_per_boss_dict,
         'late_users': late_users,
+        'event_date': event_date,
     }
     return render(request, 'events_details.html', context)
 
