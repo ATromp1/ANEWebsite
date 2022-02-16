@@ -558,11 +558,20 @@ body {
           background-color: var(--info-bg-color); }
           .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template:hover {
             background-color: var(--info-bg-hover); }
+    .event-view-container .event-view-boss-container .event-view-summary {
+      display: flex;
+      margin-top: 2rem;
+      justify-content: space-around;
+      padding-bottom: 1.5em; }
+      .event-view-container .event-view-boss-container .event-view-summary.hidden {
+        display: none; }
     .event-view-container .event-view-boss-container .event-view-boss-info {
       display: flex;
       margin-top: 2rem;
       justify-content: space-around;
       padding-bottom: 1.5em; }
+      .event-view-container .event-view-boss-container .event-view-boss-info.hidden {
+        display: none; }
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster {
         min-width: 250px;
         user-select: none; }

@@ -112,6 +112,13 @@ class RaidEvent {
             this.roster_per_boss_objects[boss_id].display_selected_roster()
         }
     }
+
+    switch_to_summary(){
+        if(this.currently_selected_boss_roster != -1){
+            this.currently_selected_boss_roster = -1
+            display_summary_view()
+        }
+    }
 }
 
 class RosterPerBoss {
@@ -303,7 +310,7 @@ class RosterPerBoss {
 
             if(this.roles.includes('healer')){
                 $tr.append($('<td/>',{
-                    'id': "tank",
+                    'id': "healer",
                     'class':'event-view-role-icon',
                     'html':$('<img/>',{
                         'src': static_url+IMAGES_PATH_ROLES+'healer.png',
@@ -314,7 +321,7 @@ class RosterPerBoss {
 
             if(this.roles.includes('mdps')){
                 $tr.append($('<td/>',{
-                    'id': "tank",
+                    'id': "mdps",
                     'html':$('<img/>',{
                         'src': static_url+IMAGES_PATH_ROLES+'mdps.png',
                         'class':td_css_class,
@@ -325,7 +332,7 @@ class RosterPerBoss {
 
             if(this.roles.includes('rdps')){
                 $tr.append($('<td/>',{
-                    'id': "tank",
+                    'id': "rdps",
                     'class':'event-view-role-icon',
                     'html':$('<img/>',{
                         'src': static_url+IMAGES_PATH_ROLES+'rdps.png',
@@ -340,6 +347,42 @@ class RosterPerBoss {
 
     } 
 }
+
+
+function display_summary_view(){
+    $('.event-view-boss-info').addClass('hidden')
+    $('body').css('backgroundImage', 'url('+static_url+'images/bossImages/Sepulcher/SepulcherBG.jpg'+')')
+    $('.event-view-header-bossname').text("Event Summary")
+    $('.boss-view-btn').removeClass('active');
+
+
+    $('.event-view-summary').removeClass("hidden")
+    $('.event-view-summary').empty()
+
+/*     $tr.append($('<td/>',{
+        'id': "tank",
+        'class':'event-view-role-icon',
+        'html':$('<img/>',{
+            'src': static_url+IMAGES_PATH_ROLES+'tank.png',
+            'class':td_css_class,
+        })
+    })) */
+
+    jQuery.each(boss_name_list, function(){
+        $boss_div = $('.event-view-summary').append($('<div/>',{
+            'class': 'event-view-summary-boss',
+            'html':$('<span/>',{
+                'class': "event-view-summary-boss-name",
+                'text': this.name,
+            })
+        }))
+        
+    });
+/*     $('.event-view-summary-'+boss_id).append('<div class="'+css_classes[char.playable_class]+' event-view-selected-roster-char">'+
+    '<img src="'+static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png" alt="'+char.playable_class+'" class="event-view-role-icon">'+
+    '<span'+additional_staff_info+'>'+char.name+'</span></div>') */
+}
+
 
 // Create new raid_event and populate that object with rosters
 raid_event = new RaidEvent(boss_name_list, roster_characters)
@@ -389,12 +432,20 @@ function update_boss_buttons_status(){
 create_boss_buttons()
 update_boss_buttons_status()
 
+// Start page on summary
+display_summary_view()
+// Summary button
+$('.event-view-summary-btn').click(function(){
+    raid_event.switch_to_summary()
+})
+
 
 // If element with class '.boss-view-btn' gets clicked then get element id and call
 // RaidEvent.switch_to_roster() with boss id same as button
 $('.boss-view-btn').click(function(){
+    $('.event-view-boss-info').removeClass('hidden')
+    $('.event-view-summary').addClass("hidden")
     raid_event.switch_to_roster(this.id)
-
     let boss_image_path = get_boss_image_path_from_id(this.id)
     $('body').css('backgroundImage', 'url('+boss_image_path+')')
     $('.event-view-header-bossname').text(boss_name_list[this.id].name)
@@ -405,6 +456,8 @@ function get_boss_image_path_from_id(boss_id){
     let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
     return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
 }
+
+
 /* 
 Sets a click event listener on benched-roster table td elements.
 If it has id then id will be role, char_name will always be the first sibling of type td
