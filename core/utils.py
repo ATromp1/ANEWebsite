@@ -319,9 +319,10 @@ def user_attendance_status(event, request):
                     return 'selected'
 
     boss_obj = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event.date))
+    print(boss_obj)
     for boss in boss_obj:
         total_roster_count = boss.tank.count() + boss.healer.count() + boss.rdps.count() + boss.mdps.count()
-        if 0 < total_roster_count < 20:
+        if total_roster_count < 20:
             return 'Pending'
 
     return 'benched'

@@ -38,7 +38,15 @@
             </div>
 
             <div class="event-view-info-header">
-                <div class="event-view-header-date">{{ event_date }}</div>
+                <div class="event-view-header-left-div">
+                    <div class="event-view-summary-btn">
+                        Event Summary
+                    </div>
+                    <div class="event-view-header-date">
+                        {{ event_date }}
+                    </div>
+                    
+                </div>
                 <div class="event-view-header-bossname">No Boss Selected</div>
                 {% if user.is_staff %}
                 <div class="event-view-template-buttons">
@@ -61,8 +69,7 @@
                 {% endif %}
             </div>
             <div class="event-view-boss-info">
-                <div class="boss-image-div">
-                    <img src="{% static 'images/bossImages/Sepulcher/anduin.png' %}"  class="boss-image">
+                <div class="event-view-buff-info">
                 </div>
                 <div class="event-view-selected-roster">
                     <span class="event-view-selected-roster-totalcount">Total: </span>

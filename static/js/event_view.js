@@ -394,9 +394,17 @@ update_boss_buttons_status()
 // RaidEvent.switch_to_roster() with boss id same as button
 $('.boss-view-btn').click(function(){
     raid_event.switch_to_roster(this.id)
+
+    let boss_image_path = get_boss_image_path_from_id(this.id)
+    $('body').css('backgroundImage', 'url('+boss_image_path+')')
     $('.event-view-header-bossname').text(boss_name_list[this.id].name)
 })
 
+function get_boss_image_path_from_id(boss_id){
+    let boss_name = boss_name_list[boss_id].name
+    let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
+    return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
+}
 /* 
 Sets a click event listener on benched-roster table td elements.
 If it has id then id will be role, char_name will always be the first sibling of type td
