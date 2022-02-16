@@ -410,6 +410,7 @@ body {
   background-color: var(--bs-success);
   padding: 0.5em 1em;
   border-radius: var(--border-radius-size);
+  border: 2px solid var(--bg-active-color);
   transition: all 200ms ease-in-out;
   user-select: none;
   pointer-events: none;
@@ -487,41 +488,50 @@ body {
 /* /.................// Event Detail View //................./ */
 .event-view-container {
   display: flex;
-  justify-content: space-between; }
+  justify-content: space-between;
+  margin-bottom: 1rem; }
   .event-view-container .event-view-signups {
     width: 170px; }
   .event-view-container .event-view-boss-container {
     width: 100%; }
-    .event-view-container .event-view-boss-container .event-view-template-buttons {
-      width: 150px;
+    .event-view-container .event-view-boss-container .event-view-info-header {
+      padding: 1em 0 1em 0;
       display: flex;
-      flex-direction: column;
-      position: absolute;
-      bottom: 0; }
-      @media screen and (max-width: 850px) {
-        .event-view-container .event-view-boss-container .event-view-template-buttons {
-          width: 125px; } }
-      .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons {
+      justify-content: center;
+      width: 90%;
+      margin: auto;
+      border-bottom: 1px solid #aaa; }
+      .event-view-container .event-view-boss-container .event-view-info-header div {
+        flex: 1; }
+      .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-bossname {
+        text-align: center;
+        font-size: 1.5em; }
+      .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-date {
+        font-size: 1.5em; }
+    .event-view-container .event-view-boss-container .event-view-template-buttons {
+      display: flex;
+      align-items: center; }
+      .event-view-container .event-view-boss-container .event-view-template-buttons .template-button {
         cursor: pointer;
         color: var(--white-color);
-        margin: 0.5em 0 5px 5px;
-        padding: 1rem 1.5rem;
         border-radius: var(--border-radius-size);
         text-align: center; }
-        .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-save-template {
+        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template {
           background-color: var(--success-bg-color); }
-          .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-save-template:hover {
+          .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template:hover {
             background-color: var(--success-bg-hover); }
-        .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-load-template {
+        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template {
           background-color: var(--info-bg-color); }
-          .event-view-container .event-view-boss-container .event-view-template-buttons .template-buttons.event-view-load-template:hover {
+          .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template:hover {
             background-color: var(--info-bg-hover); }
     .event-view-container .event-view-boss-container .event-view-boss-info {
       display: flex;
       margin-top: 2rem;
-      justify-content: center; }
+      justify-content: space-around;
+      padding-bottom: 1.5em; }
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster {
-        min-width: 250px; }
+        min-width: 250px;
+        user-select: none; }
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-totalcount.overcapacity {
           color: var(--bs-danger); }
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-header {
@@ -596,23 +606,38 @@ body {
       padding: 0.5rem;
       border-radius: var(--border-radius-size);
       background-color: var(--bg-navbar-color);
-      justify-content: space-evenly;
+      justify-content: center;
+      align-items: center;
       list-style: none;
       display: flex;
       flex-wrap: wrap; }
       .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
-        flex: 1 0 15%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         cursor: pointer;
         text-decoration: none;
-        background-color: var(--bg-hover-color);
         color: var(--white-color);
         padding: 1rem 1.5rem;
-        margin: 0.5rem 1rem;
+        margin: 0.5rem 0.5rem;
         border-radius: var(--border-radius-size);
-        min-width: 150px;
-        text-align: center; }
+        height: 80px;
+        width: 8%; }
+        @media screen and (max-width: 1650px) {
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
+            width: 15%; } }
+        @media screen and (max-width: 1090px) {
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
+            width: 13%; } }
+        @media screen and (max-width: 600px) {
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
+            width: 20%; } }
+        @media screen and (max-width: 420px) {
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
+            width: 25%; } }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.active {
-          outline: 2px solid #0d6efd; }
+          outline: 3px solid #0d6efd; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster {
           background-color: #364d63; }
           .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster:hover {
