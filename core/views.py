@@ -17,7 +17,7 @@ from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
     get_user_display_name, event_details_ajax, create_initial_roster_json, selected_roster_from_db_to_json,
-    user_attendance_status, even_view_late_to_db, get_current_user_data, load_roster_template,
+    user_attendance_status, even_view_late_to_db, get_current_user_data, load_roster_template, get_user_chars_per_event,
 )
 
 
@@ -94,7 +94,11 @@ def events_details_view(request, event_date):
     late_users = LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
                                                        raid_event=RaidEvent.objects.get(date=event_date)).exists()
+
+    user_chars_selected_per_raid = get_user_chars_per_event(event_date, request)
+
     context = {
+        'user_char_selected': user_chars_selected_per_raid,
         'roster_dict': roster_dict,
         'bosses': bosses,
         'social_user': get_user_display_name(request),

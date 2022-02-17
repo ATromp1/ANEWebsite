@@ -336,9 +336,7 @@ def sync_bnet(request):
     """
     all_user_characters = get_user_profile_data(request)
     set_account_id_and_class(all_user_characters)
-
     set_officer_staff(request)
-
     return redirect('home')
 
 
@@ -381,3 +379,23 @@ def load_roster_template(ajax_data, event_date):
             obj.ajax_to_rdps(character['name'])
         for character in mdps:
             obj.ajax_to_mdps(character['name'])
+
+
+def get_user_chars_per_event(event_date, request):
+    all_user_characters = get_current_user_data(request)['id']
+    user_chars_in_roster = Roster.objects.filter(account_id=all_user_characters)
+    obj = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+    user_chars_selected_per_raid = {}
+    for boss in obj:
+        id = boss.boss.id - 1
+        user_chars_selected_per_raid[id] = {}
+        for char in user_chars_in_roster:
+            if char in boss.tank.all():
+                user_chars_selected_per_raid[id]['tank'] = {'name': char.name, 'playable_class': char.playable_class}
+            if char in boss.healer.all():
+                user_chars_selected_per_raid[id]['healer'] = {'name': char.name, 'playable_class': char.playable_class}
+            if char in boss.rdps.all():
+                user_chars_selected_per_raid[id]['rpds'] = {'name': char.name, 'playable_class': char.playable_class}
+            if char in boss.mdps.all():
+                user_chars_selected_per_raid[id]['mdps'] = {'name': char.name, 'playable_class': char.playable_class}
+    return user_chars_selected_per_raid
