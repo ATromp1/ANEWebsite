@@ -87,7 +87,7 @@ def events_details_view(request, event_date):
     roster_dict = create_initial_roster_json(event_date)
 
     load_roster_template(event_date, request.GET)
-    select_player_ajax(event_date, request.GET, current_raid)
+    select_player_ajax(request.GET, current_raid)
 
     bosses = serializers.serialize("json", Boss.objects.all())
     roster_per_boss_dict = selected_roster_from_db_to_json(event_date)

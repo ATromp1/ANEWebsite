@@ -196,7 +196,7 @@ def even_view_late_to_db(request, ajax_data):
             LateUser.objects.filter(raid_event=current_raid).update(minutes_late=minutes_late)
 
 
-def select_player_ajax(event_date, ajax_data, current_raid):
+def select_player_ajax(ajax_data, current_raid):
     """
     Overarching function that takes in the ajax request when a role button is clicked in frontend.
     If no roster exists for that particular boss on that date, a new object will be created or otherwise updated.
@@ -214,8 +214,7 @@ def select_player_ajax(event_date, ajax_data, current_raid):
             BossPerEvent.objects.create(boss=boss_obj,
                                         raid_event=current_raid)
         else:
-            BossPerEvent.objects.filter(raid_event=current_raid).update(boss=boss_obj,
-                                                                        raid_event=current_raid)
+            BossPerEvent.objects.filter(raid_event=current_raid).update(boss=boss_obj, raid_event=current_raid)
 
         update_selected_roster(boss_obj, name, current_raid, role)
 
@@ -223,30 +222,30 @@ def select_player_ajax(event_date, ajax_data, current_raid):
 def update_selected_roster(boss, name, raid_event, role):
     """
     Upon clicking a tank/healer/melee/ranged icon while creating the active roster for a boss in the front end,
-    the back end will be updated with the selected player name and will therefore either be removed or added.
+    the database will be updated with the selected player name and will either be removed or added.
     """
-    selected_current_event_and_boss = BossPerEvent.objects.get(raid_event=raid_event, boss=boss)
+    selected_boss = BossPerEvent.objects.get(raid_event=raid_event, boss=boss)
     match role:
         case 'tank':
-            if selected_current_event_and_boss.tank.all().filter(name=name).exists():
-                selected_current_event_and_boss.remove_from_tank(name)
+            if selected_boss.tank.all().filter(name=name).exists():
+                selected_boss.remove_from_tank(name)
             else:
-                selected_current_event_and_boss.ajax_to_tank(name)
+                selected_boss.ajax_to_tank(name)
         case 'healer':
-            if selected_current_event_and_boss.healer.all().filter(name=name).exists():
-                selected_current_event_and_boss.remove_from_healer(name)
+            if selected_boss.healer.all().filter(name=name).exists():
+                selected_boss.remove_from_healer(name)
             else:
-                selected_current_event_and_boss.ajax_to_healer(name)
+                selected_boss.ajax_to_healer(name)
         case 'rdps':
-            if selected_current_event_and_boss.rdps.all().filter(name=name).exists():
-                selected_current_event_and_boss.remove_from_rdps(name)
+            if selected_boss.rdps.all().filter(name=name).exists():
+                selected_boss.remove_from_rdps(name)
             else:
-                selected_current_event_and_boss.ajax_to_rdps(name)
+                selected_boss.ajax_to_rdps(name)
         case 'mdps':
-            if selected_current_event_and_boss.mdps.all().filter(name=name).exists():
-                selected_current_event_and_boss.remove_from_mdps(name)
+            if selected_boss.mdps.all().filter(name=name).exists():
+                selected_boss.remove_from_mdps(name)
             else:
-                selected_current_event_and_boss.ajax_to_mdps(name)
+                selected_boss.ajax_to_mdps(name)
 
 
 def create_initial_roster_json(event_date):
@@ -386,7 +385,7 @@ def get_user_chars_per_event(event_date, request):
             if char in boss.healer.all():
                 user_chars_selected_per_raid[id]['healer'] = {'name': char.name, 'playable_class': char.playable_class}
             if char in boss.rdps.all():
-                user_chars_selected_per_raid[id]['rpds'] = {'name': char.name, 'playable_class': char.playable_class}
+                user_chars_selected_per_raid[id]['rdps'] = {'name': char.name, 'playable_class': char.playable_class}
             if char in boss.mdps.all():
                 user_chars_selected_per_raid[id]['mdps'] = {'name': char.name, 'playable_class': char.playable_class}
     return user_chars_selected_per_raid
