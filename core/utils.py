@@ -123,50 +123,38 @@ def get_user_display_name(request):
 
 
 def get_current_user_data(request):
-    return SocialAccount.objects.filter(user=request.user).first().extra_data
+    return SocialAccount.objects.get(user=request.user).extra_data
 
 
-def set_user_late(request, event_date):
-    event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_data(request)['sub']
-    event_obj.add_late_user(current_user_account_id=current_user_account_id)
-    return redirect('events')
+def user_chars_in_roster(request):
+    return Roster.objects.filter(account_id=get_current_user_data(request)['id'])
 
 
-def remove_user_late(request, event_date):
-    event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_data(request)['sub']
-    event_obj.rem_late_user(current_user_account_id=current_user_account_id)
-    return redirect('events')
-
-
-def rem_user_from_roster_button(request, event_date):
+def decline_raid_button(request, event_date):
     """
     removes all characters belonging to the currently logged-in user and remove them from the initial roster
     sent in the event/details view. Also removes the user from Late list if it exists.
     """
     event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_data(request)
-    event_obj.decline_raid(current_user_id=current_user_account_id['sub'])
-    remove_late_user_if_declined(event_date)
+    event_obj.decline_raid(user_chars_in_roster(request))
+    remove_late_user(event_obj)
     return redirect('events')
 
 
-def remove_late_user_if_declined(event_date):
-    late_user_obj = LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+def remove_late_user(event_obj):
+    late_user_obj = LateUser.objects.filter(raid_event=event_obj)
     if late_user_obj.exists():
         late_user_obj.delete()
 
 
-def add_user_to_roster_button(request, event_date):
+def attend_raid_button(request, event_date):
     """Current user can sign himself back in, if signed off before."""
     event_obj = RaidEvent.objects.get(date=event_date)
-    current_user_account_id = get_current_user_data(request)['sub']
-    event_obj.attend_raid(current_user_account_id)
+    event_obj.attend_raid(user_chars_in_roster(request))
     return redirect('events')
 
 
-def delete_event(request, event_date):
+def delete_event_button(request, event_date):
     """
     Deletes an event in the /events page and redirects back to the same page
     """
@@ -190,43 +178,46 @@ def even_view_late_to_db(request, ajax_data):
     """
     Reacts to ajax get request from event view. Minutes late gets stored into db after the button is pressed and
     submitted.
-    :param ajax_data:
     """
     if ajax_data.get('date') is not None:
         date = ajax_data.get('date')
-        if ajax_data.get('delete') == 'True':
-            return LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date)).delete()
         minutes_late = ajax_data.get('minutes_late')
-
+        current_raid = RaidEvent.objects.get(date=date)
         try:
-            LateUser.objects.get(raid_event=RaidEvent.objects.get(date=date))
+            late_user_obj = LateUser.objects.get(raid_event=current_raid)
+            if ajax_data.get('delete') == 'True':
+                return late_user_obj.delete()
+
         except LateUser.DoesNotExist:
-            LateUser.objects.create(raid_event=RaidEvent.objects.get(date=date),
+            LateUser.objects.create(raid_event=current_raid,
                                     minutes_late=minutes_late,
                                     user=MyUser.objects.get(user=request.user))
         else:
-            LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=date)).update(minutes_late=minutes_late)
+            LateUser.objects.filter(raid_event=current_raid).update(minutes_late=minutes_late)
 
 
-def event_details_ajax(event_date, request, ajax_data):
+def select_player_ajax(event_date, ajax_data, current_raid):
     """
     Overarching function that takes in the ajax request when a role button is clicked in frontend.
     If no roster exists for that particular boss on that date, a new object will be created or otherwise updated.
     After creating/updating the object, the update_selected_roster method is called to update the selected player in
     the database.
-    :param ajax_data:
     """
     if ajax_data.get('name') is not None:
         role = ajax_data.get('role')
         name = ajax_data.get('name')
         boss_id = str(int(ajax_data.get('boss_id')) + 1)
+        boss_obj = Boss.objects.get(id=boss_id)
+        try:
+            BossPerEvent.objects.get(raid_event=current_raid)
+        except BossPerEvent.DoesNotExist:
+            BossPerEvent.objects.create(boss=boss_obj,
+                                        raid_event=current_raid)
+        else:
+            BossPerEvent.objects.filter(raid_event=current_raid).update(boss=boss_obj,
+                                                                        raid_event=current_raid)
 
-        BossPerEvent.objects.update_or_create(boss=Boss.objects.get(id=boss_id),
-                                              raid_event=RaidEvent.objects.get(date=event_date))
-
-        raid_event = RaidEvent.objects.get(date=event_date)
-        boss = Boss.objects.get(id=boss_id)
-        update_selected_roster(boss, name, raid_event, role)
+        update_selected_roster(boss_obj, name, current_raid, role)
 
 
 def update_selected_roster(boss, name, raid_event, role):
@@ -353,7 +344,7 @@ def set_officer_staff(request):
             break
 
 
-def load_roster_template(ajax_data, event_date):
+def load_roster_template(event_date, ajax_data):
     if ajax_data.get('saved_setup') is not None:
         boss_id = str(int(ajax_data.get('boss_id')) + 1)
         roster_to_save = ajax_data.get('saved_setup')

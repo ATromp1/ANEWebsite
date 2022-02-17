@@ -56,15 +56,13 @@ class RaidEvent(models.Model):
         for character in Roster.objects.all():
             self.roster.add(Roster.objects.get(name=character))
 
-    def decline_raid(self, current_user_id):
-        current_user_characters = Roster.objects.filter(account_id=current_user_id)
-        for item in current_user_characters:
+    def decline_raid(self, characters):
+        for item in characters:
             self.roster.remove(Roster.objects.get(name=item.name))
             self.save()
 
-    def attend_raid(self, current_user_id):
-        current_user_characters = Roster.objects.filter(account_id=current_user_id)
-        for item in current_user_characters:
+    def attend_raid(self, characters):
+        for item in characters:
             self.roster.add(Roster.objects.get(name=item.name))
             self.save()
 

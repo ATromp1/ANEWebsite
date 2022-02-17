@@ -16,7 +16,7 @@ from core.models import (
 from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
-    get_user_display_name, event_details_ajax, create_initial_roster_json, selected_roster_from_db_to_json,
+    get_user_display_name, select_player_ajax, create_initial_roster_json, selected_roster_from_db_to_json,
     user_attendance_status, even_view_late_to_db, get_current_user_data, load_roster_template, get_user_chars_per_event,
 )
 
@@ -38,8 +38,8 @@ def events_view(request):
 
             if is_user_absent(event, request):
                 event.absent = True
-    ajax_data = request.GET
-    even_view_late_to_db(request, ajax_data)
+
+    even_view_late_to_db(request, request.GET)
 
     context = {
         'event_list': events,
@@ -83,17 +83,17 @@ def add_event_view(request):
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):
+    current_raid = RaidEvent.objects.get(date=event_date)
     roster_dict = create_initial_roster_json(event_date)
 
-    ajax_data = request.GET
-    load_roster_template(ajax_data, event_date)
-    event_details_ajax(event_date, request, ajax_data)
+    load_roster_template(event_date, request.GET)
+    select_player_ajax(event_date, request.GET, current_raid)
 
     bosses = serializers.serialize("json", Boss.objects.all())
     roster_per_boss_dict = selected_roster_from_db_to_json(event_date)
-    late_users = LateUser.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+    late_users = LateUser.objects.filter(raid_event=current_raid)
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
-                                                       raid_event=RaidEvent.objects.get(date=event_date)).exists()
+                                                       raid_event=current_raid).exists()
 
     user_chars_selected_per_raid = get_user_chars_per_event(event_date, request)
 

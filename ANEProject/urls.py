@@ -24,8 +24,8 @@ from core.views import (
     events_details_view,
     add_event_view,
 )
-from core.utils import rem_user_from_roster_button, add_user_to_roster_button, delete_event, logout_user_button, \
-    login_user_button, set_user_late, remove_user_late, sync_bnet
+from core.utils import decline_raid_button, attend_raid_button, delete_event_button, logout_user_button, \
+    login_user_button, sync_bnet
 
 urlpatterns = [
 
@@ -43,10 +43,9 @@ urlpatterns = [
     path('events/', events_view, name='events'),
     path('events/<slug:event_date>/', events_details_view, name='events-details'),
     path('add_event', add_event_view, name='add-event'),
-    path('delete_event/<event_date>', delete_event, name='delete-event'),
+    path('delete_event/<event_date>', delete_event_button, name='delete-event'),
 
-    path('sign_off_user/<event_date>/*', rem_user_from_roster_button, name='opt-out'),
-    path('sign_in_user/<event_date>/*', add_user_to_roster_button, name='opt-in'),
-    path('late/<event_date>', set_user_late, name='late-user'),
-    path('notlate/<event_date>', remove_user_late, name='rem-late-user')
+    path('sign_off_user/<event_date>/*', decline_raid_button, name='opt-out'),
+    path('sign_in_user/<event_date>/*', attend_raid_button, name='opt-in'),
+
 ]
