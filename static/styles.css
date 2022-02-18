@@ -78,6 +78,21 @@ body {
   aspect-ratio: 16/9;
   transition: background-image 150ms ease-in-out; }
 
+/* width */
+::-webkit-scrollbar {
+  width: 7px; }
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent; }
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: var(--border-radius-size);
+  background: #ababab; }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #c4c4c4; }
+
 /* /.................// Navbar //................./ */
 .navbar {
   display: block;
@@ -107,7 +122,8 @@ body {
         outline: 2px solid #0d6efd; }
     .navbar .navbar-content-container .navbar-ane {
       width: 10%;
-      color: var(--white-color); }
+      color: var(--white-color);
+      display: flex; }
       .navbar .navbar-content-container .navbar-ane .navbar-logo {
         margin-left: 1em; }
         .navbar .navbar-content-container .navbar-ane .navbar-logo img {
@@ -126,9 +142,26 @@ body {
           color: var(--white-color); }
         .navbar .navbar-content-container .navbar-links .navbar-nav .nav-item {
           color: var(--white-color);
-          text-align: center; }
+          text-align: center;
+          margin: 0 3px; }
         .navbar .navbar-content-container .navbar-links .navbar-nav .responsive-user-btn {
           display: none; }
+        .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view {
+          background-color: var(--warning-bg-color);
+          border-radius: var(--border-radius-size);
+          padding: 0 5px;
+          height: 51px;
+          display: flex;
+          align-items: center;
+          cursor: pointer; }
+          .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view:hover {
+            background-color: var(--warning-bg-hover); }
+          .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view .active {
+            background-color: var(--success-bg-color); }
+            .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view .active:hover {
+              background-color: var(--success-bg-hover); }
+          .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view span {
+            text-align: center; }
     .navbar .navbar-content-container .navbar-user {
       margin-right: 1em;
       width: 10%;
@@ -576,6 +609,8 @@ body {
           text-align: center; }
         .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-benched {
           font-size: 1.5em;
+          background-color: var(--warning-bg-color);
+          border-radius: var(--border-radius-size);
           text-align: center; }
         .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-role {
           text-align: center; }

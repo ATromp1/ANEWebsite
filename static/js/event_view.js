@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-dupe-class-members */
-/* eslint-disable no-undef */
 const IMAGES_PATH_ROLES = 'images/roleIcons/'
 const IMAGES_PATH_CLASS = 'images/classIcons/'
 
@@ -12,7 +9,6 @@ for (i = 0; i < boss_list.length; i++) {
         'id': boss_list[i].fields.boss_id
     }
 }
-console.log(boss_name_list)
 
 let roles_per_class = {
     'Warrior': ['tank', 'mdps'],
@@ -72,7 +68,6 @@ class RaidEvent {
     load_rosters_from_db(boss_rosters){
         for(let boss in boss_rosters){
             let boss_id = boss
-            console.log(boss_id)
             let boss_roster = boss_rosters[boss]
             let selected_roster_for_boss = []
 
@@ -105,7 +100,6 @@ class RaidEvent {
     }
 
     switch_to_roster(boss_id){
-        console.log(boss_id)
         /*
         Switches to a different roster(boss) in the info view. Changes 'currently_selected_boss_roster' to the new boss
         */
@@ -323,7 +317,6 @@ class RosterPerBoss {
 }
 
 function is_user_selected_for_boss(boss_id){
-    console.log(boss_id)
     if(typeof(user_event_summary[boss_id]) !== "undefined"){
         if(typeof(user_event_summary[boss_id].name) !== "undefined"){
             return true
@@ -351,10 +344,9 @@ function display_summary_view(){
             'class':td_css_class,
         })
     })) */
-    user_event_summary
+    /* user_event_summary */
 
     jQuery.each(boss_name_list, function(){
-        console.log(this)
         let players_in_boss_roster = raid_event.roster_per_boss_objects[this.id].selected_roster.length
         if(players_in_boss_roster>19){
             let boss_div = ($('<div/>',{
@@ -367,50 +359,47 @@ function display_summary_view(){
             $('.event-view-summary').append(boss_div)
 
             // Check if the data we get from DB is valid
-        if(typeof(user_event_summary[this.id]) !== "undefined"){
-            if(typeof(user_event_summary[this.id].name) !== "undefined"){
-                let char = user_event_summary[this.id]
-                // Create a div to show role
-                let role_div = $('<div/>',{
-                    'class':'event-view-summary-role',
-                })
-                boss_div.append(role_div)
+            if(typeof(user_event_summary[this.id]) !== "undefined"){
+                if(typeof(user_event_summary[this.id].name) !== "undefined"){
+                    let char = user_event_summary[this.id]
+                    // Create a div to show role
+                    let role_div = $('<div/>',{
+                        'class':'event-view-summary-role',
+                    })
+                    boss_div.append(role_div)
 
-                role_div.append($('<img/>',{
-                    'class':'event-view-summary-role-img',
-                    'src':static_url+IMAGES_PATH_ROLES+char.role+'.png',
-                }))
-                role_div.append($('<span/>',{
-                    'class':'event-view-summary-role-span',
-                    'text':char.role
-                }))
-                // Create a div inside of boss-container
-                let char_name_div = ($('<div/>',{
-                    'class':'event-view-summary-char-name'
-                }))
-                boss_div.append(char_name_div)
+                    role_div.append($('<img/>',{
+                        'class':'event-view-summary-role-img',
+                        'src':static_url+IMAGES_PATH_ROLES+char.role+'.png',
+                    }))
+                    role_div.append($('<span/>',{
+                        'class':'event-view-summary-role-span',
+                        'text':char.role
+                    }))
+                    // Create a div inside of boss-container
+                    let char_name_div = ($('<div/>',{
+                        'class':'event-view-summary-char-name'
+                    }))
+                    boss_div.append(char_name_div)
 
-                // Create the class image with char name next to it
-                char_name_div.append($('<img/>',{
-                    'class':'event-view-summary-class-icon',
-                    'src': static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png',
-                }))
-                char_name_div.append($('<span/>',{
-                    'text':char.name,
-                    'class': css_classes[char.playable_class]
-                }))
-            } else{
-                // If the event doesn't have your name but there is a roster that means you are bench
-                boss_div.append($('<span/>',{
-                    'class':'event-view-summary-benched',
-                    'text':'Benched'
-                }))
+                    // Create the class image with char name next to it
+                    char_name_div.append($('<img/>',{
+                        'class':'event-view-summary-class-icon',
+                        'src': static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png',
+                    }))
+                    char_name_div.append($('<span/>',{
+                        'text':char.name,
+                        'class': css_classes[char.playable_class]
+                    }))
+                } else {
+                    // If the event doesn't have your name but there is a roster that means you are bench
+                    boss_div.append($('<span/>',{
+                        'class':'event-view-summary-benched',
+                        'text':'Benched'
+                    }))
+                }
             }
-
         }
-    }
-
-
     });
 }
 
@@ -486,7 +475,6 @@ $('.boss-view-btn').click(function(){
 })
 
 function get_boss_image_path_from_id(boss_id){
-    console.log(boss_id)
     let boss_name = boss_name_list[boss_id].name
     let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
     return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
@@ -524,7 +512,6 @@ if(is_staff){
 }
 
 function char_moved_ajax(char_name, role, current_boss_id){
-    console.log(current_boss_id)
     $.ajax({
         url: window.location.href,
         data: {
@@ -534,5 +521,5 @@ function char_moved_ajax(char_name, role, current_boss_id){
         },
         dataType: 'json',
         timeout: 1000,
-    }).fail(function(XMLHttpRequest, textStatus, errorThrown){ status_alert(2000, "Save Failed: " + errorThrown, 'danger')})
+    })
 }
