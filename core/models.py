@@ -29,6 +29,7 @@ class Roster(models.Model):
 
 class Boss(models.Model):
     boss_name = models.CharField(max_length=50, null=True, blank=True)
+    boss_id = models.IntegerField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return self.boss_name
@@ -87,8 +88,8 @@ class BossPerEvent(models.Model):
     mdps = models.ManyToManyField(Roster, blank=True, related_name='rel_mdps')
     rdps = models.ManyToManyField(Roster, blank=True, related_name='rel_rdps')
 
-    # def __str__(self):
-    #     return str(self.raid_event.date)
+    def __str__(self):
+        return str(self.boss.boss_name)
 
     def dateDisplay(self):
         return str(self.raid_event.date)

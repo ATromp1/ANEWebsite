@@ -9,16 +9,19 @@ class RosterAdmin(admin.ModelAdmin):
 class RaidEventAdmin(admin.ModelAdmin):
     list_display = ['name', 'date']
 
+class BossAdmin(admin.ModelAdmin):
+    list_display = ['boss_name', 'boss_id']
 
 class BossPerEventAdmin(admin.ModelAdmin):
     list_display = ['dateDisplay', 'bossDisplay']
+    exclude = ['boss']
 
 class LateUserAdmin(admin.ModelAdmin):
     list_display = ['user', 'date', 'minutes_late']
 
 
 admin.site.register(LateUser, LateUserAdmin)
-admin.site.register(Boss)
+admin.site.register(Boss, BossAdmin)
 admin.site.register(Roster, RosterAdmin)
 admin.site.register(RaidEvent, RaidEventAdmin)
 admin.site.register(BossPerEvent, BossPerEventAdmin)
