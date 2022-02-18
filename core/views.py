@@ -18,12 +18,11 @@ from core.utils import (
     generate_calendar,
     get_user_display_name, select_player_ajax, create_roster_dict, selected_roster_from_db_to_json,
     user_attendance_status, save_late_user, load_roster_template, get_user_chars_per_event,
-    is_user_absent, get_user_rank, generate_future_events
+    is_user_absent, get_user_rank
 )
 
 
 def home_view(request):
-    generate_future_events()
     context = {
         'social_user': get_user_display_name(request),
         'is_officer': get_user_rank(request),

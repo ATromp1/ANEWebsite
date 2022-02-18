@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # own
-    'core',
+    'core.apps.CoreConfig',
 
     # allauth
     'django.contrib.sites',

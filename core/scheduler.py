@@ -1,7 +1,10 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from pytz import utc
+from .utils import generate_future_events
 
-#
-# def start():
-#     scheduler = BackgroundScheduler()
-#     scheduler.add_job(CREATE_NEW_ROSTER_EVENT, 'interval', minutes=10)
-#     scheduler.start()
+
+def start():
+    scheduler = BackgroundScheduler()
+    scheduler.configure(timezone=utc)
+    scheduler.add_job(generate_future_events, 'interval', days=1)
+    scheduler.start()
