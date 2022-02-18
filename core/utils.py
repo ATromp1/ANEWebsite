@@ -339,6 +339,26 @@ def set_officer_staff(request):
             break
 
 
+def toggle_staff_button(request):
+    if request.user.is_staff:
+        request.user.is_staff = False
+        request.user.save()
+        return redirect('home')
+    if not request.user.is_staff:
+        request.user.is_staff = True
+        request.user.save()
+        return redirect('home')
+
+
+def get_user_rank(request):
+    account_id = get_current_user_data(request)['id']
+    officer_ranks = [0, 1]
+    user_characters = Roster.objects.filter(account_id=account_id)
+    for character in user_characters:
+        if character.rank in officer_ranks:
+            return True
+
+
 def load_roster_template(current_raid, ajax_data):
     if ajax_data.get('saved_setup') is not None:
         boss_id = ajax_data.get('boss_id')

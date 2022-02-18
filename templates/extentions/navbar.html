@@ -23,14 +23,14 @@
                 <li class="nav-item">
                     <a class=" navbar-btn" href="{% url 'events' %}">Events</a>
                 </li>
-                {% if request.user.is_staff %}
+                {% if user_rank == True %}
                 <li class="nav-item navbar-toggle-officer-view">
-                    <span>Toggle Officer</span>
+                    <a href="{% url 'toggle-staff' %}">Toggle Officer</a>
                 </li>
                 <!--                 <li class="nav-item">
                     <a class=" navbar-btn" href="/admin/">Admin</a>
                 </li> -->
-                {% endif %}
+               {% endif %}
 
                 <li class="responsive-user-btn">
                     {% if request.user.is_authenticated %}
