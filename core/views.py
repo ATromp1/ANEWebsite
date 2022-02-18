@@ -25,7 +25,7 @@ from core.utils import (
 def home_view(request):
     context = {
         'social_user': get_user_display_name(request),
-        'user_rank': get_user_rank(request),
+        'is_officer': get_user_rank(request),
     }
     return render(request, 'home.html', context)
 
@@ -46,7 +46,7 @@ def events_view(request):
     context = {
         'event_list': events,
         'social_user': get_user_display_name(request),
-        'user_rank': get_user_rank(request),
+        'is_officer': get_user_rank(request),
     }
     return render(request, 'events.html', context)
 
@@ -62,6 +62,7 @@ def add_event_view(request):
             api_roster = get_guild_roster(request)
             populate_roster_db(api_roster)
             date = request.POST['date']
+            print(date)
             RaidEvent.objects.get(date=date).populate_roster()
             return redirect('events')
     else:
@@ -73,7 +74,7 @@ def add_event_view(request):
         'form': form,
         'submitted': submitted,
         'social_user': get_user_display_name(request),
-        'user_rank': get_user_rank(request),
+        'is_officer': get_user_rank(request),
     }
     return render(request, 'add_event.html', context)
 
@@ -98,7 +99,7 @@ def events_details_view(request, event_date):
         'event_date': event_date,
         'user_is_late': check_user_in_late_users,
         'social_user': get_user_display_name(request),
-        'user_rank': get_user_rank(request),
+        'is_officer': get_user_rank(request),
     }
     return render(request, 'events_details.html', context)
 
@@ -108,7 +109,7 @@ def roster_view(request):
         'roster': Roster.objects.all(),
         'playable_classes': get_playable_classes_as_css_classes(),
         'social_user': get_user_display_name(request),
-        'user_rank': get_user_rank(request),
+        'is_officer': get_user_rank(request),
     }
     return render(request, 'roster.html', context)
 
@@ -138,6 +139,6 @@ def calendar_view(request):
     context = {
         'cal': cal,
         'social_user': get_user_display_name(request),
-        'user_rank': get_user_rank(request),
+        'is_officer': get_user_rank(request),
     }
     return render(request, 'calendar.html', context)
