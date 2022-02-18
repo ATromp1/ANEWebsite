@@ -7,9 +7,9 @@ const IMAGES_PATH_CLASS = 'images/classIcons/'
 // Rework the boss information we get from the DB into a more managable format
 let boss_name_list = {}
 for (i = 0; i < boss_list.length; i++) {
-    boss_name_list[boss_list[i].pk] = {
+    boss_name_list[boss_list[i].fields.boss_id] = {
         'name': boss_list[i].fields.boss_name,
-        'id': boss_list[i].pk
+        'id': boss_list[i].fields.boss_id
     }
 }
 console.log(boss_name_list)

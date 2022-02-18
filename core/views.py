@@ -95,7 +95,7 @@ def events_details_view(request, event_date):
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
                                                        raid_event=current_raid).exists()
 
-    user_chars_selected_per_raid = get_user_chars_per_event(event_date, request)
+    user_chars_selected_per_raid = get_user_chars_per_event(current_raid, request)
 
     context = {
         'user_char_selected': user_chars_selected_per_raid,

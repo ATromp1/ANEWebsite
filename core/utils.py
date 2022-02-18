@@ -266,7 +266,7 @@ def selected_roster_from_db_to_json(current_raid):
     boss_roster = BossPerEvent.objects.filter(raid_event=current_raid)
     roster = {}
     for boss in boss_roster:
-        boss_id = boss.boss_id
+        boss_id = boss.boss.boss_id
         roster[boss_id] = {}
         tanks = []
         for char in boss.tank.all():
@@ -367,15 +367,13 @@ def load_roster_template(event_date, ajax_data):
             obj.ajax_to_mdps(character['name'])
 
 
-def get_user_chars_per_event(event_date, request):
-    all_user_characters = get_current_user_data(request)['id']
-    user_chars_in_roster = Roster.objects.filter(account_id=all_user_characters)
-    obj = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date))
+def get_user_chars_per_event(current_raid, request):
+    obj = BossPerEvent.objects.filter(raid_event=current_raid)
     user_chars_selected_per_raid = {}
     for boss in obj:
-        id = boss.boss_id
+        id = boss.boss.boss_id
         user_chars_selected_per_raid[id] = {}
-        for char in user_chars_in_roster:
+        for char in get_user_chars_in_roster(request):
             if char in boss.tank.all():
                 user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'tank'}
             if char in boss.healer.all():
