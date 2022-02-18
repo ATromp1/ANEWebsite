@@ -129,6 +129,23 @@ body {
         .navbar .navbar-content-container .navbar-ane .navbar-logo img {
           height: 52px;
           width: 52px; }
+    .navbar .navbar-content-container .navbar-toggle-officer-view {
+      background-color: var(--warning-bg-color);
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      border-radius: var(--border-radius-size); }
+      .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn {
+        height: 50px;
+        text-decoration: none;
+        color: var(--white-color);
+        border-radius: var(--border-radius-size); }
+        .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn.active {
+          background-color: var(--success-bg-color); }
+          .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn.active:hover {
+            background-color: var(--success-bg-hover); }
+      .navbar .navbar-content-container .navbar-toggle-officer-view:hover {
+        background-color: var(--warning-bg-hover); }
     .navbar .navbar-content-container .navbar-links {
       min-width: 370px;
       max-width: 500px;
@@ -146,22 +163,6 @@ body {
           margin: 0 3px; }
         .navbar .navbar-content-container .navbar-links .navbar-nav .responsive-user-btn {
           display: none; }
-        .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view {
-          background-color: var(--warning-bg-color);
-          border-radius: var(--border-radius-size);
-          padding: 0 5px;
-          height: 51px;
-          display: flex;
-          align-items: center;
-          cursor: pointer; }
-          .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view:hover {
-            background-color: var(--warning-bg-hover); }
-          .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view .active {
-            background-color: var(--success-bg-color); }
-            .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view .active:hover {
-              background-color: var(--success-bg-hover); }
-          .navbar .navbar-content-container .navbar-links .navbar-nav .navbar-toggle-officer-view span {
-            text-align: center; }
     .navbar .navbar-content-container .navbar-user {
       margin-right: 1em;
       width: 10%;
@@ -901,7 +902,16 @@ body {
               border-radius: var(--border-radius-size); }
               .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item .navbar-btn:hover {
                 color: var(--white-color);
-                background-color: var(--bg-active-color); } }
+                background-color: var(--bg-active-color); }
+            .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn {
+              text-decoration: none;
+              color: var(--white-color);
+              border-radius: var(--border-radius-size);
+              background-color: var(--warning-bg-color); }
+              .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn.active {
+                background-color: var(--success-bg-color); }
+                .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn.active:hover {
+                  background-color: var(--success-bg-hover); } }
 
 /* /.................// Mediaquery @420px //................./ */
 @media screen and (max-width: 420px) {
