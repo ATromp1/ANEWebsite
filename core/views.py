@@ -17,7 +17,8 @@ from core.utils import (
     get_playable_classes_as_css_classes,
     generate_calendar,
     get_user_display_name, select_player_ajax, create_roster_dict, selected_roster_from_db_to_json,
-    user_attendance_status, even_view_late_to_db, get_current_user_data, load_roster_template, get_user_chars_per_event,
+    user_attendance_status, save_late_user, load_roster_template, get_user_chars_per_event,
+    is_user_absent,
 )
 
 
@@ -39,21 +40,13 @@ def events_view(request):
             if is_user_absent(event, request):
                 event.absent = True
 
-    even_view_late_to_db(request, request.GET)
+    save_late_user(request, request.GET)
 
     context = {
         'event_list': events,
         'social_user': get_user_display_name(request),
     }
     return render(request, 'events.html', context)
-
-
-def is_user_absent(event, request):
-    if event.roster.filter(account_id=Roster.objects.filter(
-            account_id=get_current_user_data(request)['id']).first().account_id).exists():
-        return True
-    else:
-        return False
 
 
 def add_event_view(request):
@@ -84,27 +77,21 @@ def add_event_view(request):
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):
     current_raid = RaidEvent.objects.get(date=event_date)
-    roster_dict = create_roster_dict(current_raid)
 
-    load_roster_template(event_date, request.GET)
+    load_roster_template(current_raid, request.GET)
     select_player_ajax(request.GET, current_raid)
 
-    bosses = serializers.serialize("json", Boss.objects.all())
-    roster_per_boss_dict = selected_roster_from_db_to_json(current_raid)
-    late_users = LateUser.objects.filter(raid_event=current_raid)
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
                                                        raid_event=current_raid).exists()
 
-    user_chars_selected_per_raid = get_user_chars_per_event(current_raid, request)
-
     context = {
-        'user_char_selected': user_chars_selected_per_raid,
-        'roster_dict': roster_dict,
-        'bosses': bosses,
+        'user_char_selected': get_user_chars_per_event(current_raid, request),
+        'roster_dict': create_roster_dict(current_raid),
+        'bosses': serializers.serialize("json", Boss.objects.all()),
         'social_user': get_user_display_name(request),
         'css_classes': get_playable_classes_as_css_classes(),
-        'selected_roster': roster_per_boss_dict,
-        'late_users': late_users,
+        'selected_roster': selected_roster_from_db_to_json(current_raid),
+        'late_users': LateUser.objects.filter(raid_event=current_raid),
         'event_date': event_date,
         'user_is_late': check_user_in_late_users,
     }
