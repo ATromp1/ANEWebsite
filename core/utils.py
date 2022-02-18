@@ -26,6 +26,19 @@ def get_playable_classes_as_css_classes():
     }
     return playable_classes
 
+def get_coming_raid_days(amount_of_raids: int):
+    raid_days = [0, 2, 6]  # Monday, Wednesday, Sunday
+    current_day = datetime.now()
+    
+    raid_dates_in_future = []
+    index = 0
+    while(len(raid_dates_in_future) < amount_of_raids):
+        day_in_future = current_day + timedelta(index)
+        index = index + 1
+        if(day_in_future.weekday() in raid_days):
+            raid_dates_in_future.append(day_in_future)
+
+    return raid_dates_in_future
 
 def generate_calendar(events):
     weeks_to_show = 3
@@ -36,7 +49,7 @@ def generate_calendar(events):
     days_of_week = {
         0: "Mon",
         1: "Tues",
-        2: "Wednes",
+        2: "Wed",
         3: "Thurs",
         4: "Fri",
         5: "Satur",
