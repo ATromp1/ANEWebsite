@@ -108,11 +108,20 @@ body {
     justify-content: space-between;
     align-content: center;
     align-items: center; }
-    .navbar .navbar-content-container .navbar-btn {
-      text-decoration: none;
+    .navbar .navbar-content-container .nav-item {
+      height: 50px;
+      width: 100px;
       background-color: var(--bg-hover-color);
       color: var(--white-color);
-      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius-size); }
+    .navbar .navbar-content-container .navbar-btn {
+      color: var(--white-color);
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
       border-radius: var(--border-radius-size); }
       .navbar .navbar-content-container .navbar-btn:hover {
         color: var(--white-color);
@@ -130,13 +139,12 @@ body {
           height: 52px;
           width: 52px; }
     .navbar .navbar-content-container .navbar-toggle-officer-view {
-      background-color: var(--warning-bg-color);
       display: flex;
       align-items: center;
+      background-color: var(--warning-bg-color);
       cursor: pointer;
       border-radius: var(--border-radius-size); }
       .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn {
-        height: 50px;
         text-decoration: none;
         color: var(--white-color);
         border-radius: var(--border-radius-size); }
