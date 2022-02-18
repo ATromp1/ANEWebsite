@@ -25,12 +25,13 @@
                 </li>
                 {% if user_rank == True %}
                 <li class="nav-item navbar-toggle-officer-view">
-                    <a href="{% url 'toggle-staff' %}">Toggle Officer</a>
+                    {% if user.is_staff %}
+                    <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn active">Disable Officer</a>
+                    {% else %}
+                    <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn">Enable Officer</a>
+                    {% endif %}
                 </li>
-                <!--                 <li class="nav-item">
-                    <a class=" navbar-btn" href="/admin/">Admin</a>
-                </li> -->
-               {% endif %}
+                {% endif %}
 
                 <li class="responsive-user-btn">
                     {% if request.user.is_authenticated %}
@@ -81,9 +82,13 @@
                 <li class="nav-item">
                     <a class="navbar-btn" href="{% url 'events' %}">Events</a>
                 </li>
-                {% if request.user.is_staff %}
-                <li class="nav-item">
-                    <a class="navbar-btn" href="/admin/">Admin</a>
+                {% if user_rank == True %}
+                <li class="nav-item navbar-toggle-officer-view">
+                    {% if user.is_staff %}
+                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn active">Disable Officer</a>
+                    {% else %}
+                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn">Enable Officer</a>
+                    {% endif %}
                 </li>
                 {% endif %}
                 <li class="nav-item">
