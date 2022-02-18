@@ -560,11 +560,61 @@ body {
             background-color: var(--info-bg-hover); }
     .event-view-container .event-view-boss-container .event-view-summary {
       display: flex;
+      flex-wrap: wrap;
       margin-top: 2rem;
       justify-content: space-around;
       padding-bottom: 1.5em; }
       .event-view-container .event-view-boss-container .event-view-summary.hidden {
         display: none; }
+      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss {
+        display: flex;
+        flex-direction: column;
+        min-width: 200px;
+        margin-bottom: 1em; }
+        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-boss-name {
+          font-size: 1.7em;
+          text-align: center; }
+        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-benched {
+          font-size: 1.5em;
+          text-align: center; }
+        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-role {
+          text-align: center; }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-role .event-view-summary-role-img {
+            height: 1.5em; }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-role .event-view-summary-role-span {
+            vertical-align: middle;
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 1.5em;
+            text-transform: capitalize; }
+        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name {
+          text-align: center; }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .event-view-summary-class-icon {
+            height: 1.5em; }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .warrior {
+            color: var(--classcolor-warrior); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .paladin {
+            color: var(--classcolor-paladin); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .hunter {
+            color: var(--classcolor-hunter); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .rogue {
+            color: var(--classcolor-rogue); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .priest {
+            color: var(--classcolor-priest); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .shaman {
+            color: var(--classcolor-shaman); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .mage {
+            color: var(--classcolor-mage); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .warlock {
+            color: var(--classcolor-warlock); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .monk {
+            color: var(--classcolor-monk); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .druid {
+            color: var(--classcolor-druid); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .demonhunter {
+            color: var(--classcolor-demonhunter); }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .deathknight {
+            color: var(--classcolor-deathknight); }
     .event-view-container .event-view-boss-container .event-view-boss-info {
       display: flex;
       margin-top: 2rem;
@@ -579,7 +629,6 @@ body {
           color: var(--bs-danger); }
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-header {
           height: 1.5rem;
-          margin-top: 1rem;
           margin-bottom: 10px; }
           .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster .event-view-selected-roster-header span {
             display: inline-block;
@@ -667,8 +716,7 @@ body {
         border-radius: var(--border-radius-size);
         height: 80px;
         width: 8%;
-        /* If logged in user is staff member then show empty or in progress rosters
-                For normal user only display finished rosters */ }
+        display: none; }
         @media screen and (max-width: 1650px) {
           .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn {
             width: 15%; } }
@@ -684,22 +732,26 @@ body {
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.active {
           outline: 3px solid #0d6efd; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster {
-          display: none; }
-        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster-staff {
+          display: flex;
           background-color: var(--bg-hover-color); }
-          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster-staff:hover {
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.empty-roster:hover {
             background-color: var(--bg-active-color); }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress {
-          display: none; }
-        .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress-staff {
+          display: flex;
           background-color: #917508; }
-          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress-staff:hover {
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.in-progress:hover {
             background-color: #c19c0b; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete {
+          display: flex;
           background-color: #22915d; }
+          .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete.benched {
+            background-color: #917508; }
+            .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete.benched:hover {
+              background-color: #c19c0b; }
           .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete:hover {
             background-color: #2cba77; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete-staff {
+          display: flex;
           background-color: #22915d; }
           .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-btn.roster-complete-staff:hover {
             background-color: #2cba77; }

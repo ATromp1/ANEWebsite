@@ -5,13 +5,14 @@ const IMAGES_PATH_ROLES = 'images/roleIcons/'
 const IMAGES_PATH_CLASS = 'images/classIcons/'
 
 // Rework the boss information we get from the DB into a more managable format
-let boss_name_list = []
+let boss_name_list = {}
 for (i = 0; i < boss_list.length; i++) {
-    boss_name_list.push({
+    boss_name_list[boss_list[i].pk] = {
         'name': boss_list[i].fields.boss_name,
-        'id': i
-    })
+        'id': boss_list[i].pk
+    }
 }
+console.log(boss_name_list)
 
 let roles_per_class = {
     'Warrior': ['tank', 'mdps'],
@@ -52,7 +53,7 @@ class RaidEvent {
         this.initial_roster = initial_roster;
 
         // Objects of class RosterPerBoss in an array to access them
-        this.roster_per_boss_objects = []
+        this.roster_per_boss_objects = {}
 
         // This should be a boss_id
         this.currently_selected_boss_roster = -1
@@ -71,6 +72,7 @@ class RaidEvent {
     load_rosters_from_db(boss_rosters){
         for(let boss in boss_rosters){
             let boss_id = boss
+            console.log(boss_id)
             let boss_roster = boss_rosters[boss]
             let selected_roster_for_boss = []
 
@@ -95,14 +97,15 @@ class RaidEvent {
         Create a new object of RosterPerBoss for each boss in the current RaidEvent
         */
         for (let boss in this.bosses) {
-            this.bosses[boss];
+            this.bosses[boss]
             let current_roster = new RosterPerBoss(this.bosses[boss].id, this.initial_roster)
-            this.roster_per_boss_objects.push(current_roster)
+            this.roster_per_boss_objects[this.bosses[boss].id] = current_roster
         }
 
     }
 
     switch_to_roster(boss_id){
+        console.log(boss_id)
         /*
         Switches to a different roster(boss) in the info view. Changes 'currently_selected_boss_roster' to the new boss
         */
@@ -208,7 +211,7 @@ class RosterPerBoss {
             this.remove_from_benched_display_at_index(char_removed_at_index)
             this.display_selected_roster()
         }
-        update_boss_buttons_status()
+        update_boss_buttons_status(this.boss)
     }
 
     move_from_selected_to_bench(char_name, display_change){
@@ -219,7 +222,7 @@ class RosterPerBoss {
             this.display_benched_roster()
             this.display_selected_roster()
         }
-        update_boss_buttons_status()
+        update_boss_buttons_status(this.boss)
     }
 
     remove_from_benched_display_at_index(index){
@@ -286,6 +289,8 @@ class RosterPerBoss {
         // Clear the table first
         $('.event-view-benched-roster-table').empty();
 
+        let roles = ['tank', 'healer', 'mdps', 'rdps']
+        let td_css_class = "event-view-role-icon"
         jQuery.each(this.benched_roster, function(){
             let $tr = $('<tr/>',{'class':'benched-roster-row'})
 
@@ -296,50 +301,19 @@ class RosterPerBoss {
 
             // Don't append the role icons if user is not staff
             if(is_staff){
-            let td_css_class = "event-view-role-icon"
-            if(this.roles.includes('tank')){
-                $tr.append($('<td/>',{
-                    'id': "tank",
-                    'class':'event-view-role-icon',
-                    'html':$('<img/>',{
-                        'src': static_url+IMAGES_PATH_ROLES+'tank.png',
-                        'class':td_css_class,
-                    })
-                }))
-            } else { $tr.append($('<td/>')) }
-
-            if(this.roles.includes('healer')){
-                $tr.append($('<td/>',{
-                    'id': "healer",
-                    'class':'event-view-role-icon',
-                    'html':$('<img/>',{
-                        'src': static_url+IMAGES_PATH_ROLES+'healer.png',
-                        'class':td_css_class,
-                    })
-                }))
-            } else { $tr.append($('<td/>')) }
-
-            if(this.roles.includes('mdps')){
-                $tr.append($('<td/>',{
-                    'id': "mdps",
-                    'html':$('<img/>',{
-                        'src': static_url+IMAGES_PATH_ROLES+'mdps.png',
-                        'class':td_css_class,
-                    })
-                }))
-            } else { $tr.append($('<td/>')) }
-
-
-            if(this.roles.includes('rdps')){
-                $tr.append($('<td/>',{
-                    'id': "rdps",
-                    'class':'event-view-role-icon',
-                    'html':$('<img/>',{
-                        'src': static_url+IMAGES_PATH_ROLES+'rdps.png',
-                        'class':td_css_class,
-                    })
-                }))
-            } else { $tr.append($('<td/>')) }
+                for(let role in roles){
+                    role = roles[role]
+                    if(this.roles.includes(role)){
+                        $tr.append($('<td/>',{
+                            'id': role,
+                            'class':'event-view-role-icon',
+                            'html':$('<img/>',{
+                                'src': static_url+IMAGES_PATH_ROLES+role+'.png',
+                                'class':td_css_class,
+                            })
+                        }))
+                    } else { $tr.append($('<td/>')) }
+                }
             }
             $('.event-view-benched-roster-table').append($tr)
 
@@ -348,6 +322,16 @@ class RosterPerBoss {
     } 
 }
 
+function is_user_selected_for_boss(boss_id){
+    console.log(boss_id)
+    if(typeof(user_event_summary[boss_id]) !== "undefined"){
+        if(typeof(user_event_summary[boss_id].name) !== "undefined"){
+            return true
+        }
+        return false
+    }
+    return false
+}
 
 function display_summary_view(){
     $('.event-view-boss-info').addClass('hidden')
@@ -367,20 +351,67 @@ function display_summary_view(){
             'class':td_css_class,
         })
     })) */
+    user_event_summary
 
     jQuery.each(boss_name_list, function(){
-        $boss_div = $('.event-view-summary').append($('<div/>',{
-            'class': 'event-view-summary-boss',
-            'html':$('<span/>',{
-                'class': "event-view-summary-boss-name",
-                'text': this.name,
-            })
-        }))
-        
+        console.log(this)
+        let players_in_boss_roster = raid_event.roster_per_boss_objects[this.id].selected_roster.length
+        if(players_in_boss_roster>19){
+            let boss_div = ($('<div/>',{
+                'class': 'event-view-summary-boss',
+                'html':$('<span/>',{
+                    'class': "event-view-summary-boss-name",
+                    'text': this.name,
+                })
+            }))
+            $('.event-view-summary').append(boss_div)
+
+            // Check if the data we get from DB is valid
+        if(typeof(user_event_summary[this.id]) !== "undefined"){
+            if(typeof(user_event_summary[this.id].name) !== "undefined"){
+                let char = user_event_summary[this.id]
+                // Create a div to show role
+                let role_div = $('<div/>',{
+                    'class':'event-view-summary-role',
+                })
+                boss_div.append(role_div)
+
+                role_div.append($('<img/>',{
+                    'class':'event-view-summary-role-img',
+                    'src':static_url+IMAGES_PATH_ROLES+char.role+'.png',
+                }))
+                role_div.append($('<span/>',{
+                    'class':'event-view-summary-role-span',
+                    'text':char.role
+                }))
+                // Create a div inside of boss-container
+                let char_name_div = ($('<div/>',{
+                    'class':'event-view-summary-char-name'
+                }))
+                boss_div.append(char_name_div)
+
+                // Create the class image with char name next to it
+                char_name_div.append($('<img/>',{
+                    'class':'event-view-summary-class-icon',
+                    'src': static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png',
+                }))
+                char_name_div.append($('<span/>',{
+                    'text':char.name,
+                    'class': css_classes[char.playable_class]
+                }))
+            } else{
+                // If the event doesn't have your name but there is a roster that means you are bench
+                boss_div.append($('<span/>',{
+                    'class':'event-view-summary-benched',
+                    'text':'Benched'
+                }))
+            }
+
+        }
+    }
+
+
     });
-/*     $('.event-view-summary-'+boss_id).append('<div class="'+css_classes[char.playable_class]+' event-view-selected-roster-char">'+
-    '<img src="'+static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png" alt="'+char.playable_class+'" class="event-view-role-icon">'+
-    '<span'+additional_staff_info+'>'+char.name+'</span></div>') */
 }
 
 
@@ -403,35 +434,38 @@ function create_boss_buttons(){
 }
 
 // Set the colour depending on the rosters status
-function update_boss_buttons_status(){
-    for(let boss in raid_event.bosses){
-        boss_id = raid_event.bosses[boss].id
-        let boss_btn_element = $('.boss-view-btn').eq(boss_id)
+function update_boss_buttons_status(boss_id){
+    let boss_btn_element = $('.boss-view-btn#'+boss_id)
 
-        $(boss_btn_element).removeClass('empty-roster in-progress roster-complete')
-
-        let players_in_boss_roster = raid_event.roster_per_boss_objects[boss_id].selected_roster.length
-        let boss_roster_status = ''
+    $(boss_btn_element).removeClass('empty-roster in-progress roster-complete '+
+    'empty-roster-staff in-progress-staff roster-complete-staff')
+    let players_in_boss_roster = raid_event.roster_per_boss_objects[boss_id].selected_roster.length
+    let boss_roster_status = ''
+    if(is_staff){
         if(players_in_boss_roster == 0){
             boss_roster_status = 'empty-roster'
-
         } else if(players_in_boss_roster < 20){
             boss_roster_status = 'in-progress'
         } else {
             boss_roster_status = 'roster-complete'
         }
-        
-        if(is_staff){
-            boss_roster_status = boss_roster_status+'-staff'
+    } else{
+        if(players_in_boss_roster>19){
+            boss_roster_status = 'roster-complete'
         }
-        $(boss_btn_element).addClass(boss_roster_status)
+        if(!is_user_selected_for_boss(boss_id)){
+            boss_roster_status = boss_roster_status + ' benched'
+        }
     }
+    $(boss_btn_element).addClass(boss_roster_status)
 }
 
 // Create buttons and update their status on page load
 create_boss_buttons()
-update_boss_buttons_status()
-
+// Update all buttons atleast once on page load
+for(let boss in raid_event.bosses){
+    update_boss_buttons_status(raid_event.bosses[boss].id)
+}
 // Start page on summary
 display_summary_view()
 // Summary button
@@ -452,6 +486,7 @@ $('.boss-view-btn').click(function(){
 })
 
 function get_boss_image_path_from_id(boss_id){
+    console.log(boss_id)
     let boss_name = boss_name_list[boss_id].name
     let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
     return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
@@ -484,12 +519,12 @@ if(is_staff){
         current_boss_id = raid_event.currently_selected_boss_roster
         role = this.parentElement.parentElement.id
         raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role, true)
-
         char_moved_ajax(char_name, role, current_boss_id)
     })
 }
 
 function char_moved_ajax(char_name, role, current_boss_id){
+    console.log(current_boss_id)
     $.ajax({
         url: window.location.href,
         data: {
@@ -498,129 +533,6 @@ function char_moved_ajax(char_name, role, current_boss_id){
             'boss_id': current_boss_id,
         },
         dataType: 'json',
-    })
-}
-
-
-/* /.................// Roster Templates //................./ */
-
-$('.event-view-save-template').click(function(){
-    if(raid_event.currently_selected_boss_roster == -1){
-        status_alert(2000, "Needs a Selected Boss", "warning")
-        return
-    }
-    let template_name = prompt("Name of Template: ")
-    save_roster_template(template_name)
-})
-
-$('.event-view-load-template').click(function(){
-    if(raid_event.currently_selected_boss_roster == -1){
-        status_alert(2000, "Needs a Selected Boss", "warning")
-        return
-    }
-    toggle_template_load_modal()
-})
-
-$('#template-modal-close').click(function(){toggle_template_load_modal()})
-
-
-$('#template-modal-load').click(function(){
-    let selected_value = $('#event-view-template-modal-dropdown :selected').val()
-    toggle_template_load_modal()
-    load_roster_template(selected_value)
-})
-
-$('#template-modal-delete').click(function(){
-    let selected_value = $('#event-view-template-modal-dropdown :selected').val()
-    let confirm_delete = confirm("Remove Template: " + selected_value+"?")
-    if(confirm_delete){
-        delete_roster_template(selected_value)
-    }
-})
-
-function toggle_template_load_modal(){
-    fill_template_modal_dropdown()
-    $('#event-view-template-modal').toggleClass('open')
-}
-
-function fill_template_modal_dropdown(){
-    let available_templates = get_available_templates()
-    let dropdown_element = $('#event-view-template-modal-dropdown')
-    $(dropdown_element).empty()
-    jQuery.each(available_templates, function(){
-        $('<option/>', {
-            'value': this,
-            'text': this
-        }).appendTo(dropdown_element);
-    });
-    
-}
-/* Saves the roster for the currently selected boss */
-function save_roster_template(template_name){
-    if(typeof(Storage) !== "undefined"){
-        // Quick name validation, must be between 1 and 25 chars
-        if(template_name == null){return}
-        if(template_name.length<1 || template_name.length>25){
-            status_alert(2000, "Cannot Save: Invalid Name", "warning")
-            return
-        }
-
-        let boss_id = raid_event.currently_selected_boss_roster
-        let roster_to_save = raid_event.roster_per_boss_objects[boss_id].selected_roster
-        // Check if roster contains characters
-        if(roster_to_save.length<1){
-            status_alert(2000, "Cannot Save: Roster is Empty", "danger")
-            return
-        }
-        let jsonified_roster = JSON.stringify(roster_to_save)
-        localStorage.setItem(template_name, jsonified_roster)
-
-
-        let saved_roster_template_list = get_available_templates()
-        saved_roster_template_list.push(template_name)
-        let jsonified_list = JSON.stringify(saved_roster_template_list)
-        localStorage.setItem("saved_roster_template_list", jsonified_list)
-
-        status_alert(2000, "Template Saved As: " + template_name, "success")
-    } else{
-        status_alert(2000, "You don't have LocalStorage on your browser", "danger")
-    }
-}
-
-function get_available_templates(){
-    return JSON.parse(localStorage.getItem("saved_roster_template_list")) || []
-}
-
-function load_roster_template(template_name){
-    let roster_from_localstorage = localStorage.getItem(template_name)
-    let parsed_roster = JSON.parse(roster_from_localstorage)
-
-    let boss_id = raid_event.currently_selected_boss_roster
-    raid_event.roster_per_boss_objects[boss_id].load_roster_from_roster_list(parsed_roster)
-    raid_event.roster_per_boss_objects[boss_id].display_selected_roster()
-    raid_event.roster_per_boss_objects[boss_id].display_benched_roster()
-    status_alert(2000, "Template Loaded: " + template_name, "success")
-
-    $.ajax({
-        url: window.location.href,
-        data: {
-            'saved_setup': roster_from_localstorage,
-            'boss_id': boss_id,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-    })
-}
-
-function delete_roster_template(template_name){
-    // Overwrite existing storage containing our templates
-    available_templates = get_available_templates()
-    let item_index = available_templates.indexOf(template_name) 
-    available_templates.splice(item_index, 1)
-    localStorage.setItem("saved_roster_template_list", JSON.stringify(available_templates))
-
-    localStorage.removeItem(template_name)
-    fill_template_modal_dropdown()
-
-    status_alert(2000, "Template deleted", "success")
+        timeout: 1000,
+    }).fail(function(XMLHttpRequest, textStatus, errorThrown){ status_alert(2000, "Save Failed: " + errorThrown, 'danger')})
 }

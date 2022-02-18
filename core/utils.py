@@ -382,11 +382,11 @@ def get_user_chars_per_event(event_date, request):
         user_chars_selected_per_raid[id] = {}
         for char in user_chars_in_roster:
             if char in boss.tank.all():
-                user_chars_selected_per_raid[id]['tank'] = {'name': char.name, 'playable_class': char.playable_class}
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'tank'}
             if char in boss.healer.all():
-                user_chars_selected_per_raid[id]['healer'] = {'name': char.name, 'playable_class': char.playable_class}
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'healer'}
             if char in boss.rdps.all():
-                user_chars_selected_per_raid[id]['rpds'] = {'name': char.name, 'playable_class': char.playable_class}
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'rdps'}
             if char in boss.mdps.all():
-                user_chars_selected_per_raid[id]['mdps'] = {'name': char.name, 'playable_class': char.playable_class}
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'mdps'}
     return user_chars_selected_per_raid

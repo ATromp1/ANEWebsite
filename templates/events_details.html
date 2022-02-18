@@ -74,7 +74,9 @@
                 <div class="event-view-buff-info">
                 </div>
                 <div class="event-view-selected-roster">
-                    <span class="event-view-selected-roster-totalcount">Total: </span>
+                    {% if user.is_staff %}
+                        <span class="event-view-selected-roster-totalcount">Total: </span>
+                    {% endif %}
                     <div class="event-view-selected-roster-tank" id="tank">
                         <div class="event-view-selected-roster-header">
                             <img src="{% static 'images/roleIcons/tank.png' %}" alt="Tank Icon" class="event-view-role-icon">
@@ -141,8 +143,10 @@
         let static_url = "{% get_static_prefix %}"
         let boss_rosters = {{ selected_roster|safe }}
         let is_staff = {{ user.is_staff|yesno:"true,false" }}
+        let user_event_summary = {{ user_char_selected|safe }}
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
+    <script src="{% static '/js/roster_template.js' %}"></script>
 
 
     {% endblock %}
