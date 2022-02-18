@@ -99,19 +99,19 @@ def generate_calendar(events):
             current_day_of_month, current_month)
         calendarhtml += "<div class='calendar-grid-item-content'>"
 
-        for id in events:
+        for index in events:
             # Index == ID
-            if events[id]['event_date'].year == current_year:
-                if events[id]['event_date'].month == current_month:
-                    if events[id]['event_date'].day == current_day_of_month:
-                        event_name = events[id]['event_name']
+            if events[index]['event_date'].year == current_year:
+                if events[index]['event_date'].month == current_month:
+                    if events[index]['event_date'].day == current_day_of_month:
+                        event_name = events[index]['event_name']
 
-                        event_status = events[id]['event_status']
+                        event_status = events[index]['event_status']
                         event_status_cssclass = event_status
 
                         calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
                         calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (
-                            events[id]['event_date'],
+                            events[index]['event_date'],
                             event_status_cssclass, event_status.capitalize())
 
         calendarhtml += "</div></div>"
@@ -187,7 +187,7 @@ def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
 
 
-def even_view_late_to_db(request, ajax_data):
+def save_late_user(request, ajax_data):
     """
     Reacts to ajax get request from event view. Minutes late gets stored into db after the button is pressed and
     submitted.
@@ -220,14 +220,14 @@ def select_player_ajax(ajax_data, current_raid):
         role = ajax_data.get('role')
         name = ajax_data.get('name')
         boss_id = ajax_data.get('boss_id')
+        boss = Boss.objects.get(boss_id=boss_id)
 
-        boss_obj = BossPerEvent.objects.update_or_create(boss=Boss.objects.get(boss_id=boss_id),
-                                                         raid_event=current_raid)
+        boss_obj = BossPerEvent.objects.update_or_create(boss=boss, raid_event=current_raid)
 
-        update_selected_roster(boss_obj, name, current_raid, role)
+        update_selected_roster(boss_obj, name, role)
 
 
-def update_selected_roster(boss, name, raid_event, role):
+def update_selected_roster(boss, name, role):
     """
     Upon clicking a tank/healer/melee/ranged icon while creating the active roster for a boss in the front end,
     the database will be updated with the selected player name and will either be removed or added.
@@ -352,7 +352,27 @@ def set_officer_staff(request):
             break
 
 
-def load_roster_template(event_date, ajax_data):
+def toggle_staff_button(request):
+    if request.user.is_staff:
+        request.user.is_staff = False
+        request.user.save()
+        return redirect('home')
+    if not request.user.is_staff:
+        request.user.is_staff = True
+        request.user.save()
+        return redirect('home')
+
+
+def get_user_rank(request):
+    account_id = get_current_user_data(request)['id']
+    officer_ranks = [0, 1]
+    user_characters = Roster.objects.filter(account_id=account_id)
+    for character in user_characters:
+        if character.rank in officer_ranks:
+            return True
+
+
+def load_roster_template(current_raid, ajax_data):
     if ajax_data.get('saved_setup') is not None:
         boss_id = ajax_data.get('boss_id')
         roster_to_save = ajax_data.get('saved_setup')
@@ -361,15 +381,15 @@ def load_roster_template(event_date, ajax_data):
         healers = [x for x in json_to_object if x['role'] == 'healer']
         rdps = [x for x in json_to_object if x['role'] == 'rdps']
         mdps = [x for x in json_to_object if x['role'] == 'mdps']
+        boss_obj = Boss.objects.get(boss_id=boss_id)
+
         try:
-            obj = BossPerEvent.objects.filter(raid_event=RaidEvent.objects.get(date=event_date)).get(
-                boss=Boss.objects.get(boss_id=boss_id))
+            obj = BossPerEvent.objects.filter(raid_event=current_raid).get(boss=boss_obj)
             obj.delete()
         except BossPerEvent.DoesNotExist:
             pass
 
-        obj = BossPerEvent.objects.create(boss=Boss.objects.get(boss_id=boss_id),
-                                          raid_event=RaidEvent.objects.get(date=event_date))
+        obj = BossPerEvent.objects.create(boss=boss_obj, raid_event=current_raid)
         for character in tanks:
             obj.ajax_to_tank(character['name'])
         for character in healers:
@@ -383,16 +403,28 @@ def load_roster_template(event_date, ajax_data):
 def get_user_chars_per_event(current_raid, request):
     obj = BossPerEvent.objects.filter(raid_event=current_raid)
     user_chars_selected_per_raid = {}
-    for boss in obj:
-        id = boss.boss.boss_id
+    for boss_obj in obj:
+        id = boss_obj.boss.boss_id
         user_chars_selected_per_raid[id] = {}
         for char in get_user_chars_in_roster(request):
-            if char in boss.tank.all():
-                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'tank'}
-            if char in boss.healer.all():
-                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'healer'}
-            if char in boss.rdps.all():
-                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'rdps'}
-            if char in boss.mdps.all():
-                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class, 'role': 'mdps'}
+            if char in boss_obj.tank.all():
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class,
+                                                    'role': 'tank'}
+            if char in boss_obj.healer.all():
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class,
+                                                    'role': 'healer'}
+            if char in boss_obj.rdps.all():
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class,
+                                                    'role': 'rdps'}
+            if char in boss_obj.mdps.all():
+                user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class,
+                                                    'role': 'mdps'}
     return user_chars_selected_per_raid
+
+
+def is_user_absent(event, request):
+    account_id = get_current_user_data(request)['id']
+    if event.roster.filter(account_id=Roster.objects.filter(account_id=account_id).first().account_id).exists():
+        return False
+    else:
+        return True
