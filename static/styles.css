@@ -181,9 +181,9 @@ body {
         justify-content: flex-end;
         align-content: center;
         align-items: center; }
-        .navbar .navbar-content-container .navbar-user .navbar-user-menu .navbar-user-menu-btn {
-          margin-left: 0.5rem;
-          text-align: center; }
+        .navbar .navbar-content-container .navbar-user .navbar-user-menu .nav-item {
+          margin-left: 10px;
+          width: 70px; }
     @media screen and (max-width: 66em) {
       .navbar .navbar-content-container .navbar-user {
         margin-right: 0px !important; }
