@@ -413,6 +413,8 @@ def load_roster_template(current_raid, ajax_data):
 
 
 def get_user_chars_per_event(current_raid, request):
+    if is_user_absent(current_raid, request):
+        return {}
     obj = BossPerEvent.objects.filter(raid_event=current_raid)
     user_chars_selected_per_raid = {}
     for boss_obj in obj:
