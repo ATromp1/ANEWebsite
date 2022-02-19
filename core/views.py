@@ -108,6 +108,7 @@ def events_details_view(request, event_date):
         'late_users': LateUser.objects.filter(raid_event=current_raid),
         'event_date': event_date,
         'user_is_late': check_user_in_late_users,
+        'user_is_absent': is_user_absent(current_raid, request),
         'social_user': get_user_display_name(request),
         'is_officer': get_user_rank(request),
     }

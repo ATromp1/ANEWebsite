@@ -336,19 +336,11 @@ function display_summary_view(){
     $('.event-view-summary').removeClass("hidden")
     $('.event-view-summary').empty()
 
-/*     $tr.append($('<td/>',{
-        'id': "tank",
-        'class':'event-view-role-icon',
-        'html':$('<img/>',{
-            'src': static_url+IMAGES_PATH_ROLES+'tank.png',
-            'class':td_css_class,
-        })
-    })) */
-    /* user_event_summary */
-
+    let any_boss_is_shown = false
     jQuery.each(boss_name_list, function(){
         let players_in_boss_roster = raid_event.roster_per_boss_objects[this.id].selected_roster.length
         if(players_in_boss_roster>19){
+            any_boss_is_shown = true
             let boss_div = ($('<div/>',{
                 'class': 'event-view-summary-boss',
                 'html':$('<span/>',{
@@ -392,7 +384,7 @@ function display_summary_view(){
                         'class': css_classes[char.playable_class]
                     }))
                 } else {
-                    // If the event doesn't have your name but there is a roster that means you are bench
+                    // If the event doesn't have your name and you are not absent but there is a roster that means you are bench
                     boss_div.append($('<span/>',{
                         'class':'event-view-summary-benched',
                         'text':'Benched'
@@ -401,6 +393,28 @@ function display_summary_view(){
             }
         }
     });
+    // For non-staff users. If no boss has a roster of atleast 20 people then show that to user
+    if(!any_boss_is_shown){
+        $('.event-view-summary').append($('<div/>',{
+            'class': 'event-view-summary-boss',
+            'html':$('<span/>',{
+                'class': "event-view-summary-boss-name",
+                'text': 'No boss has a selected roster yet',
+            })
+        }))
+    }
+    // If current user is absent then we don't show any bosses and just display absent
+    if(user_is_absent){
+        $('.event-view-summary').empty()
+        $('.event-view-summary').append($('<div/>',{
+            'class': 'event-view-summary-boss',
+            'style': 'background-color:var(--danger-bg-color);padding:3px 5px;border-radius:0.25rem',
+            'html':$('<span/>',{
+                'class': "event-view-summary-boss-name",
+                'text': 'You are Absent for this event',
+            })
+        }))
+    }
 }
 
 
