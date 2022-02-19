@@ -141,19 +141,19 @@ body {
     .navbar .navbar-content-container .navbar-toggle-officer-view {
       display: flex;
       align-items: center;
-      background-color: var(--warning-bg-color);
       cursor: pointer;
       border-radius: var(--border-radius-size); }
       .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn {
         text-decoration: none;
         color: var(--white-color);
+        background-color: var(--warning-bg-color);
         border-radius: var(--border-radius-size); }
         .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn.active {
           background-color: var(--success-bg-color); }
           .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn.active:hover {
             background-color: var(--success-bg-hover); }
-      .navbar .navbar-content-container .navbar-toggle-officer-view:hover {
-        background-color: var(--warning-bg-hover); }
+        .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn:hover {
+          background-color: var(--warning-bg-hover); }
     .navbar .navbar-content-container .navbar-links {
       min-width: 370px;
       max-width: 500px;
