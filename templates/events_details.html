@@ -60,11 +60,17 @@
                 {% else %}
                 {% if user_is_late %}
                     <div class="event-header-right-div">
-                        <p class="event-header-late-warning">You are marked late for this event</p>
+                        <p class="event-header-late-warning">You are marked Late for this event</p>
                     </div>
+                {% else %}
+                {% if user_is_absent %}
+                <div class="event-header-right-div">
+                    <p class="event-header-late-warning">You are marked Absent for this event</p>
+                </div>
                 {% else %}
                 <div class="invis-positioning-div">
                 </div>
+                {% endif %}
                 {% endif %}
                 {% endif %}
             </div>
@@ -144,6 +150,7 @@
         let boss_rosters = {{ selected_roster|safe }}
         let is_staff = {{ user.is_staff|yesno:"true,false" }}
         let user_event_summary = {{ user_char_selected|safe }}
+        let user_is_absent = {{ user_is_absent|yesno:"true,false" }}
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
     <script src="{% static '/js/roster_template.js' %}"></script>
