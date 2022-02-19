@@ -23,7 +23,17 @@ from core.utils import (
 
 
 def home_view(request):
+    events = RaidEvent.objects.all().order_by('date')
+    if events.exists():
+        for event in events:
+            event.status = user_attendance_status(event, request)
+
+            if is_user_absent(event, request):
+                event.absent = True
+    
+    save_late_user(request, request.GET)
     context = {
+        'upcoming_event': events[0],
         'social_user': get_user_display_name(request),
         'is_officer': get_user_rank(request),
     }

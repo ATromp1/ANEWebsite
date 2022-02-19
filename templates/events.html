@@ -50,7 +50,7 @@
     <div class="event-list">
     <ul>
         {% for event in event_list %}
-            <li class="event-per-date">
+            <li class="event-list-container">
                 <div class="event-list-date {{event.status}}">
                 <a href="{% url 'events-details' event.date %}" class=""><p>{{ event.date|date:'M j' }}</p><p>{{ event.date|date:'Y' }}</p></a>
                 </div>

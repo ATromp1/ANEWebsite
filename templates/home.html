@@ -9,22 +9,95 @@
 </head>
 <body>
 {% block content %}
+{% load static %}
+<!-- Alert message -->
+<div class="status-alert">
+    <span>Late Time Saved</span>
+</div>
+<!-- Modal -->
+<div class="input-modal" id="events-late-modal">
+    <div class="input-modal-container">
+        <div class="input-modal-header">
+            <span>Report Late for <span id="input-modal-header-date">{{upcoming_event.date}}</span></span>
+        </div>
 
-    {% load account %}
-    <h1>home.html</h1>
-
-    {% if request.user.is_authenticated %}
-        {{ social_user }} has logged in...
-    {% else %}
-        You're not logged in
-    {% endif %}
-
-    <div>
-    {% if request.user.is_authenticated %}
-        <a class="btn btn-primary" href="{% url 'sync-bnet' %}">Sync Bnet Data</a>
+        <select class="input-modal-dropdown" id="events-modal-mins-late-dropdown">
+            <option value="15m" selected="selected">15min</option>
+            <option value="30m">30m</option>
+            <option value="45m">45m</option>
+            <option value="1h">1h</option>
+            <option value="1h15m">1h15m</option>
+            <option value="1h30m">1h30m</option>
+            <option value="After Break">After Break</option>
+        </select>
+        <div class="input-modal-action-btns">
+            <span class="input-modal-btn close-btn">Cancel</span>
+            <span class="input-modal-btn delete-btn">Delete</span>
+            <span class="input-modal-btn submit-btn">Submit</span>
+        </div>
     </div>
-    {% endif %}
+</div>
+<div class="home-container">
+    {% load account %}
+    <div class="home-content-container">
+        <div class="home-account">
+            <div class="home-account-header">
+                <span class="home-header">Account</span>
+            </div>
+            {% if request.user.is_authenticated %}
+            <div class="home-sync-bnet">
+                <span>{{ social_user }}</br></span>
+                <a class="btn btn-primary" href="{% url 'sync-bnet' %}">Re-Sync Bnet Data</a>
+            </div>
+            {% else %}
+            <div class="home-not-logged-in">
+                <span>Not logged in</span>
+            </div>
+            {% endif %}
+            {% if user.is_staff %}
+            <div class="home-staff-options">
+                <span class="home-staff-options-header">Officer Options</span>
+                <div class="home-update-roster">
+                    <a class="btn btn-primary" href="/">Update Roster</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
 
+        <div class="home-upcoming-event-container">
+            <div class="home-upcoming-event-header">
+                <span class="home-header">Upcoming Event</span>
+            </div>
+            <li class="event-list-container">
+                {% if upcoming_event %}
+                <div class="event-list-date {{upcoming_event.status}}">
+                <a href="{% url 'events-details' upcoming_event.date %}" class=""><p>{{ upcoming_event.date|date:'M j' }}</p><p>{{ upcoming_event.date|date:'Y' }}</p></a>
+                </div>
+                <div class="event-list-user-options">
+                    {% if upcoming_event.status == 'absent' %}
+                        <a href="{% url 'opt-in' upcoming_event.date %}" class="event-list-opt-in" id="opt-in">Attend</a>
+                        {% else %}
+                        <a href="{% url 'opt-out' upcoming_event.date %}" class="event-list-opt-out" id="opt-out">Decline</a>
+                    {% endif %}
+                    <!-- Button open modal -->
+                    {% if not upcoming_event.absent == True %}
+                        <button type="button" id="{{upcoming_event}}" class="events_modal_open_btn" >
+                            Late
+                        </button>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div style="margin:auto;">
+                    <span>There are no upcoming events</span>
+                </div>
+                {% endif %}
+            </li>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static '/js/modal.js' %}"></script>
 
 {% endblock %}
 
