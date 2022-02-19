@@ -82,7 +82,7 @@
                 <li class="nav-item">
                     <a class="navbar-btn" href="{% url 'events' %}">Events</a>
                 </li>
-                {% if user_rank == True %}
+                {% if is_officer == True %}
                 <li class="nav-item navbar-toggle-officer-view">
                     {% if user.is_staff %}
                     <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn active">Disable Officer</a>
