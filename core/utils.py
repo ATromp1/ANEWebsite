@@ -376,6 +376,8 @@ def toggle_staff_button(request):
 
 
 def get_user_rank(request):
+    if request.user.is_anonymous or request.user.is_superuser:
+        return False
     account_id = get_current_user_data(request)['id']
     officer_ranks = [0, 1]
     user_characters = Roster.objects.filter(account_id=account_id)
