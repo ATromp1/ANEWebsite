@@ -74,6 +74,7 @@
                 <a href="{% url 'events-details' upcoming_event.date %}" class=""><p>{{ upcoming_event.date|date:'M j' }}</p><p>{{ upcoming_event.date|date:'Y' }}</p></a>
                 </div>
                 <div class="event-list-user-options">
+                    {% if request.user.is_authenticated %}
                     {% if upcoming_event.status == 'absent' %}
                         <a href="{% url 'opt-in' upcoming_event.date %}" class="event-list-opt-in" id="opt-in">Attend</a>
                         {% else %}
@@ -84,6 +85,7 @@
                         <button type="button" id="{{upcoming_event}}" class="events_modal_open_btn" >
                             Late
                         </button>
+                    {% endif %}
                     {% endif %}
                 </div>
                 {% else %}
