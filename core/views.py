@@ -6,8 +6,6 @@ from core.forms import Eventform
 from core.models import (
     Roster,
     RaidEvent,
-    populate_roster_db,
-    get_guild_roster,
     Boss,
     LateUser,
     MyUser
@@ -73,8 +71,6 @@ def add_event_view(request):
         form = Eventform(request.POST)
         if form.is_valid():
             form.save()
-            api_roster = get_guild_roster(request)
-            populate_roster_db(api_roster)
             date = request.POST['date']
             print(date)
             RaidEvent.objects.get(date=date).populate_roster()
