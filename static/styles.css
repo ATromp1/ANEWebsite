@@ -147,7 +147,8 @@ html {
 .event-view-container,
 .calendar-grid-container,
 .events-list-container,
-.home-container {
+.home-container,
+.auth-container {
   width: 90%;
   min-height: 90vh;
   background-color: rgba(53, 56, 64, 0.85);
