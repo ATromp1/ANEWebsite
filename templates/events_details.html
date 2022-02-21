@@ -53,24 +53,32 @@
                     <div class="event-view-save-template template-button">
                         Save as Template
                     </div>
+                    {% if is_past_event%}
+                    <div class="event-header-right-div">
+                        <p class="event-header-info-text info">This event has passed</p>
+                    </div>
+                    {% else %}
                     <div class="event-view-load-template template-button">
                         Load a Template
                     </div>
+                    {% endif %}
                 </div>
                 {% else %}
-                {% if user_is_late %}
-                    <div class="event-header-right-div">
-                        <p class="event-header-late-warning">You are marked Late for this event</p>
-                    </div>
-                {% else %}
-                {% if user_is_absent %}
+                {% if is_past_event %}
                 <div class="event-header-right-div">
-                    <p class="event-header-late-warning">You are marked Absent for this event</p>
+                    <p class="event-header-info-text info">This event has passed</p>
                 </div>
+                {% elif user_is_absent %}
+                <div class="event-header-right-div">
+                    <p class="event-header-info-text danger">You are marked Absent for this event</p>
+                </div>
+                {% elif user_is_late %}
+                    <div class="event-header-right-div">
+                        <p class="event-header-info-text warning">You are marked Late for this event</p>
+                    </div>
                 {% else %}
                 <div class="invis-positioning-div">
                 </div>
-                {% endif %}
                 {% endif %}
                 {% endif %}
             </div>
@@ -151,6 +159,8 @@
         let is_staff = {{ user.is_staff|yesno:"true,false" }}
         let user_event_summary = {{ user_char_selected|safe }}
         let user_is_absent = {{ user_is_absent|yesno:"true,false" }}
+        let is_past_event = {{ is_past_event|yesno:"true,false"}}
+        console.log(is_past_event)
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
     <script src="{% static '/js/roster_template.js' %}"></script>

@@ -25,6 +25,10 @@ let roles_per_class = {
     'Death Knight': ['tank', 'mdps']
 }
 
+if(is_past_event){
+    is_staff = false
+}
+
 
 // Rework the roster information we get from the DB into a more managable format
 let roster_characters = []

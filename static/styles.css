@@ -637,13 +637,19 @@ body {
       width: 90%;
       margin: auto;
       border-bottom: 1px solid #aaa; }
-      .event-view-container .event-view-boss-container .event-view-info-header .event-header-late-warning {
+      .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text {
         float: right;
         margin: 0;
         line-height: 36px;
-        background-color: var(--danger-bg-color);
+        background-color: var(--info-bg-color);
         border-radius: 0.25rem;
         padding: 2px 4px; }
+        .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text.danger {
+          background-color: var(--danger-bg-color); }
+        .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text.warning {
+          background-color: var(--warning-bg-color); }
+        .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text.success {
+          background-color: var(--success-bg-color); }
       .event-view-container .event-view-boss-container .event-view-info-header div {
         flex: 1; }
       .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-bossname {
