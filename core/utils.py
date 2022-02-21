@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 
 from core.models import RaidEvent, BossPerEvent, Boss, Roster, LateUser, MyUser, get_user_profile_data, \
-    set_account_id_and_class
+    set_account_id_and_class, get_guild_roster, populate_roster_db
 
 
 def get_playable_classes_as_css_classes():
@@ -40,6 +40,7 @@ def get_coming_raid_days(amount_of_raids):
             raid_dates_in_future.append(day_in_future)
 
     return raid_dates_in_future
+
 
 def generate_future_events():
     for day in get_coming_raid_days(9):
@@ -177,6 +178,12 @@ def attend_raid_button(request, event_date):
     event_obj = RaidEvent.objects.get(date=event_date)
     event_obj.attend_raid(get_user_chars_in_roster(request))
     return redirect('events')
+
+
+def roster_update_button(request):
+    api_roster = get_guild_roster(request)
+    populate_roster_db(api_roster)
+    return redirect('home')
 
 
 def delete_event_button(request, event_date):
@@ -376,6 +383,8 @@ def toggle_staff_button(request):
 
 
 def get_user_rank(request):
+    if request.user.is_anonymous or request.user.is_superuser:
+        return False
     account_id = get_current_user_data(request)['id']
     officer_ranks = [0, 1]
     user_characters = Roster.objects.filter(account_id=account_id)

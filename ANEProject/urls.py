@@ -25,7 +25,7 @@ from core.views import (
     add_event_view,
 )
 from core.utils import decline_raid_button, attend_raid_button, delete_event_button, logout_user_button, \
-    login_user_button, sync_bnet, toggle_staff_button
+    login_user_button, sync_bnet, toggle_staff_button, roster_update_button
 
 urlpatterns = [
 
@@ -37,6 +37,7 @@ urlpatterns = [
     path('accounts/logout/', logout_user_button, name='logout-user-button'),
     path('sync/', sync_bnet, name='sync-bnet'),
     path('toggle_staff/', toggle_staff_button, name='toggle-staff'),
+    path('update_roster', roster_update_button, name='update-roster'),
 
     path('roster/', roster_view, name='roster'),
     path('calendar/', calendar_view, name='calendar'),
