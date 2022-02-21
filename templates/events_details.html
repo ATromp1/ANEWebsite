@@ -160,7 +160,6 @@
         let user_event_summary = {{ user_char_selected|safe }}
         let user_is_absent = {{ user_is_absent|yesno:"true,false" }}
         let is_past_event = {{ is_past_event|yesno:"true,false"}}
-        console.log(is_past_event)
     </script>
     <script src="{% static '/js/event_view.js' %}"></script>
     <script src="{% static '/js/roster_template.js' %}"></script>
