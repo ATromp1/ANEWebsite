@@ -41,14 +41,31 @@
 </div>
 <div class="events-list-container">
     <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">event_available</span><span class="page-header-text">Raids</span></div>
+    <div class="event-list-header-btns">
+        <span class="event-list-header-past-events">Show old Raids</span>
     {% if user.is_staff and not user.is_superuser %}
         <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary events-list-add-event">Add Event</button>
     {% endif %}
-
+    </div>
 
 
     <div class="event-list">
-    <ul>
+        <ul class="event-list-past_events">
+            {% for event in past_events %}
+                <li class="event-list-container">
+                    <div class="event-list-date past">
+                    <a href="{% url 'events-details' event.date %}" class=""><p>{{ event.date|date:'M j' }}</p><p>{{ event.date|date:'Y' }}</p></a>
+                    </div>
+                    <div class="event-list-user-options">
+                    </div>
+                    <!-- Delete event // Only if staff member (officer) -->
+                    {% if user.is_staff %}
+                        <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm delete-event-btn">Delete</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    <ul class="event-list-upcoming_events">
         {% for event in event_list %}
             <li class="event-list-container">
                 <div class="event-list-date {{event.status}}">

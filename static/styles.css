@@ -422,6 +422,8 @@ body {
       background-color: var(--danger-bg-color); }
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.absent:hover {
         background-color: var(--danger-bg-hover); }
+    .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.past {
+      background-color: #6E7276; }
   @media screen and (max-width: 1300px) {
     .calendar-grid-container {
       width: 80%; } }
@@ -490,10 +492,38 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center; }
-  .events-list-container .events-list-add-event {
-    max-width: 200px; }
-  .events-list-container .event-list {
+  .events-list-container .event-list-past_events {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    top: -1000px;
+    left: -1000px;
+    transition: opacity 200ms ease-in-out; }
+    .events-list-container .event-list-past_events.active {
+      position: initial;
+      opacity: 100;
+      pointer-events: initial; }
+  .events-list-container .event-list-header-btns {
+    height: 38px;
     display: flex; }
+  .events-list-container .event-list-header-past-events {
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+    color: white;
+    font-size: 1rem;
+    vertical-align: middle;
+    font-weight: 400;
+    padding: 0 0.75rem;
+    background-color: var(--info-bg-color);
+    border-radius: var(--border-radius-size); }
+    .events-list-container .event-list-header-past-events:hover {
+      background-color: var(--info-bg-hover); }
+  .events-list-container .event-list {
+    display: flex;
+    flex-direction: column; }
     .events-list-container .event-list ul {
       padding-left: 0px; }
 
@@ -539,6 +569,8 @@ body {
       border-color: var(--danger-bg-color); }
     .event-list-container .event-list-date.selected {
       border-color: var(--success-bg-color); }
+    .event-list-container .event-list-date.past {
+      border-color: #6E7276; }
     .event-list-container .event-list-date a {
       color: var(--white-color);
       position: relative; }

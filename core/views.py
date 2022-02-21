@@ -16,15 +16,15 @@ from core.utils import (
     generate_calendar,
     get_user_display_name, select_player_ajax, create_roster_dict, selected_roster_from_db_to_json,
     user_attendance_status, save_late_user, load_roster_template, get_user_chars_per_event,
-    is_user_absent, get_user_rank, handle_event_ajax
+    is_user_absent, get_user_rank, handle_event_ajax, get_past_events, get_upcoming_events
 )
 
 
 def home_view(request):
-    events = RaidEvent.objects.all().order_by('date')
-    
+    events = get_upcoming_events()
+
     if request.user.is_authenticated:
-        if events.exists():
+        if events:
             for event in events:
                 event.status = user_attendance_status(event, request)
 
@@ -41,19 +41,18 @@ def home_view(request):
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_view(request):
-    events = RaidEvent.objects.all().order_by('date')
-
-    if events.exists():
+    events = get_upcoming_events()
+    if events:
         for event in events:
             event.status = user_attendance_status(event, request)
 
             if is_user_absent(event, request):
                 event.absent = True
-
     save_late_user(request, request.GET)
-
+    past_events = get_past_events()
     context = {
         'event_list': events,
+        'past_events': past_events,
         'social_user': get_user_display_name(request),
         'is_officer': get_user_rank(request),
     }

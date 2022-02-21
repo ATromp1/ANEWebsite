@@ -32,4 +32,9 @@ function status_alert(time_to_display, text, status_type){
     }, time_to_display)
 }
 
-
+$('.event-list-header-past-events').click(function(){
+    display_past_events()
+})
+function display_past_events(){
+    $('.event-list-past_events').toggleClass("active")
+}

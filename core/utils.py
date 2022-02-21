@@ -121,7 +121,9 @@ def generate_calendar(events):
 
                         event_status = events[index]['event_status']
                         event_status_cssclass = event_status
-
+                        if day_in_future.date() < datetime.now().date():
+                            event_status_cssclass = "past"
+                            event_status = "Passed"
                         calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
                         calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (
                             events[index]['event_date'],
@@ -197,6 +199,23 @@ def delete_event_button(request, event_date):
     else:
         return redirect('events')
 
+def get_past_events():
+    events = RaidEvent.objects.all().order_by('date')
+    past_events = []
+    if events.exists():
+        for event in events:
+            if event.date < datetime.now().date():
+                past_events.append(event)
+    return past_events
+
+def get_upcoming_events():
+    events = RaidEvent.objects.all().order_by('date')
+    upcoming_events = []
+    if events.exists():
+        for event in events:
+            if event.date >= datetime.now().date():
+                upcoming_events.append(event)
+    return upcoming_events
 
 def logout_user_button():
     return redirect('/accounts/logout/')
