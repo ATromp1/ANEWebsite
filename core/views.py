@@ -30,9 +30,15 @@ def home_view(request):
 
                 if is_user_absent(event, request):
                     event.absent = True
+                    
+    try:
+        event = events[0]
+    except IndexError:
+        event = []
+        
     handle_event_ajax(request, request.GET)
     context = {
-        'upcoming_event': events[0],
+        'upcoming_event': event,
         'social_user': get_user_display_name(request),
         'is_officer': get_user_rank(request),
     }
