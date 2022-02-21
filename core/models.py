@@ -97,29 +97,14 @@ class BossPerEvent(models.Model):
     def bossDisplay(self):
         return str(self.boss.boss_name)
 
-    def ajax_to_tank(self, name):
-        self.tank.add(Roster.objects.get(name=name))
+    def check_exists(self, role, name):
+        return getattr(self, role).filter(name=name).exists()
 
-    def ajax_to_healer(self, name):
-        self.healer.add(Roster.objects.get(name=name))
+    def add_to_role(self, role, name):
+        getattr(self, role).add(Roster.objects.get(name=name))
 
-    def ajax_to_mdps(self, name):
-        self.mdps.add(Roster.objects.get(name=name))
-
-    def ajax_to_rdps(self, name):
-        self.rdps.add(Roster.objects.get(name=name))
-
-    def remove_from_tank(self, name):
-        self.tank.remove(Roster.objects.get(name=name))
-
-    def remove_from_healer(self, name):
-        self.healer.remove(Roster.objects.get(name=name))
-
-    def remove_from_rdps(self, name):
-        self.rdps.remove(Roster.objects.get(name=name))
-
-    def remove_from_mdps(self, name):
-        self.mdps.remove(Roster.objects.get(name=name))
+    def remove_from_role(self, role, name):
+        getattr(self, role).remove(Roster.objects.get(name=name))
 
 
 def set_account_id_and_class(char_json):

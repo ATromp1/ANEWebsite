@@ -162,8 +162,17 @@ def decline_raid_button(request, event_date):
     sent in the event/details view. Also removes the user from Late list if it exists.
     """
     event_obj = RaidEvent.objects.get(date=event_date)
+    user_chars = get_user_chars_per_event(event_obj, request)
+    for boss in user_chars.keys():
+        if user_chars[boss]:
+            boss_obj = BossPerEvent.objects.get(raid_event=event_obj, boss=Boss.objects.get(boss_id=boss))
+            role = user_chars[boss]['role']
+            name = user_chars[boss]['name']
+            boss_obj.remove_from_role(role, name)
+
     event_obj.decline_raid(get_user_chars_in_roster(request))
     remove_late_user(event_obj)
+
     return redirect('events')
 
 
@@ -252,27 +261,10 @@ def update_selected_roster(boss, name, role):
     the database will be updated with the selected player name and will either be removed or added.
     """
     boss = boss[0]
-    match role:
-        case 'tank':
-            if boss.tank.all().filter(name=name).exists():
-                boss.remove_from_tank(name)
-            else:
-                boss.ajax_to_tank(name)
-        case 'healer':
-            if boss.healer.all().filter(name=name).exists():
-                boss.remove_from_healer(name)
-            else:
-                boss.ajax_to_healer(name)
-        case 'rdps':
-            if boss.rdps.all().filter(name=name).exists():
-                boss.remove_from_rdps(name)
-            else:
-                boss.ajax_to_rdps(name)
-        case 'mdps':
-            if boss.mdps.all().filter(name=name).exists():
-                boss.remove_from_mdps(name)
-            else:
-                boss.ajax_to_mdps(name)
+    if boss.check_exists(role, name):
+        boss.remove_from_role(role, name)
+    else:
+        boss.add_to_role(role, name)
 
 
 def create_roster_dict(current_raid):
@@ -325,14 +317,10 @@ def user_attendance_status(event, request):
             return 'absent'
 
         for boss in BossPerEvent.objects.filter(raid_event=event):
-            if boss.tank.filter(name=user_char).exists():
-                return 'selected'
-            if boss.healer.filter(name=user_char).exists():
-                return 'selected'
-            if boss.rdps.filter(name=user_char).exists():
-                return 'selected'
-            if boss.mdps.filter(name=user_char).exists():
-                return 'selected'
+            roles = ['tank', 'healer', 'rdps', 'mdps']
+            for role in roles:
+                if boss.check_exists(role, user_char):
+                    return 'selected'
 
     boss_obj = BossPerEvent.objects.filter(raid_event=event)
     if not boss_obj.exists():
@@ -340,7 +328,7 @@ def user_attendance_status(event, request):
 
     for boss in boss_obj:
         total_roster_count = boss.tank.count() + boss.healer.count() + boss.rdps.count() + boss.mdps.count()
-        if total_roster_count < 20:
+        if 0 < total_roster_count < 20:
             return 'Pending'
 
     return 'benched'
@@ -396,29 +384,18 @@ def get_user_rank(request):
 def load_roster_template(current_raid, ajax_data):
     if ajax_data.get('saved_setup') is not None:
         boss_id = ajax_data.get('boss_id')
-        roster_to_save = ajax_data.get('saved_setup')
-        json_to_object = json.loads(roster_to_save)
-        tanks = [x for x in json_to_object if x['role'] == 'tank']
-        healers = [x for x in json_to_object if x['role'] == 'healer']
-        rdps = [x for x in json_to_object if x['role'] == 'rdps']
-        mdps = [x for x in json_to_object if x['role'] == 'mdps']
-        boss_obj = Boss.objects.get(boss_id=boss_id)
+        roster = json.loads(ajax_data.get('saved_setup'))
 
-        try:
-            obj = BossPerEvent.objects.filter(raid_event=current_raid).get(boss=boss_obj)
+        boss_obj = Boss.objects.get(boss_id=boss_id)
+        obj = BossPerEvent.objects.filter(raid_event=current_raid, boss=boss_obj)
+
+        if obj.exists():
             obj.delete()
-        except BossPerEvent.DoesNotExist:
-            pass
 
         obj = BossPerEvent.objects.create(boss=boss_obj, raid_event=current_raid)
-        for character in tanks:
-            obj.ajax_to_tank(character['name'])
-        for character in healers:
-            obj.ajax_to_healer(character['name'])
-        for character in rdps:
-            obj.ajax_to_rdps(character['name'])
-        for character in mdps:
-            obj.ajax_to_mdps(character['name'])
+
+        for character in roster:
+            obj.add_to_role(character['role'], character['name'])
 
 
 def get_user_chars_per_event(current_raid, request):
