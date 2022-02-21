@@ -5,6 +5,7 @@
 function send_late_ajax(event_date, minutes_late, delete_current){
     $.ajax({
         data: {
+            'type': 'late',
             'date': event_date,
             'minutes_late': minutes_late,
             'delete': delete_current,
@@ -12,6 +13,44 @@ function send_late_ajax(event_date, minutes_late, delete_current){
         dataType: 'json',
     })
 }
+
+function update_raid_status_ajax(event_date, request_type){
+
+    $.ajax({
+        data:{
+            'type':request_type,
+            'date':event_date,
+        },
+        dataType: 'json',
+    })
+
+}
+function attend_raid(e){
+    let event_date = e.id
+    update_raid_status_ajax(event_date, "attend")
+    status_alert(2000, "You are no longer marked as absent for raid: " + event_date, "success")
+    update_event_display(e)
+}
+function confirm_decline_raid(e){
+    let event_date = e.id
+    let res = confirm("Decline raid: " + event_date + "?")
+    if(res){
+        update_raid_status_ajax(event_date, "decline")
+        status_alert(2000,"Declined raid: " + event_date, "warning")
+        update_event_display(e)
+    } else{
+        return
+    }
+}
+function update_event_display(element){
+    let absent_div = $('#'+element.id+'.event-list-user-options.absent')
+    let present_div = $('#'+element.id+'.event-list-user-options.present')
+    let date_div = $('#'+element.id+'.event-list-date')
+    date_div.toggleClass("selected absent")
+    absent_div.toggleClass('disabled')
+    present_div.toggleClass('disabled')
+}
+
 
 // Open and close Modal
 let events_modal = $('#events-late-modal')

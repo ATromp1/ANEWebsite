@@ -66,7 +66,6 @@ function save_roster_template(template_name){
         }
 
         let boss_id = raid_event.currently_selected_boss_roster
-        console.log(boss_id)
         let roster_to_save = raid_event.roster_per_boss_objects[boss_id].selected_roster
         // Check if roster contains characters
         if(roster_to_save.length<1){
@@ -97,7 +96,6 @@ function load_roster_template(template_name){
     let parsed_roster = JSON.parse(roster_from_localstorage)
 
     let boss_id = raid_event.currently_selected_boss_roster
-    console.log(boss_id)
     raid_event.roster_per_boss_objects[boss_id].load_roster_from_roster_list(parsed_roster)
     raid_event.roster_per_boss_objects[boss_id].display_selected_roster()
     raid_event.roster_per_boss_objects[boss_id].display_benched_roster()

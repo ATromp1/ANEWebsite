@@ -121,7 +121,9 @@ def generate_calendar(events):
 
                         event_status = events[index]['event_status']
                         event_status_cssclass = event_status
-
+                        if day_in_future.date() < datetime.now().date():
+                            event_status_cssclass = "past"
+                            event_status = "Passed"
                         calendarhtml += "<div class='calendar-grid-event-name'>%s</div>" % event_name
                         calendarhtml += "<a href='/events/%s' class='calendar-grid-event-btn %s'>%s</a>" % (
                             events[index]['event_date'],
@@ -206,6 +208,23 @@ def delete_event_button(request, event_date):
     else:
         return redirect('events')
 
+def get_past_events():
+    events = RaidEvent.objects.all().order_by('date')
+    past_events = []
+    if events.exists():
+        for event in events:
+            if event.date < datetime.now().date():
+                past_events.append(event)
+    return past_events
+
+def get_upcoming_events():
+    events = RaidEvent.objects.all().order_by('date')
+    upcoming_events = []
+    if events.exists():
+        for event in events:
+            if event.date >= datetime.now().date():
+                upcoming_events.append(event)
+    return upcoming_events
 
 def logout_user_button():
     return redirect('/accounts/logout/')
@@ -214,6 +233,23 @@ def logout_user_button():
 def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
 
+def handle_event_ajax(request, ajax_data):
+    """
+    Events takes 2 types of ajax request: late and decline. 
+    Call different functions depending on which one is specified in type
+    """
+    if ajax_data.get('type') is not None:
+        if ajax_data.get('type') == 'decline':
+            decline_raid_button(request, ajax_data.get('date'))
+            
+        elif ajax_data.get('type') == 'attend':
+            attend_raid_button(request, ajax_data.get('date'))
+             
+        elif ajax_data.get('type') == 'late':
+            save_late_user(request, ajax_data)
+            
+        
+            
 
 def save_late_user(request, ajax_data):
     """
@@ -373,12 +409,14 @@ def toggle_staff_button(request):
 def get_user_rank(request):
     if request.user.is_anonymous or request.user.is_superuser:
         return False
-    account_id = get_current_user_data(request)['id']
-    officer_ranks = [0, 1]
-    user_characters = Roster.objects.filter(account_id=account_id)
-    for character in user_characters:
-        if character.rank in officer_ranks:
-            return True
+    if request.user.is_authenticated:
+        account_id = get_current_user_data(request)['id']
+        officer_ranks = [0, 1]
+        user_characters = Roster.objects.filter(account_id=account_id)
+        for character in user_characters:
+            if character.rank in officer_ranks:
+                return True
+    return False
 
 
 def load_roster_template(current_raid, ajax_data):

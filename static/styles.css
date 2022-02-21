@@ -56,7 +56,7 @@ html {
 
 .status-alert {
   position: fixed;
-  width: 175px;
+  width: 200px;
   margin: auto;
   top: 0px;
   left: 0;
@@ -66,7 +66,7 @@ html {
   background-color: var(--bs-success);
   padding: 0.5em 1em;
   border-radius: var(--border-radius-size);
-  border: 2px solid var(--bg-active-color);
+  border: 2px solid var(--active-border-color);
   transition: all 200ms ease-in-out;
   user-select: none;
   pointer-events: none;
@@ -147,7 +147,8 @@ html {
 .event-view-container,
 .calendar-grid-container,
 .events-list-container,
-.home-container {
+.home-container,
+.auth-container {
   width: 90%;
   min-height: 90vh;
   background-color: rgba(53, 56, 64, 0.85);
@@ -421,6 +422,8 @@ body {
       background-color: var(--danger-bg-color); }
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.absent:hover {
         background-color: var(--danger-bg-hover); }
+    .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.past {
+      background-color: #6E7276; }
   @media screen and (max-width: 1300px) {
     .calendar-grid-container {
       width: 80%; } }
@@ -489,10 +492,38 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center; }
-  .events-list-container .events-list-add-event {
-    max-width: 200px; }
-  .events-list-container .event-list {
+  .events-list-container .event-list-past_events {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    top: -1000px;
+    left: -1000px;
+    transition: opacity 200ms ease-in-out; }
+    .events-list-container .event-list-past_events.active {
+      position: initial;
+      opacity: 100;
+      pointer-events: initial; }
+  .events-list-container .event-list-header-btns {
+    height: 38px;
     display: flex; }
+  .events-list-container .event-list-header-past-events {
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+    color: white;
+    font-size: 1rem;
+    vertical-align: middle;
+    font-weight: 400;
+    padding: 0 0.75rem;
+    background-color: var(--info-bg-color);
+    border-radius: var(--border-radius-size); }
+    .events-list-container .event-list-header-past-events:hover {
+      background-color: var(--info-bg-hover); }
+  .events-list-container .event-list {
+    display: flex;
+    flex-direction: column; }
     .events-list-container .event-list ul {
       padding-left: 0px; }
 
@@ -538,6 +569,8 @@ body {
       border-color: var(--danger-bg-color); }
     .event-list-container .event-list-date.selected {
       border-color: var(--success-bg-color); }
+    .event-list-container .event-list-date.past {
+      border-color: #6E7276; }
     .event-list-container .event-list-date a {
       color: var(--white-color);
       position: relative; }
@@ -548,6 +581,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-around; }
+    .event-list-container .event-list-user-options.disabled {
+      display: none; }
     .event-list-container .event-list-user-options a,
     .event-list-container .event-list-user-options button {
       display: inline-block;
@@ -561,6 +596,8 @@ body {
       .event-list-container .event-list-user-options a:hover,
       .event-list-container .event-list-user-options button:hover {
         background-color: var(--bg-active-color); }
+    .event-list-container .event-list-user-options .event-list-btn {
+      cursor: pointer; }
     .event-list-container .event-list-user-options .event-list-opt-out {
       height: 45%;
       line-height: 35px;
@@ -600,13 +637,19 @@ body {
       width: 90%;
       margin: auto;
       border-bottom: 1px solid #aaa; }
-      .event-view-container .event-view-boss-container .event-view-info-header .event-header-late-warning {
+      .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text {
         float: right;
         margin: 0;
         line-height: 36px;
-        background-color: var(--danger-bg-color);
+        background-color: var(--info-bg-color);
         border-radius: 0.25rem;
         padding: 2px 4px; }
+        .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text.danger {
+          background-color: var(--danger-bg-color); }
+        .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text.warning {
+          background-color: var(--warning-bg-color); }
+        .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text.success {
+          background-color: var(--success-bg-color); }
       .event-view-container .event-view-boss-container .event-view-info-header div {
         flex: 1; }
       .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-bossname {

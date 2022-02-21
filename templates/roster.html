@@ -33,7 +33,7 @@
                 </div>
             </div>
             {% endfor %}
-            {% if user.is_staff %}
+            {% if user.is_staff and request.user.is_authenticated %}
                 <div class="roster-view unsorted">
                     {% for char in roster %}
                         {% if char.playable_class == None %}

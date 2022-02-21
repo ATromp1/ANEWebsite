@@ -1,0 +1,27 @@
+.auth-container {
+    width: 60%;
+}
+
+.auth-content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 60%;
+    margin: auto;
+    padding-top: 10em;
+}
+
+button[type=submit] {
+    margin-top: 1em;
+    cursor: pointer;
+    padding: 0.5em 1.5em;
+    text-align: center;
+    color: white;
+    border: solid 1px #00aeff;
+    background-color: #006fb2;
+}
+
+button[type=submit]:hover {
+    background-color: #008ee6;
+}
