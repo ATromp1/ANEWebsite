@@ -24,13 +24,13 @@
                     <a class=" navbar-btn" href="{% url 'events' %}">Events</a>
                 </li>
                 {% if is_officer == True %}
-                    <li class="nav-item navbar-toggle-officer-view">
-                        {% if user.is_staff %}
-                            <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn active">Disable Officer</a>
-                        {% else %}
-                            <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn">Enable Officer</a>
-                        {% endif %}
-                    </li>
+                <li class="nav-item navbar-toggle-officer-view">
+                    {% if user.is_staff %}
+                    <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn active">Disable Officer</a>
+                    {% else %}
+                    <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn">Enable Officer</a>
+                    {% endif %}
+                </li>
                 {% endif %}
 
                 <li class="responsive-user-btn">

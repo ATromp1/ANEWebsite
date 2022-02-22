@@ -99,6 +99,7 @@ function load_roster_template(template_name){
     raid_event.roster_per_boss_objects[boss_id].load_roster_from_roster_list(parsed_roster)
     raid_event.roster_per_boss_objects[boss_id].display_selected_roster()
     raid_event.roster_per_boss_objects[boss_id].display_benched_roster()
+    raid_event.roster_per_boss_objects[boss_id].display_buff_info()
 
     $.ajax({
         url: window.location.href,

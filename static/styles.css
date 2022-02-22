@@ -749,6 +749,13 @@ body {
       padding-bottom: 1.5em; }
       .event-view-container .event-view-boss-container .event-view-boss-info.hidden {
         display: none; }
+      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-buff-info .event-view-buff {
+        margin-bottom: 10px; }
+      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-buff-info .event-view-missing-buffs-text {
+        font-size: 1.5em; }
+      .event-view-container .event-view-boss-container .event-view-boss-info .event-view-buff-info .event-view-buff-icon {
+        height: 24px;
+        width: 24px; }
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-selected-roster {
         min-width: 250px;
         user-select: none; }
