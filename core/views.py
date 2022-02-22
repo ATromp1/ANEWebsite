@@ -27,15 +27,14 @@ def home_view(request):
         if events:
             for event in events:
                 event.status = user_attendance_status(event, request)
-
                 if is_user_absent(event, request):
                     event.absent = True
-                    
+
     try:
         event = events[0]
     except IndexError:
         event = []
-        
+
     handle_event_ajax(request, request.GET)
     context = {
         'upcoming_event': event,
@@ -51,14 +50,14 @@ def events_view(request):
     if events:
         for event in events:
             event.status = user_attendance_status(event, request)
-
             if is_user_absent(event, request):
                 event.absent = True
+
     save_late_user(request, request.GET)
-    past_events = get_past_events()
+
     context = {
         'event_list': events,
-        'past_events': past_events,
+        'past_events': get_past_events(),
         'social_user': get_user_display_name(request),
         'is_officer': get_user_rank(request),
     }
@@ -74,7 +73,6 @@ def add_event_view(request):
         if form.is_valid():
             form.save()
             date = request.POST['date']
-            print(date)
             RaidEvent.objects.get(date=date).populate_roster()
             return redirect('events')
     else:
@@ -94,13 +92,12 @@ def add_event_view(request):
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):
     current_raid = RaidEvent.objects.get(date=event_date)
-    
-    
+
     if current_raid in get_past_events():
         is_past_event = True
-    else: 
+    else:
         is_past_event = False
-        
+
     load_roster_template(current_raid, request.GET)
     select_player_ajax(request.GET, current_raid)
 
@@ -124,7 +121,7 @@ def events_details_view(request, event_date):
     return render(request, 'events_details.html', context)
 
 
-def roster_view(request):    
+def roster_view(request):
     context = {
         'roster': Roster.objects.all(),
         'playable_classes': get_playable_classes_as_css_classes(),
