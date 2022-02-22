@@ -1,16 +1,8 @@
 const IMAGES_PATH_ROLES = 'images/roleIcons/'
 const IMAGES_PATH_CLASS = 'images/classIcons/'
+const IMAGES_PATH_BUFFS = 'images/buffIcons/'
 
-// Rework the boss information we get from the DB into a more managable format
-let boss_name_list = {}
-for (i = 0; i < boss_list.length; i++) {
-    boss_name_list[boss_list[i].fields.boss_id] = {
-        'name': boss_list[i].fields.boss_name,
-        'id': boss_list[i].fields.boss_id
-    }
-}
-
-let roles_per_class = {
+const roles_per_class = {
     'Warrior': ['tank', 'mdps'],
     'Paladin': ['tank', 'mdps', 'healer'],
     'Hunter': ['rdps', 'mdps'],
@@ -24,6 +16,45 @@ let roles_per_class = {
     'Demon Hunter': ['tank', 'mdps'],
     'Death Knight': ['tank', 'mdps']
 }
+
+const class_buffs = {
+    0: {
+        'playable_class':'Warrior',
+        'buff':'battle_shout'
+    },
+    1:{
+        'playable_class': 'Priest',
+        'buff': 'fortitude',
+    },
+    2:{
+        'playable_class':'Mage',
+        'buff':'intellect',
+    },
+    3:{
+        'playable_class':'Warlock',
+        'buff':'soulstone',
+    },
+    4:{
+        'playable_class':'Monk',
+        'buff':'mystic_touch',
+    },
+    5:{
+        'playable_class':'Demon Hunter',
+        'buff':'chaos_brand',
+    },
+}
+
+
+// Rework the boss information we get from the DB into a more managable format
+let boss_name_list = {}
+for (i = 0; i < boss_list.length; i++) {
+    boss_name_list[boss_list[i].fields.boss_id] = {
+        'name': boss_list[i].fields.boss_name,
+        'id': boss_list[i].fields.boss_id
+    }
+}
+
+
 
 if(is_past_event){
     is_staff = false
@@ -111,6 +142,7 @@ class RaidEvent {
             this.currently_selected_boss_roster = boss_id
             this.roster_per_boss_objects[boss_id].display_benched_roster()
             this.roster_per_boss_objects[boss_id].display_selected_roster()
+            this.roster_per_boss_objects[boss_id].display_buff_info()
         }
     }
 
@@ -208,6 +240,7 @@ class RosterPerBoss {
         if(display_change){
             this.remove_from_benched_display_at_index(char_removed_at_index)
             this.display_selected_roster()
+            this.display_buff_info()
         }
         update_boss_buttons_status(this.boss)
     }
@@ -219,6 +252,7 @@ class RosterPerBoss {
         if(display_change){
             this.display_benched_roster()
             this.display_selected_roster()
+            this.display_buff_info()
         }
         update_boss_buttons_status(this.boss)
     }
@@ -318,7 +352,51 @@ class RosterPerBoss {
         });
 
     } 
+
+    classes_in_roster(){
+        let classes_in_roster = []
+        jQuery.each(this.selected_roster, function(){
+            if(!classes_in_roster.includes(this.playable_class)){
+                classes_in_roster.push(this.playable_class)
+            }
+        })
+        return classes_in_roster
+    }
+
+    display_buff_info(){
+        if(is_staff){
+            $('.event-view-buff-info').empty()
+            $('.event-view-buff-info').append($('<div/>',{
+                'text':'Missing Buffs',
+                'class':'event-view-missing-buffs-text',
+            }))
+            let classes_in_roster = this.classes_in_roster()
+            jQuery.each(class_buffs, function(index){
+                if(!classes_in_roster.includes(class_buffs[index].playable_class)){
+                    let $buff_div = $('<div/>',{'class':'event-view-buff'})
+                    $buff_div.append($('<img/>',{
+                        'class': 'event-view-buff-icon',
+                        'src': static_url+IMAGES_PATH_BUFFS+class_buffs[index].buff+'.png',
+                    }))
+                    $buff_div.append($('<span/>',{
+                        'id': class_buffs[index],
+                        'class':'event-view-buff-text',
+                        'text': unslugify_string(class_buffs[index].buff),
+                    }))
+                    $('.event-view-buff-info').append($buff_div)
+                }
+            });
+            
+        }
+    }
 }
+
+function unslugify_string(slug) {
+    const result = slug.replace(/\_/g, " ");
+    return result.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
 
 function is_user_selected_for_boss(boss_id){
     if(typeof(user_event_summary[boss_id]) !== "undefined"){
@@ -422,6 +500,8 @@ function display_summary_view(){
 }
 
 
+
+
 // Create new raid_event and populate that object with rosters
 raid_event = new RaidEvent(boss_name_list, roster_characters)
 raid_event.populate_boss_rosters()
@@ -503,18 +583,19 @@ function get_boss_image_path_from_id(boss_id){
 Sets a click event listener on benched-roster table td elements.
 If it has id then id will be role, char_name will always be the first sibling of type td
 Sends ajax request to the server to sync up the database
-Doesnt need a staff check as it is not displayed unless you're staff member
 */
-$('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
-    if(this.id){
-        role = this.id
-        char_name = jQuery(this).siblings('td').first()[0].innerHTML
-        current_boss_id = raid_event.currently_selected_boss_roster
-        raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
+if(is_staff){
+    $('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
+        if(this.id){
+            role = this.id
+            char_name = jQuery(this).siblings('td').first()[0].innerHTML
+            current_boss_id = raid_event.currently_selected_boss_roster
+            raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
 
-        char_moved_ajax(char_name, role, current_boss_id)
-    }
-})
+            char_moved_ajax(char_name, role, current_boss_id)
+        }
+    })
+}
 
 /*
  Same as above but removes the character from selected instead
