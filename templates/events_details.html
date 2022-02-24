@@ -151,16 +151,17 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        const static_url = "{% get_static_prefix %}"
+        const is_staff = {{ user.is_staff|yesno:"true,false" }}
+        const is_past_event = {{ is_past_event|yesno:"true,false"}}
+        const user_is_absent = {{ user_is_absent|yesno:"true,false" }}
         let boss_list = {{bosses | safe}}
         let roster = {{roster_dict | safe}}
         let css_classes = {{css_classes | safe}}
-        let static_url = "{% get_static_prefix %}"
         let boss_rosters = {{ selected_roster|safe }}
-        let is_staff = {{ user.is_staff|yesno:"true,false" }}
         let user_event_summary = {{ user_char_selected|safe }}
-        let user_is_absent = {{ user_is_absent|yesno:"true,false" }}
-        let is_past_event = {{ is_past_event|yesno:"true,false"}}
     </script>
+    <script src="{% static '/js/utils.js' %}"></script>
     <script src="{% static '/js/event_view.js' %}"></script>
     <script src="{% static '/js/roster_template.js' %}"></script>
 
