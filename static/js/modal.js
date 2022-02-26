@@ -15,7 +15,6 @@ function send_late_ajax(event_date, minutes_late, delete_current){
 }
 
 function update_raid_status_ajax(event_date, request_type){
-
     $.ajax({
         data:{
             'type':request_type,
@@ -53,12 +52,12 @@ function update_event_display(element){
 
 
 // Open and close Modal
-let events_modal = $('#events-late-modal')
-let events_modal_open_btn = $('.events_modal_open_btn')
-let events_modal_close_btn = $('.close-btn')
-let events_modal_submit_btn = $('.submit-btn')
-let events_modal_delete_btn = $('.delete-btn')
-let events_modal_header_date = $('#input-modal-header-date')
+const events_modal = $('#events-late-modal')
+const events_modal_open_btn = $('.events_modal_open_btn')
+const events_modal_close_btn = $('.close-btn')
+const events_modal_submit_btn = $('.submit-btn')
+const events_modal_delete_btn = $('.delete-btn')
+const events_modal_header_date = $('#input-modal-header-date')
 let event_date;
 
 function toggle_events_modal(){

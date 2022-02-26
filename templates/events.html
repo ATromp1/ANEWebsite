@@ -95,10 +95,18 @@
 </div>
 
 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script src="{% static '/js/modal.js' %}"></script>
+<script>
+    $('.event-list-header-past-events').click(function(){
+        display_past_events()
+    })
+    function display_past_events(){
+        $('.event-list-past_events').toggleClass("active")
+    }
+</script>
+
 
 {% endblock %}
 
