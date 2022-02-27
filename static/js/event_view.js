@@ -1,7 +1,6 @@
 const IMAGES_PATH_ROLES = 'images/roleIcons/'
 const IMAGES_PATH_CLASS = 'images/classIcons/'
 const IMAGES_PATH_BUFFS = 'images/buffIcons/'
-
 const roles_per_class = {
     'Warrior': ['tank', 'mdps'],
     'Paladin': ['tank', 'mdps', 'healer'],
@@ -16,7 +15,6 @@ const roles_per_class = {
     'Demon Hunter': ['tank', 'mdps'],
     'Death Knight': ['tank', 'mdps']
 }
-
 const class_buffs = {
     0: {
         'playable_class':'Warrior',
@@ -44,34 +42,44 @@ const class_buffs = {
     },
 }
 
-
-// Rework the boss information we get from the DB into a more managable format
-let boss_name_list = {}
-for (i = 0; i < boss_list.length; i++) {
-    boss_name_list[boss_list[i].fields.boss_id] = {
-        'name': boss_list[i].fields.boss_name,
-        'id': boss_list[i].fields.boss_id
-    }
+function boss_list_db_to_object(boss_list){
+    /*
+    // Rework the boss information we get from the DB into a more managable format
+    */
+    let bosses = {}
+    boss_list.forEach(boss => {
+        boss = boss.fields
+        bosses[boss.boss_id]={
+            'name': boss.boss_name,
+            'id':boss.boss_id,
+        }
+    })
+    return bosses
 }
+let boss_name_list = boss_list_db_to_object(boss_list)
 
+function roster_list_db_to_object(roster_list){
+    /*
+    // Rework the roster information we get from the DB into a more managable format
+    */
+    let roster_chars = []
+    for (let i in roster_list) {
+        let roles = roles_per_class[roster[i].playable_class]
+        roster_chars.push({
+            'name': roster[i].name,
+            'playable_class': roster[i].playable_class,
+            'roles': roles,
+        })
+    }
+    return roster_chars
+}
+let roster_characters = roster_list_db_to_object(roster)
 
-
+// is_past_event is variable sent through from backend. If true then we disable staff so group can't be altered
 if(is_past_event){
     is_staff = false
 }
 
-
-// Rework the roster information we get from the DB into a more managable format
-let roster_characters = []
-for (let i in roster) {
-    let roles = roles_per_class[roster[i].playable_class]
-    roster_characters.push({
-        'name': roster[i].name,
-        'playable_class': roster[i].playable_class,
-        'roles': roles,
-    })
-}
- 
 class RaidEvent {
     /*
     Contains the information needed to display a roster for each boss
@@ -90,7 +98,6 @@ class RaidEvent {
         this.currently_selected_boss_roster = -1
     }
     get_playable_class_by_char_name(char_name){
-
         for(let i in this.initial_roster){
             let char = this.initial_roster[i]
             if(char.name == char_name){
@@ -179,7 +186,7 @@ class RosterPerBoss {
         this.benched_roster = this.initial_roster.slice()
     }
 
-    #remove_char_from_benched_roster(char_name){
+    remove_char_from_benched_roster(char_name){
         for(let index in this.benched_roster){
             let char = this.benched_roster[index]
             if(char.name == char_name){
@@ -189,7 +196,7 @@ class RosterPerBoss {
         }
     }   
 
-    #add_char_to_benched_roster(char_name){
+    add_char_to_benched_roster(char_name){
         for(let index in this.initial_roster){
             let char = this.initial_roster[index]
             if(char.name == char_name){
@@ -198,7 +205,7 @@ class RosterPerBoss {
         }
     }
 
-    #remove_char_from_selected_roster(char_name){
+    remove_char_from_selected_roster(char_name){
         for(let index in this.selected_roster){
             let char = this.selected_roster[index]
             if(char.name == char_name){
@@ -207,7 +214,7 @@ class RosterPerBoss {
         }
     }
 
-    #add_char_to_selected_roster(char_name, role){
+    add_char_to_selected_roster(char_name, role){
         // Assume char is in the benched roster.
         for(let index in this.benched_roster){
             let char = this.benched_roster[index]
@@ -220,7 +227,6 @@ class RosterPerBoss {
             }
         }
     }
-
 
     get_amount_of_role_in_selected_roster(role){
         let count = 0
@@ -235,8 +241,8 @@ class RosterPerBoss {
 
     move_from_bench_to_selected(char_name, role, display_change){
         display_change = false || display_change
-        this.#add_char_to_selected_roster(char_name, role);
-        let char_removed_at_index = this.#remove_char_from_benched_roster(char_name)
+        this.add_char_to_selected_roster(char_name, role);
+        let char_removed_at_index = this.remove_char_from_benched_roster(char_name)
         if(display_change){
             this.remove_from_benched_display_at_index(char_removed_at_index)
             this.display_selected_roster()
@@ -247,8 +253,8 @@ class RosterPerBoss {
 
     move_from_selected_to_bench(char_name, display_change){
         display_change = false || display_change
-        this.#add_char_to_benched_roster(char_name)
-        this.#remove_char_from_selected_roster(char_name);
+        this.add_char_to_benched_roster(char_name)
+        this.remove_char_from_selected_roster(char_name);
         if(display_change){
             this.display_benched_roster()
             this.display_selected_roster()
@@ -261,7 +267,6 @@ class RosterPerBoss {
         let element_to_remove = $('.event-view-benched-roster-table .benched-roster-row').eq(index)
         element_to_remove.remove()
     }
-
 
     display_selected_roster(){
         let header_element_tank = $('.event-view-selected-roster-header').eq(0);
@@ -391,13 +396,6 @@ class RosterPerBoss {
     }
 }
 
-function unslugify_string(slug) {
-    const result = slug.replace(/\_/g, " ");
-    return result.replace(/\w\S*/g, function (txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-  }
-
 function is_user_selected_for_boss(boss_id){
     if(typeof(user_event_summary[boss_id]) !== "undefined"){
         if(typeof(user_event_summary[boss_id].name) !== "undefined"){
@@ -499,17 +497,15 @@ function display_summary_view(){
     }
 }
 
+function create_new_raid_event(){
+    // Create new raid_event and populate that object with rosters
+    raid_event = new RaidEvent(boss_name_list, roster_characters)
+    raid_event.populate_boss_rosters()
+    raid_event.load_rosters_from_db(boss_rosters)
+}
+create_new_raid_event()
 
 
-
-// Create new raid_event and populate that object with rosters
-raid_event = new RaidEvent(boss_name_list, roster_characters)
-raid_event.populate_boss_rosters()
-raid_event.load_rosters_from_db(boss_rosters)
-
-
-
-//Create boss buttons
 function create_boss_buttons(){
     jQuery.each(boss_name_list, function(){
         $('.event-view-boss-list').append($('<div/>',{
@@ -520,8 +516,8 @@ function create_boss_buttons(){
     });
 }
 
-// Set the colour depending on the rosters status
 function update_boss_buttons_status(boss_id){
+    // Set the colour depending on the rosters status
     let boss_btn_element = $('.boss-view-btn#'+boss_id)
 
     $(boss_btn_element).removeClass('empty-roster in-progress roster-complete '+
@@ -549,58 +545,64 @@ function update_boss_buttons_status(boss_id){
 
 // Create buttons and update their status on page load
 create_boss_buttons()
-// Update all buttons atleast once on page load
+
 for(let boss in raid_event.bosses){
+    // Update all buttons atleast once on page load
     update_boss_buttons_status(raid_event.bosses[boss].id)
 }
+
 // Start page on summary
 display_summary_view()
-// Summary button
+
 $('.event-view-summary-btn').click(function(){
+    // Summary button
     raid_event.switch_to_summary()
 })
 
 
-// If element with class '.boss-view-btn' gets clicked then get element id and call
-// RaidEvent.switch_to_roster() with boss id same as button
 $('.boss-view-btn').click(function(){
+    // If element with class '.boss-view-btn' gets clicked then get element id and call
+    // RaidEvent.switch_to_roster() with boss id same as button
     $('.event-view-boss-info').removeClass('hidden')
     $('.event-view-summary').addClass("hidden")
     raid_event.switch_to_roster(this.id)
-    let boss_image_path = get_boss_image_path_from_id(this.id)
-    $('body').css('backgroundImage', 'url('+boss_image_path+')')
-    $('.event-view-header-bossname').text(boss_name_list[this.id].name)
+    swap_background_image(this.id)
+
+    function swap_background_image(boss_id){
+        let boss_image_path = get_boss_image_path_from_id(boss_id)
+        $('body').css('backgroundImage', 'url('+boss_image_path+')')
+        $('.event-view-header-bossname').text(boss_name_list[boss_id].name)
+    }
+    
+    function get_boss_image_path_from_id(boss_id){
+        let boss_name = boss_name_list[boss_id].name
+        let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
+        return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
+    }
 })
 
-function get_boss_image_path_from_id(boss_id){
-    let boss_name = boss_name_list[boss_id].name
-    let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
-    return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
-}
-
-
-/* 
-Sets a click event listener on benched-roster table td elements.
-If it has id then id will be role, char_name will always be the first sibling of type td
-Sends ajax request to the server to sync up the database
-*/
 if(is_staff){
+    /* 
+    Sets a click event listener on benched-roster table td elements.
+    If it has id then id will be role, char_name will always be the first sibling of type td
+    Sends ajax request to the server to sync up the database
+    */
     $('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
         if(this.id){
             role = this.id
             char_name = jQuery(this).siblings('td').first()[0].innerHTML
             current_boss_id = raid_event.currently_selected_boss_roster
             raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
-
             char_moved_ajax(char_name, role, current_boss_id)
         }
     })
 }
 
-/*
- Same as above but removes the character from selected instead
-*/
 if(is_staff){
+    /*
+    Sets a click event listener on selected roster elements.
+    Sends ajax request to the server to sync up the database
+    */
     $('.event-view-selected-roster').on('click','.event-view-selected-roster-char span', function(){
         char_name = this.innerHTML
         current_boss_id = raid_event.currently_selected_boss_roster
