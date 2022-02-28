@@ -745,7 +745,7 @@ body {
     .event-view-container .event-view-boss-container .event-view-boss-info {
       display: flex;
       margin-top: 2rem;
-      justify-content: space-around;
+      justify-content: space-evenly;
       padding-bottom: 1.5em; }
       .event-view-container .event-view-boss-container .event-view-boss-info.hidden {
         display: none; }
