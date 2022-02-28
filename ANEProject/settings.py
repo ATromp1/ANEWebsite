@@ -29,9 +29,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-bvv(o_xhsqtaa#4rrp-1p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get('DEBUG')) == "1"
 
-ALLOWED_HOSTS = []
-if not DEBUG:
-    ALLOWED_HOSTS += [os.environ.get('DJANGO_ALLOWED_HOST')]
+ALLOWED_HOSTS = ['ane.superhelt.org','127.0.0.1','localhost']
+
 
 LOGIN_REDIRECT_URL = '/'
 
