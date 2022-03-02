@@ -6,8 +6,11 @@ name = "pypi"
 [packages]
 django = "4.0.2"
 django-allauth = "*"
-apscheduler = "*"
+apscheduler = "==3.6.3"
 django-dotenv = "*"
+pysqlite3 = "*"
+pysqlite3-binary = "*"
+gunicorn = "*"
 
 [dev-packages]
 

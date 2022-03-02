@@ -117,11 +117,19 @@ def set_account_id_and_class(char_json):
             char_name = char_json['wow_accounts'][i]['characters'][j]['name']
             playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
             char_id = char_json['wow_accounts'][i]['characters'][j]['id']
-            if Roster.objects.filter(name=char_name).exists():
-                res = Roster.objects.get(character_id=char_id)
+            try: 
+                res = Roster.objects.get(name=char_name)
+            except Roster.DoesNotExist:
+                pass
+            else:
                 res.account_id = account_id
                 res.playable_class = playable_class
                 res.save()
+            #if Roster.objects.filter(name=char_name).exists():
+            #    res = Roster.objects.get(character_id=char_id)
+            #    res.account_id = account_id
+            #    res.playable_class = playable_class
+            #    res.save()
 
 
 def get_user_profile_data(request):

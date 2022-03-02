@@ -16,9 +16,11 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, 'static'),
+#]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -27,12 +29,12 @@ STATICFILES_DIRS = [
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-bvv(o_xhsqtaa#4rrp-1pk(qwk%h3)(!x80&qjk9=ob$hp5)jx')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.environ.get('DEBUG')) == "1"
+DEBUG = str(os.environ.get('DEBUG')) == '1'
 
-ALLOWED_HOSTS = ['ane.superhelt.org','127.0.0.1','localhost']
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['http://calendar.ane-guild.org', 'localhost']
 
-
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/sync/'
 
 SOCIALACCOUNT_STORE_TOKENS = True
 
