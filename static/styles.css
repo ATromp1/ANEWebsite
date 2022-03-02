@@ -436,20 +436,18 @@ body {
     margin: auto;
     display: grid;
     grid-template-columns: repeat(6, minmax(150px, 1fr));
-    row-gap: 10%;
     column-gap: 1%; }
     @media screen and (max-width: 1350px) {
       .roster-container .roster-grid {
-        grid-template-columns: repeat(4, minmax(150px, 1fr));
-        row-gap: 5%; } }
+        grid-template-columns: repeat(4, minmax(150px, 1fr)); } }
     @media screen and (max-width: 800px) {
       .roster-container .roster-grid {
         grid-template-columns: repeat(3, minmax(150px, 1fr)); } }
     @media screen and (max-width: 600px) {
       .roster-container .roster-grid {
-        grid-template-columns: repeat(2, minmax(150px, 1fr));
-        row-gap: 2%; } }
+        grid-template-columns: repeat(2, minmax(150px, 1fr)); } }
     .roster-container .roster-grid .roster-class-col {
+      margin: 3rem 0;
       text-shadow: 2px 2px 4px #000; }
     .roster-container .roster-grid .roster-class-col-header {
       font-size: 1.3em;
