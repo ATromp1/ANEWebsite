@@ -155,8 +155,12 @@ def get_current_user_data(request):
 
 
 def get_user_chars_in_roster(request):
-    return Roster.objects.filter(account_id=get_current_user_data(request)['id'])
-
+    try:
+        res = Roster.objects.filter(account_id=get_current_user_data(request)['id'])
+    except Roster.DoesNotExist:
+        pass
+    else:
+        return res
 
 def decline_raid_button(request, event_date):
     """
@@ -385,14 +389,18 @@ def sync_bnet(request):
 def set_officer_staff(request):
     account_id = get_current_user_data(request)['id']
     officer_ranks = [0, 1]
-    user_characters = Roster.objects.filter(account_id=account_id)
-    for character in user_characters:
-        if character.rank in officer_ranks:
-            group = Group.objects.get(name='Officers')
-            request.user.groups.add(group)
-            request.user.is_staff = True
-            request.user.save()
-            break
+    try:
+        user_characters = Roster.objects.filter(account_id=account_id)
+    except Roster.DoesNotExist:
+        pass
+    else:
+        for character in user_characters:
+            if character.rank in officer_ranks:
+                group = Group.objects.get(name='Officers')
+                request.user.groups.add(group)
+                request.user.is_staff = True
+                request.user.save()
+                break
 
 
 def toggle_staff_button(request):
