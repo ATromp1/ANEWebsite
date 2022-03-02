@@ -162,6 +162,7 @@ def get_user_chars_in_roster(request):
     else:
         return res
 
+
 def decline_raid_button(request, event_date):
     """
     removes all characters belonging to the currently logged-in user and remove them from the initial roster
@@ -212,6 +213,7 @@ def delete_event_button(request, event_date):
     else:
         return redirect('events')
 
+
 def get_past_events():
     events = RaidEvent.objects.all().order_by('date')
     past_events = []
@@ -220,6 +222,7 @@ def get_past_events():
             if event.date < datetime.now().date():
                 past_events.append(event)
     return past_events
+
 
 def get_upcoming_events():
     events = RaidEvent.objects.all().order_by('date')
@@ -230,12 +233,14 @@ def get_upcoming_events():
                 upcoming_events.append(event)
     return upcoming_events
 
+
 def logout_user_button():
     return redirect('/accounts/logout/')
 
 
 def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
+
 
 def handle_event_ajax(request, ajax_data):
     """
@@ -245,15 +250,13 @@ def handle_event_ajax(request, ajax_data):
     if ajax_data.get('type') is not None:
         if ajax_data.get('type') == 'decline':
             decline_raid_button(request, ajax_data.get('date'))
-            
+
         elif ajax_data.get('type') == 'attend':
             attend_raid_button(request, ajax_data.get('date'))
-             
+
         elif ajax_data.get('type') == 'late':
             save_late_user(request, ajax_data)
-            
-        
-            
+
 
 def save_late_user(request, ajax_data):
     """
@@ -471,10 +474,9 @@ def get_user_chars_per_event(current_raid, request):
 def is_user_absent(event, request):
     account_id = get_current_user_data(request)['id']
     try:
-        event.roster.get(account_id=Roster.objects.filter(account_id=account_id).account_id).exists()
+        event.roster.get(account_id=Roster.objects.filter(account_id=account_id).account_id)
+        return False
     except:
         all_user_characters = get_user_profile_data(request)
         set_account_id_and_class(all_user_characters)
         return True
-    else:
-        return False
