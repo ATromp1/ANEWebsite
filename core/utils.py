@@ -476,7 +476,7 @@ def is_user_absent(event, request):
     try:
         event.roster.get(account_id=Roster.objects.filter(account_id=account_id).account_id)
         return False
-    except:
+    except RaidEvent.DoesNotExist:
         all_user_characters = get_user_profile_data(request)
         set_account_id_and_class(all_user_characters)
         return True
