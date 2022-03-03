@@ -419,7 +419,7 @@ function display_summary_view(){
     let any_boss_is_shown = false
     jQuery.each(boss_name_list, function(){
         let players_in_boss_roster = raid_event.roster_per_boss_objects[this.id].selected_roster.length
-        if(players_in_boss_roster>19){
+        if(players_in_boss_roster>=18){
             any_boss_is_shown = true
             let boss_div = ($('<div/>',{
                 'class': 'event-view-summary-boss',
@@ -463,12 +463,24 @@ function display_summary_view(){
                         'text':char.name,
                         'class': css_classes[char.playable_class]
                     }))
+                    if(players_in_boss_roster<20){
+                        char_name_div.append($('<p/>',{
+                            'text': "Note, this group is not complete",
+                            'class': "text-center m-auto text-secondary w-75"
+                        }))
+                    }
                 } else {
                     // If the event doesn't have your name and you are not absent but there is a roster that means you are bench
                     boss_div.append($('<span/>',{
                         'class':'event-view-summary-benched',
                         'text':'Benched'
                     }))
+                    if(players_in_boss_roster<20){
+                        boss_div.append($('<p/>',{
+                            'text': "Note, this group is not complete",
+                            'class': "text-center m-auto text-secondary w-75"
+                        }))
+                    }
                 }
             }
         }
@@ -533,7 +545,7 @@ function update_boss_buttons_status(boss_id){
             boss_roster_status = 'roster-complete'
         }
     } else{
-        if(players_in_boss_roster>19){
+        if(players_in_boss_roster >= 20){
             boss_roster_status = 'roster-complete'
         }
         if(!is_user_selected_for_boss(boss_id)){
