@@ -411,13 +411,13 @@ def toggle_staff_button(request):
         request.user.is_staff = False
         request.user.save()
         return redirect('home')
-    if not request.user.is_staff:
+    if not request.user.is_staff and is_user_officer(request) == True:
         request.user.is_staff = True
         request.user.save()
         return redirect('home')
 
 
-def get_user_rank(request):
+def is_user_officer(request):
     if request.user.is_anonymous or request.user.is_superuser:
         return False
     if request.user.is_authenticated:
