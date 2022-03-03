@@ -1,18 +1,7 @@
 // TODO LIST
-
-
+    -- Maybe save template to DB>session storage
+    -- Remove the red from calendar
+    
 BUGS
-
-
-
-
-PRODUCTION
-
-
--- Some urls are still coded to localhost
-    --callback url in Battlenet API settings
-
--- Change some of the cdns to their production version
--- add site domain to "Sites" in admin and bnet application
-
--- WSGI + gunicorn or uwsgi on linux
+    -- You can put yourself as officer if you go to /toggle_staff/ url
+    -- Dont send a delete late if user is not late
