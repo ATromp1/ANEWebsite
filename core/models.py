@@ -118,7 +118,7 @@ def set_account_id_and_class(char_json):
             playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
             char_id = char_json['wow_accounts'][i]['characters'][j]['id']
             try: 
-                res = Roster.objects.get(name=char_name)
+                res = Roster.objects.get(character_id=char_id)
             except Roster.DoesNotExist:
                 pass
             else:
