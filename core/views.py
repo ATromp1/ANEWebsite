@@ -16,7 +16,7 @@ from core.utils import (
     generate_calendar,
     get_user_display_name, select_player_ajax, create_roster_dict, selected_roster_from_db_to_json,
     user_attendance_status, save_late_user, load_roster_template, get_user_chars_per_event,
-    is_user_absent, get_user_rank, handle_event_ajax, get_past_events, get_upcoming_events, sync_bnet
+    is_user_absent, is_user_officer, handle_event_ajax, get_past_events, get_upcoming_events, sync_bnet
 )
 
 def sync_view(request):
@@ -42,7 +42,7 @@ def home_view(request):
     context = {
         'upcoming_event': event,
         'social_user': get_user_display_name(request),
-        'is_officer': get_user_rank(request),
+        'is_officer': is_user_officer(request),
     }
     return render(request, 'home.html', context)
 
@@ -62,7 +62,7 @@ def events_view(request):
         'event_list': events,
         'past_events': get_past_events(),
         'social_user': get_user_display_name(request),
-        'is_officer': get_user_rank(request),
+        'is_officer': is_user_officer(request),
     }
     return render(request, 'events.html', context)
 
@@ -87,7 +87,7 @@ def add_event_view(request):
         'form': form,
         'submitted': submitted,
         'social_user': get_user_display_name(request),
-        'is_officer': get_user_rank(request),
+        'is_officer': is_user_officer(request),
     }
     return render(request, 'add_event.html', context)
 
@@ -118,7 +118,7 @@ def events_details_view(request, event_date):
         'user_is_late': check_user_in_late_users,
         'user_is_absent': is_user_absent(current_raid, request),
         'social_user': get_user_display_name(request),
-        'is_officer': get_user_rank(request),
+        'is_officer': is_user_officer(request),
         'is_past_event': is_past_event,
     }
     return render(request, 'events_details.html', context)
@@ -129,7 +129,7 @@ def roster_view(request):
         'roster': Roster.objects.all(),
         'playable_classes': get_playable_classes_as_css_classes(),
         'social_user': get_user_display_name(request),
-        'is_officer': get_user_rank(request),
+        'is_officer': is_user_officer(request),
     }
     return render(request, 'roster.html', context)
 
@@ -159,6 +159,6 @@ def calendar_view(request):
     context = {
         'cal': cal,
         'social_user': get_user_display_name(request),
-        'is_officer': get_user_rank(request),
+        'is_officer': is_user_officer(request),
     }
     return render(request, 'calendar.html', context)

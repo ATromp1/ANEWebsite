@@ -162,6 +162,7 @@ def get_user_chars_in_roster(request):
     else:
         return res
 
+
 def decline_raid_button(request, event_date):
     """
     removes all characters belonging to the currently logged-in user and remove them from the initial roster
@@ -212,6 +213,7 @@ def delete_event_button(request, event_date):
     else:
         return redirect('events')
 
+
 def get_past_events():
     events = RaidEvent.objects.all().order_by('date')
     past_events = []
@@ -220,6 +222,7 @@ def get_past_events():
             if event.date < datetime.now().date():
                 past_events.append(event)
     return past_events
+
 
 def get_upcoming_events():
     events = RaidEvent.objects.all().order_by('date')
@@ -230,12 +233,14 @@ def get_upcoming_events():
                 upcoming_events.append(event)
     return upcoming_events
 
+
 def logout_user_button():
     return redirect('/accounts/logout/')
 
 
 def login_user_button(request):
     return redirect('/accounts/battlenet/login/?process=login')
+
 
 def handle_event_ajax(request, ajax_data):
     """
@@ -245,15 +250,13 @@ def handle_event_ajax(request, ajax_data):
     if ajax_data.get('type') is not None:
         if ajax_data.get('type') == 'decline':
             decline_raid_button(request, ajax_data.get('date'))
-            
+
         elif ajax_data.get('type') == 'attend':
             attend_raid_button(request, ajax_data.get('date'))
-             
+
         elif ajax_data.get('type') == 'late':
             save_late_user(request, ajax_data)
-            
-        
-            
+
 
 def save_late_user(request, ajax_data):
     """
@@ -408,13 +411,13 @@ def toggle_staff_button(request):
         request.user.is_staff = False
         request.user.save()
         return redirect('home')
-    if not request.user.is_staff:
+    if not request.user.is_staff and is_user_officer(request) == True:
         request.user.is_staff = True
         request.user.save()
         return redirect('home')
 
 
-def get_user_rank(request):
+def is_user_officer(request):
     if request.user.is_anonymous or request.user.is_superuser:
         return False
     if request.user.is_authenticated:
@@ -470,7 +473,14 @@ def get_user_chars_per_event(current_raid, request):
 
 def is_user_absent(event, request):
     account_id = get_current_user_data(request)['id']
-    if event.roster.filter(account_id=Roster.objects.filter(account_id=account_id).first().account_id).exists():
+
+    if event.roster.filter(account_id=account_id).exists():
+        # print("you be existing")
         return False
+
+    # if event.roster.filter(account_id=Roster.objects.filter(account_id=account_id).first().account_id).exists():
+    #     return False
     else:
+        # print("you dont exist")
         return True
+
