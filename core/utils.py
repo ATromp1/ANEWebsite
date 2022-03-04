@@ -355,6 +355,8 @@ def selected_roster_from_db_to_json(current_raid):
 
 
 def user_attendance_status(event, request):
+    if not is_raider(request):
+        return 'Click For Details'
     for user_char in get_user_chars_in_roster(request):
         if not event.roster.all().filter(name=user_char).exists():
             return 'absent'
@@ -473,14 +475,15 @@ def get_user_chars_per_event(current_raid, request):
 
 def is_user_absent(event, request):
     account_id = get_current_user_data(request)['id']
-
     if event.roster.filter(account_id=account_id).exists():
-        # print("you be existing")
         return False
-
-    # if event.roster.filter(account_id=Roster.objects.filter(account_id=account_id).first().account_id).exists():
-    #     return False
     else:
-        # print("you dont exist")
         return True
 
+
+def is_raider(request):
+    account_id = get_current_user_data(request)['id']
+    if Roster.objects.filter(account_id=account_id).exists():
+        return True
+    else:
+        return False
