@@ -107,6 +107,13 @@ class BossPerEvent(models.Model):
         getattr(self, role).remove(Roster.objects.get(name=name))
 
 
+class UserCharacters(models.Model):
+    name = models.CharField(max_length=30)
+    character_id = models.IntegerField(unique=True)
+    account_id = models.IntegerField()
+    playable_class = models.CharField(max_length=30)
+
+
 def set_account_id_and_class(char_json):
     """
     Updates the account id and playable class in the Roster with the data received from the API after someone logs in
@@ -114,10 +121,9 @@ def set_account_id_and_class(char_json):
     for i in range(len(char_json['wow_accounts'])):
         for j in range(len(char_json['wow_accounts'][i]['characters'])):
             account_id = char_json['id']
-            char_name = char_json['wow_accounts'][i]['characters'][j]['name']
             playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
             char_id = char_json['wow_accounts'][i]['characters'][j]['id']
-            try: 
+            try:
                 res = Roster.objects.get(character_id=char_id)
             except Roster.DoesNotExist:
                 pass
@@ -125,11 +131,38 @@ def set_account_id_and_class(char_json):
                 res.account_id = account_id
                 res.playable_class = playable_class
                 res.save()
-            #if Roster.objects.filter(name=char_name).exists():
-            #    res = Roster.objects.get(character_id=char_id)
-            #    res.account_id = account_id
-            #    res.playable_class = playable_class
-            #    res.save()
+
+
+def sync_roster_from_user_characters():
+    unsynced = Roster.objects.filter(account_id__isnull=True)
+    for character in unsynced:
+        if UserCharacters.objects.filter(character_id=character.character_id).exists():
+            character.account_id = UserCharacters.objects.get(character_id=character.character_id).account_id
+            character.playable_class = UserCharacters.objects.get(character_id=character.character_id).playable_class
+            character.save()
+
+
+def populate_user_characters(char_json):
+    for i in range(len(char_json['wow_accounts'])):
+        for j in range(len(char_json['wow_accounts'][i]['characters'])):
+            account_id = char_json['id']
+            char_name = char_json['wow_accounts'][i]['characters'][j]['name']
+            playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
+            char_id = char_json['wow_accounts'][i]['characters'][j]['id']
+            # try:
+            #     res = UserCharacters.objects.get(character_id=char_id)
+            # except UserCharacters.DoesNotExist:
+            #     pass
+            # else:
+            #     res.name = char_name
+            #     res.character_id = char_id
+            #     res.account_id = account_id
+            #     res.playable_class = playable_class
+            #     res.save()
+            UserCharacters.objects.filter(character_id=char_id).update_or_create(account_id=account_id,
+                                                                                 name=char_name,
+                                                                                 playable_class=playable_class,
+                                                                                 character_id=char_id)
 
 
 def get_user_profile_data(request):
