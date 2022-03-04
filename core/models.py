@@ -152,7 +152,6 @@ def get_user_profile_data(request):
 def populate_roster_db(api_roster):
     """
     Adding characters from the API call that contains all guild roster characters and filters them by rank
-    Also updating the ranks in the CurrentUser database
     """
     raider_ranks = [0, 1, 3, 4, 5]
     for member in api_roster['members']:
