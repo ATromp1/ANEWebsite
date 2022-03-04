@@ -158,6 +158,14 @@ html {
   margin: auto;
   margin-top: 1em;
   box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 3px; }
+  @media screen and (max-width: 420px) {
+    .roster-container,
+    .event-view-container,
+    .calendar-grid-container,
+    .events-list-container,
+    .home-container,
+    .auth-container {
+      width: 98%; } }
 
 body {
   background-image: url("images/bossImages/Sepulcher/SepulcherBG.jpg");
@@ -390,13 +398,15 @@ body {
     .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn {
       cursor: pointer;
       text-decoration: none;
-      color: var(--main-text-color);
+      background-color: var(--info-bg-color);
       display: block;
       border-radius: var(--border-radius-size);
       padding: 10px 0;
       margin-bottom: 3px;
       color: var(--white-color);
       transition: background-color 150ms ease-in; }
+      .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn:hover {
+        background-color: var(--info-bg-hover); }
       @media screen and (max-width: 750px) {
         .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn {
           font-size: 0.8em; } }
@@ -702,6 +712,8 @@ body {
         display: inline-block; }
         .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-left-div .event-view-header-date span {
           display: inline-block; }
+    .event-view-container .event-view-boss-container .event-view-attendance-status span {
+      font-size: 1.2em; }
     .event-view-container .event-view-boss-container .event-view-summary {
       display: flex;
       flex-wrap: wrap;
