@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 
 from core.models import RaidEvent, BossPerEvent, Boss, Roster, LateUser, MyUser, get_user_profile_data, \
-    set_account_id_and_class, get_guild_roster, populate_roster_db
+    set_account_id_and_class, get_guild_roster, populate_roster_db, populate_user_characters, sync_roster_from_user_characters
 
 
 def get_playable_classes_as_css_classes():
@@ -199,6 +199,7 @@ def attend_raid_button(request, event_date):
 def roster_update_button(request):
     api_roster = get_guild_roster(request)
     populate_roster_db(api_roster)
+    sync_roster_from_user_characters()
     return redirect('home')
 
 
@@ -355,6 +356,8 @@ def selected_roster_from_db_to_json(current_raid):
 
 
 def user_attendance_status(event, request):
+    if not is_raider(request):
+        return 'Click For Details'
     for user_char in get_user_chars_in_roster(request):
         if not event.roster.all().filter(name=user_char).exists():
             return 'absent'
@@ -384,6 +387,7 @@ def sync_bnet(request):
     given staff status.
     """
     all_user_characters = get_user_profile_data(request)
+    populate_user_characters(all_user_characters)
     set_account_id_and_class(all_user_characters)
     set_officer_staff(request)
     return redirect('home')
@@ -473,14 +477,15 @@ def get_user_chars_per_event(current_raid, request):
 
 def is_user_absent(event, request):
     account_id = get_current_user_data(request)['id']
-
     if event.roster.filter(account_id=account_id).exists():
-        # print("you be existing")
         return False
-
-    # if event.roster.filter(account_id=Roster.objects.filter(account_id=account_id).first().account_id).exists():
-    #     return False
     else:
-        # print("you dont exist")
         return True
 
+
+def is_raider(request):
+    account_id = get_current_user_data(request)['id']
+    if Roster.objects.filter(account_id=account_id).exists():
+        return True
+    else:
+        return False

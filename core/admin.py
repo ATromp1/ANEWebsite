@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Roster, RaidEvent, BossPerEvent, Boss, LateUser
+from .models import Roster, RaidEvent, BossPerEvent, Boss, LateUser, UserCharacters
 
 
 class RosterAdmin(admin.ModelAdmin):
@@ -19,10 +19,13 @@ class BossPerEventAdmin(admin.ModelAdmin):
 class LateUserAdmin(admin.ModelAdmin):
     list_display = ['user', 'date', 'minutes_late']
 
+class UserCharactersAdmin(admin.ModelAdmin):
+    list_display = ['name', 'character_id', 'account_id', 'playable_class']
+
 
 admin.site.register(LateUser, LateUserAdmin)
 admin.site.register(Boss, BossAdmin)
 admin.site.register(Roster, RosterAdmin)
 admin.site.register(RaidEvent, RaidEventAdmin)
 admin.site.register(BossPerEvent, BossPerEventAdmin)
-
+admin.site.register(UserCharacters, UserCharactersAdmin)
