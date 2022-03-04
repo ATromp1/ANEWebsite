@@ -92,6 +92,13 @@
                     </div>
                 </div>
             </div>
+            <div class="event-view-attendance-status d-flex justify-content-center mt-2">
+            {% if user_is_absent %}
+            <span>You are <span class="text-danger">Absent</span> from this event</span>
+            {% elif user_is_late %}
+            <span>You are marked <span class="text-warning">{{user_minutes_late}}</span> late for this event</span>
+            {% endif %}
+            </div>
             <div class="event-view-summary">
             </div>
             <div class="event-view-boss-info">

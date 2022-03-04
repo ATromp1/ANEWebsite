@@ -461,17 +461,9 @@ function display_summary_view(){
             })
         }))
     }
-    // If current user is absent then we don't show any bosses and just display absent
+    // If current user remove bosses on summary
     if(user_is_absent){
         $('.event-view-summary').empty()
-        $('.event-view-summary').append($('<div/>',{
-            'class': 'event-view-summary-boss',
-            'style': 'background-color:var(--danger-bg-color);padding:3px 5px;border-radius:0.25rem',
-            'html':$('<span/>',{
-                'class': "event-view-summary-boss-name",
-                'text': 'You are Absent for this event',
-            })
-        }))
     }
 }
 
