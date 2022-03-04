@@ -576,7 +576,7 @@ $('.boss-view-btn').click(function(){
 
     function swap_background_image(boss_id){
         let boss_image_path = get_boss_image_path_from_id(boss_id)
-        $('body').css('backgroundImage', 'url('+boss_image_path+')')
+        $('.page-bg').css('backgroundImage', 'url('+boss_image_path+')')
         $('.event-view-header-bossname').text(boss_name_list[boss_id].name)
     }
     
