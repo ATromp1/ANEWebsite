@@ -244,7 +244,7 @@ def login_user_button(request):
 
 def handle_event_ajax(request, ajax_data):
     """
-    Events takes 2 types of ajax request: late and decline. 
+    Events takes 3 types of ajax request: late and decline. 
     Call different functions depending on which one is specified in type
     """
     if ajax_data.get('type') is not None:

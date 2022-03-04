@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-undef */
-
 // Ajax request to send to server with the information user put in 
 function send_late_ajax(event_date, minutes_late, delete_current){
     $.ajax({
@@ -50,13 +47,18 @@ function update_event_display(element){
     present_div.toggleClass('disabled')
 }
 
+$('.event-view-attendance-btn').click(function(){
+    setTimeout(function(){
+        window.location.reload()
+    },100)
+})
 
 // Open and close Modal
 const events_modal = $('#events-late-modal')
 const events_modal_open_btn = $('.events_modal_open_btn')
-const events_modal_close_btn = $('.close-btn')
-const events_modal_submit_btn = $('.submit-btn')
-const events_modal_delete_btn = $('.delete-btn')
+const events_modal_close_btn = $('#late-modal-close')
+const events_modal_submit_btn = $('#late-modal-submit')
+const events_modal_delete_btn = $('#late-modal-delete')
 const events_modal_header_date = $('#input-modal-header-date')
 let event_date;
 

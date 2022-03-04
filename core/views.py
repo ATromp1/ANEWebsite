@@ -95,7 +95,6 @@ def add_event_view(request):
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):
     current_raid = RaidEvent.objects.get(date=event_date)
-
     if current_raid in get_past_events():
         is_past_event = True
     else:
@@ -103,11 +102,12 @@ def events_details_view(request, event_date):
 
     load_roster_template(current_raid, request.GET)
     select_player_ajax(request.GET, current_raid)
-
+    handle_event_ajax(request, request.GET)
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
                                                        raid_event=current_raid).exists()
 
     context = {
+        'event': current_raid,
         'user_char_selected': get_user_chars_per_event(current_raid, request),
         'roster_dict': create_roster_dict(current_raid),
         'bosses': serializers.serialize("json", Boss.objects.all()),
