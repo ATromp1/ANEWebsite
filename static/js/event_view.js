@@ -412,7 +412,6 @@ function display_summary_view(){
     $('.event-view-header-bossname').text("Event Summary")
     $('.boss-view-btn').removeClass('active');
 
-
     $('.event-view-summary').removeClass("hidden")
     $('.event-view-summary').empty()
 
@@ -433,42 +432,8 @@ function display_summary_view(){
             // Check if the data we get from DB is valid
             if(typeof(user_event_summary[this.id]) !== "undefined"){
                 if(typeof(user_event_summary[this.id].name) !== "undefined"){
-                    let char = user_event_summary[this.id]
-                    // Create a div to show role
-                    let role_div = $('<div/>',{
-                        'class':'event-view-summary-role',
-                    })
-                    boss_div.append(role_div)
-
-                    role_div.append($('<img/>',{
-                        'class':'event-view-summary-role-img',
-                        'src':static_url+IMAGES_PATH_ROLES+char.role+'.png',
-                    }))
-                    role_div.append($('<span/>',{
-                        'class':'event-view-summary-role-span',
-                        'text':char.role
-                    }))
-                    // Create a div inside of boss-container
-                    let char_name_div = ($('<div/>',{
-                        'class':'event-view-summary-char-name'
-                    }))
-                    boss_div.append(char_name_div)
-
-                    // Create the class image with char name next to it
-                    char_name_div.append($('<img/>',{
-                        'class':'event-view-summary-class-icon',
-                        'src': static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png',
-                    }))
-                    char_name_div.append($('<span/>',{
-                        'text':char.name,
-                        'class': css_classes[char.playable_class]
-                    }))
-                    if(players_in_boss_roster<20){
-                        char_name_div.append($('<p/>',{
-                            'text': "Note, this group is not complete",
-                            'class': "text-center m-auto text-secondary w-75"
-                        }))
-                    }
+                     let char = user_event_summary[this.id]
+                     append_boss_summary(boss_div, char, players_in_boss_roster)
                 } else {
                     // If the event doesn't have your name and you are not absent but there is a roster that means you are bench
                     boss_div.append($('<span/>',{
@@ -485,6 +450,7 @@ function display_summary_view(){
             }
         }
     });
+
     // For non-staff users. If no boss has a roster of atleast 20 people then show that to user
     if(!any_boss_is_shown){
         $('.event-view-summary').append($('<div/>',{
@@ -505,6 +471,42 @@ function display_summary_view(){
                 'class': "event-view-summary-boss-name",
                 'text': 'You are Absent for this event',
             })
+        }))
+    }
+}
+
+function append_boss_summary(boss_div, char, players_in_boss_roster){
+    // Create a div to show role
+    let role_div = $('<div/>',{
+        'class':'event-view-summary-role',
+    })
+    boss_div.append(role_div)
+    role_div.append($('<img/>',{
+        'class':'event-view-summary-role-img',
+        'src':static_url+IMAGES_PATH_ROLES+char.role+'.png',
+    }))
+    role_div.append($('<span/>',{
+        'class':'event-view-summary-role-span',
+        'text':char.role
+    }))
+    // Create a div inside of boss-container
+    let char_name_div = ($('<div/>',{
+        'class':'event-view-summary-char-name'
+    }))
+    boss_div.append(char_name_div)
+    // Create the class image with char name next to it
+    char_name_div.append($('<img/>',{
+        'class':'event-view-summary-class-icon',
+        'src': static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png',
+    }))
+    char_name_div.append($('<span/>',{
+        'text':char.name,
+        'class': css_classes[char.playable_class]
+    }))
+    if(players_in_boss_roster<20){
+        char_name_div.append($('<p/>',{
+            'text': "Note, this group is not complete",
+            'class': "text-center m-auto text-secondary w-75"
         }))
     }
 }
@@ -608,9 +610,7 @@ if(is_staff){
             char_moved_ajax(char_name, role, current_boss_id)
         }
     })
-}
 
-if(is_staff){
     /*
     Sets a click event listener on selected roster elements.
     Sends ajax request to the server to sync up the database

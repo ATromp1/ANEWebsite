@@ -1,8 +1,10 @@
 function status_alert(time_to_display, text, status_type){
     status_type = status_type || "info"
     e = $('.status-alert')
-    $(e).toggleClass('active ' + status_type)
-    $(e).first().text(text)
+    setTimeout(function(){
+        $(e).toggleClass('active ' + status_type)
+        $(e).first().text(text)
+    },200)
     setTimeout(function(){
         $(e).toggleClass('active ' + status_type)
     }, time_to_display)
@@ -40,7 +42,3 @@ $('.hamburger-menu-toggle-button').click(function(){
     $('.navbar-hamburger-menu-content').toggleClass('open');
     $('.navbar-hamburger-menu').toggleClass('open');
 });
-//$('.hamburger-menu-toggle-button').click(function(){
-//    $('.navbar-hamburger-menu-content').addClass('open');
-//    $('.navbar-hamburger-menu').addClass('open');
-//});
