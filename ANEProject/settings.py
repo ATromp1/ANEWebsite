@@ -16,10 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -29,8 +25,15 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-bvv(o_xhsqtaa#4rrp-1p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get('DEBUG')) == '1'
 
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    CSRF_TRUSTED_ORIGINS = ['http://calendar.ane-guild.org', 'http://*localhost']
+else:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+    ]
+
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['http://calendar.ane-guild.org', 'localhost']
 
 LOGIN_REDIRECT_URL = '/sync/'
 
