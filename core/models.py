@@ -145,24 +145,25 @@ def sync_roster_from_user_characters():
 def populate_user_characters(char_json):
     for i in range(len(char_json['wow_accounts'])):
         for j in range(len(char_json['wow_accounts'][i]['characters'])):
-            account_id = char_json['id']
-            char_name = char_json['wow_accounts'][i]['characters'][j]['name']
-            playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
-            char_id = char_json['wow_accounts'][i]['characters'][j]['id']
-            # try:
-            #     res = UserCharacters.objects.get(character_id=char_id)
-            # except UserCharacters.DoesNotExist:
-            #     pass
-            # else:
-            #     res.name = char_name
-            #     res.character_id = char_id
-            #     res.account_id = account_id
-            #     res.playable_class = playable_class
-            #     res.save()
-            UserCharacters.objects.filter(character_id=char_id).update_or_create(account_id=account_id,
-                                                                                 name=char_name,
-                                                                                 playable_class=playable_class,
-                                                                                 character_id=char_id)
+            if char_json['wow_accounts'][i]['characters'][j]['realm']['id'] == 1306:
+                account_id = char_json['id']
+                char_name = char_json['wow_accounts'][i]['characters'][j]['name']
+                playable_class = char_json['wow_accounts'][i]['characters'][j]['playable_class']['name']
+                char_id = char_json['wow_accounts'][i]['characters'][j]['id']
+                # try:
+                #     res = UserCharacters.objects.get(character_id=char_id)
+                # except UserCharacters.DoesNotExist:
+                #     pass
+                # else:
+                #     res.name = char_name
+                #     res.character_id = char_id
+                #     res.account_id = account_id
+                #     res.playable_class = playable_class
+                #     res.save()
+                UserCharacters.objects.filter(character_id=char_id).update_or_create(account_id=account_id,
+                                                                                     name=char_name,
+                                                                                     playable_class=playable_class,
+                                                                                     character_id=char_id)
 
 
 def get_user_profile_data(request):
