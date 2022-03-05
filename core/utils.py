@@ -504,6 +504,7 @@ def get_declined_users_for_event(request, current_raid):
     for character in roster.all():
         if is_user_absent(current_raid, request, character.account_id):
             user_btag = user_btag_from_account_id(character.account_id)
-            if user_btag not in declined_users:
-                declined_users.append(user_btag)
+            if not any(user_btag in x for x in declined_users): # Cryptic if statement checks if user_btag exists anywhere in multidimensional array
+                declined_users.append([user_btag, character.name])
+                
     return declined_users

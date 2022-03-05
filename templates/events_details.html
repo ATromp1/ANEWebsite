@@ -185,7 +185,8 @@
                         <div class="event-view-declined-users mt-3">
                             <h4 class="mb-1">Declined Users:</h4>
                             {% for declined_user in declined_users %}
-                                <span>{{ declined_user }}<span><br/>
+                                <span>{{declined_user.0}}</span><span class="text-secondary"> - {{declined_user.1}} </span>
+                                <br/>
                             {% endfor %}
                         </div>
                         {% endif %}
