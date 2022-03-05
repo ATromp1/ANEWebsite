@@ -376,8 +376,10 @@ class RosterPerBoss {
                 'class':'event-view-missing-buffs-text',
             }))
             let classes_in_roster = this.classes_in_roster()
+            let any_buff_is_shown = true
             jQuery.each(class_buffs, function(index){
                 if(!classes_in_roster.includes(class_buffs[index].playable_class)){
+                    any_buff_is_shown = false
                     let $buff_div = $('<div/>',{'class':'event-view-buff'})
                     $buff_div.append($('<img/>',{
                         'class': 'event-view-buff-icon',
@@ -391,6 +393,11 @@ class RosterPerBoss {
                     $('.event-view-buff-info').append($buff_div)
                 }
             });
+            if(any_buff_is_shown){
+                $('.event-view-buff-info').append($('<span/>',{
+                    'text': 'All Buffs in Group'
+                }))
+            }
             
         }
     }

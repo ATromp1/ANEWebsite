@@ -475,8 +475,8 @@ def get_user_chars_per_event(current_raid, request):
     return user_chars_selected_per_raid
 
 
-def is_user_absent(event, request):
-    account_id = get_current_user_data(request)['id']
+def is_user_absent(event, request, account_id=0):
+    account_id = get_current_user_data(request)['id'] if account_id == 0 else account_id
     if event.roster.filter(account_id=account_id).exists():
         return False
     else:
@@ -489,3 +489,21 @@ def is_raider(request):
         return True
     else:
         return False
+
+
+def user_btag_from_account_id(account_id):
+    return SocialAccount.objects.get(uid=account_id).extra_data.get("battletag")
+
+
+def get_declined_users_for_event(request, current_raid):
+    """
+    Returns a list of users declined for current raid.
+    """
+    declined_users = []
+    roster = Roster.objects.all()
+    for character in roster.all():
+        if is_user_absent(current_raid, request, character.account_id):
+            user_btag = user_btag_from_account_id(character.account_id)
+            if user_btag not in declined_users:
+                declined_users.append(user_btag)
+    return declined_users

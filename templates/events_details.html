@@ -171,14 +171,26 @@
                     </table>
                 </div>
                 {% if user.is_staff %}
-                {% if late_users|length > 0 %}
-                <div class="event-view-late-users">
-                    <p>LATE USERS</p>
-                    {% for late_user in late_users %}
-                        {{ late_user.user }} -- {{ late_user.minutes_late }}
-                    {% endfor %}
-                </div>
-                {% endif %}
+                    {% if late_users|length > 0 or declined_users|length > 0 %}
+                    <div class="event-view-missing-users">
+                        {% if late_users|length > 0 %}
+                        <div class="event-view-late-users mb-3">
+                            <h4 class="mb-1">Late Users:</h4>
+                            {% for late_user in late_users %}
+                                {{ late_user.user }} -- <span class="text-warning">{{ late_user.minutes_late }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if declined_users|length > 0 %}
+                        <div class="event-view-declined-users mt-3">
+                            <h4 class="mb-1">Declined Users:</h4>
+                            {% for declined_user in declined_users %}
+                                <span>{{ declined_user }}<span><br/>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
