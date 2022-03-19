@@ -2,7 +2,7 @@ from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from core.forms import Eventform
+from core.forms import Eventform,EditEventForm
 from core.models import (
     Roster,
     RaidEvent,
@@ -91,6 +91,31 @@ def add_event_view(request):
     }
     return render(request, 'add_event.html', context)
 
+@login_required(login_url='/accounts/battlenet/login/?process=login')
+def edit_event(request, event_date):
+    if request.user.is_superuser:
+        return redirect('home')
+
+    current_raid = RaidEvent.objects.get(date=event_date)
+    if request.method == "POST":
+        form = EditEventForm(request.POST, instance=current_raid)
+        if form.is_valid():
+            form.save()
+            name = request.POST['name']
+            RaidEvent.objects.filter(date=event_date).update(name=name)
+            return redirect('events')
+    else:
+        form = EditEventForm(initial={
+            'name':current_raid.name,
+            'date':event_date,
+            })
+
+    
+    context = {
+        'form': form,
+        'event': current_raid,
+    }
+    return render(request, 'edit_event.html', context)
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):

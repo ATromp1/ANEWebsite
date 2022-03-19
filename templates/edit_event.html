@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "base.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+</head>
+<body>
+
+{% block content %}
+{% load static %}
+<div class="m-auto my-2 p-2 w-75" style="background-color:#353840;border-radius:0.25rem;">
+    <h1 class="text-center edit-event-header" style="border-bottom: 1px solid #aaa;">Edit Event<span class="text-secondary"> - {{event.date}}</span></h1>
+    
+    <form action="" method="POST" class="w-75 m-auto mb-3">
+        {% csrf_token %}
+        <span>Change Event Name</span>
+        {{ form.as_p }}
+        <input type="submit" value="Submit" class="btn btn-primary btn-l">
+        <a href={% url 'events' %} class="btn btn-secondary btn-l">Cancel</a>
+        <a onclick="delete_event('{{event}}')" class="btn btn-danger btn-l float-right">Delete Event</a>
+    </form>
+    
+</div>
+<script src="{% static '/js/edit_event.js' %}"></script>
+{% endblock %}
+
+</body>
+</html>

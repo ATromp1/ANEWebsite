@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 :root {
-  /* #353840 */
   --main-bg-color: #353840;
   --bg-hover-color: #343A40;
   --bg-active-color: #6E7276;
@@ -142,6 +141,9 @@ html {
       .input-modal .input-modal-container .input-modal-btn:hover {
         color: var(--white-color);
         background-color: var(--bg-active-color); }
+
+.hidden {
+  display: none !important; }
 
 .roster-container,
 .event-view-container,
@@ -634,6 +636,30 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem; }
+  .event-view-container .warrior {
+    color: var(--classcolor-warrior); }
+  .event-view-container .paladin {
+    color: var(--classcolor-paladin); }
+  .event-view-container .hunter {
+    color: var(--classcolor-hunter); }
+  .event-view-container .rogue {
+    color: var(--classcolor-rogue); }
+  .event-view-container .priest {
+    color: var(--classcolor-priest); }
+  .event-view-container .shaman {
+    color: var(--classcolor-shaman); }
+  .event-view-container .mage {
+    color: var(--classcolor-mage); }
+  .event-view-container .warlock {
+    color: var(--classcolor-warlock); }
+  .event-view-container .monk {
+    color: var(--classcolor-monk); }
+  .event-view-container .druid {
+    color: var(--classcolor-druid); }
+  .event-view-container .demonhunter {
+    color: var(--classcolor-demonhunter); }
+  .event-view-container .deathknight {
+    color: var(--classcolor-deathknight); }
   .event-view-container .event-view-signups {
     width: 170px; }
   .event-view-container .event-view-boss-container {
@@ -717,14 +743,48 @@ body {
           display: inline-block; }
     .event-view-container .event-view-boss-container .event-view-attendance-status span {
       font-size: 1.2em; }
+    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-char {
+      margin: 3px 0px; }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-char:hover {
+        outline: 2px solid #aaa; }
+    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-options {
+      margin-right: 5px; }
+    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rects {
+      align-items: center;
+      margin-left: auto; }
+    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect {
+      border-radius: var(--border-radius-size);
+      margin: 0 3px;
+      height: 20px;
+      width: 20px;
+      border: 1px solid #aaa;
+      position: relative;
+      background-color: var(--bg-hover-color);
+      transition: 200ms all ease-in-out; }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect.killed {
+        background-color: var(--info-bg-color); }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(2) {
+        border-right: 3px solid var(--danger-bg-color); }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(5) {
+        border-right: 3px solid var(--warning-bg-color); }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(8) {
+        border-right: 3px solid var(--success-bg-color); }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:hover {
+        transform: scale(1.1, 1.1); }
     .event-view-container .event-view-boss-container .event-view-summary {
       display: flex;
       flex-wrap: wrap;
+      flex-direction: column;
       margin-top: 2rem;
-      justify-content: space-around;
+      margin: 2em auto;
+      width: 90%;
+      justify-content: center;
       padding-bottom: 1.5em; }
       .event-view-container .event-view-boss-container .event-view-summary.hidden {
         display: none; }
+      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info {
+        width: 215px;
+        border-bottom: 1px solid #aaa; }
       .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss {
         display: flex;
         flex-direction: column;
@@ -752,30 +812,6 @@ body {
           text-align: center; }
           .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .event-view-summary-class-icon {
             height: 1.5em; }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .warrior {
-            color: var(--classcolor-warrior); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .paladin {
-            color: var(--classcolor-paladin); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .hunter {
-            color: var(--classcolor-hunter); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .rogue {
-            color: var(--classcolor-rogue); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .priest {
-            color: var(--classcolor-priest); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .shaman {
-            color: var(--classcolor-shaman); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .mage {
-            color: var(--classcolor-mage); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .warlock {
-            color: var(--classcolor-warlock); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .monk {
-            color: var(--classcolor-monk); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .druid {
-            color: var(--classcolor-druid); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .demonhunter {
-            color: var(--classcolor-demonhunter); }
-          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-char-name .deathknight {
-            color: var(--classcolor-deathknight); }
     .event-view-container .event-view-boss-container .event-view-boss-info {
       display: flex;
       margin-top: 2rem;

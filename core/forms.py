@@ -16,3 +16,14 @@ class Eventform(ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Event name'}),
             'date': forms.DateInput(attrs=dict(type='date'))
         }
+
+class EditEventForm(ModelForm):
+    class Meta:
+        model = RaidEvent
+        fields = ('name',)
+        labels = {
+            'name': '',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Change Event Name'}),
+        }

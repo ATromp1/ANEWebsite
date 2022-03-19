@@ -1,4 +1,80 @@
 /* /.................// Roster Templates //................./ */
+const templateModal = (()=> {
+    const modal = $('#event-view-template-modal')
+    const openModalButton = $('.event-view-load-template')
+    const closeModalButton = $('#template-modal-close')
+    const submitModal = $('#template-modal-load')
+    const deleteSelectedValueButton = $('#template-modal-delete')
+    let eventDate;
+
+    $(openModalButton).click(()=>{
+        templateModal.openModal()
+    })
+    $(closeModalButton).click(()=>{
+        templateModal.closeModal()
+    })
+    $(submitModal).click((e)=>{
+        submitForm(eventDate)
+    })
+    $(deleteSelectedValueButton).click((e)=>{
+        deleteSelectedValue(eventDate)
+    })
+
+    function openModal(){
+        fillTemplateModalDropdown()
+        $(modal).addClass('open')
+    }
+    function closeModal(){
+        $(modal).removeClass('open')
+    }
+
+    function fillTemplateModalDropdown(){
+        const availableTemplates = get_available_templates()
+        const dropdownElement = $('#event-view-template-modal-dropdown')
+        $(dropdownElement).empty()
+        jQuery.each(availableTemplates, function(){
+            $('<option/>', {
+                'value': this,
+                'text': this
+            }).appendTo(dropdownElement);
+        });
+    }
+
+    function submitForm(){
+        const selectedValue = $('#events-modal-mins-late-dropdown :selected').val()
+
+    }
+
+    function deleteTemplate(templateName){
+        // Overwrite existing storage containing our templates
+        availableTemplates = get_available_templates()
+        let itemIndex = availableTemplates.indexOf(templateName) 
+        availableTemplates.splice(itemIndex, 1)
+        localStorage.setItem("saved_roster_template_list", JSON.stringify(availableTemplates))
+        localStorage.removeItem(templateName)
+
+        fillTemplateModalDropdown()
+        status_alert(2000, "Template deleted", "success")
+    }
+
+    function deleteSelectedValue(){
+        const templateName = $('#event-view-template-modal-dropdown :selected').val()
+        if(templateName){ 
+            let confirmDelete = confirm("Remove Template: " + templateName+"?")
+            if(confirmDelete){
+                deleteTemplate(templateName)
+            }
+        } else {
+            status_alert(2000, "No such template exists", "warning")
+        }
+    }
+
+    return {
+        openModal: openModal,
+        closeModal: closeModal,
+        fillTemplateModalDropdown: fillTemplateModalDropdown,
+    }
+})();
 
 // Template save button
 $('.event-view-save-template').click(function(){
@@ -10,51 +86,17 @@ $('.event-view-save-template').click(function(){
     save_roster_template(template_name)
 })
 
-// Open template modal
-$('.event-view-load-template').click(function(){
-    if(raid_event.currently_selected_boss_roster == -1){
-        status_alert(2000, "Needs a Selected Boss", "warning")
-        return
-    }
-    toggle_template_load_modal()
-})
-
-// Close template modal
-$('#template-modal-close').click(function(){toggle_template_load_modal()})
-
 // Load a template from modal
 $('#template-modal-load').click(function(){
     let selected_value = $('#event-view-template-modal-dropdown :selected').val()
-    toggle_template_load_modal()
-    load_roster_template(selected_value)
-})
-
-// Delete a template from modal
-$('#template-modal-delete').click(function(){
-    let selected_value = $('#event-view-template-modal-dropdown :selected').val()
-    let confirm_delete = confirm("Remove Template: " + selected_value+"?")
-    if(confirm_delete){
-        delete_roster_template(selected_value)
+    templateModal.closeModal()
+    if(selected_value){
+         load_roster_template(selected_value)
+    } else {
+        status_alert(2000, "No such template exists", "warning")
     }
 })
 
-function toggle_template_load_modal(){
-    fill_template_modal_dropdown()
-    $('#event-view-template-modal').toggleClass('open')
-}
-
-function fill_template_modal_dropdown(){
-    let available_templates = get_available_templates()
-    let dropdown_element = $('#event-view-template-modal-dropdown')
-    $(dropdown_element).empty()
-    jQuery.each(available_templates, function(){
-        $('<option/>', {
-            'value': this,
-            'text': this
-        }).appendTo(dropdown_element);
-    });
-    
-}
 /* Saves the roster for the currently selected boss */
 function save_roster_template(template_name){
     if(typeof(Storage) !== "undefined"){
@@ -112,16 +154,3 @@ function load_roster_template(template_name){
         success: status_alert(2000, "Template Loaded: " + template_name, "success"),
     })
 } 
-
-function delete_roster_template(template_name){
-    // Overwrite existing storage containing our templates
-    available_templates = get_available_templates()
-    let item_index = available_templates.indexOf(template_name) 
-    available_templates.splice(item_index, 1)
-    localStorage.setItem("saved_roster_template_list", JSON.stringify(available_templates))
-
-    localStorage.removeItem(template_name)
-    fill_template_modal_dropdown()
-
-    status_alert(2000, "Template deleted", "success")
-}

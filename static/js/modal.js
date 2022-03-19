@@ -53,40 +53,63 @@ $('.event-view-attendance-btn').click(function(){
     },100)
 })
 
-// Open and close Modal
-const events_modal = $('#events-late-modal')
-const events_modal_open_btn = $('.events_modal_open_btn')
-const events_modal_close_btn = $('#late-modal-close')
-const events_modal_submit_btn = $('#late-modal-submit')
-const events_modal_delete_btn = $('#late-modal-delete')
-const events_modal_header_date = $('#input-modal-header-date')
-let event_date;
+const lateModal = (()=> {
+    const modal = $('#events-late-modal')
+    const openModalButton = $('.events_modal_open_btn')
+    const closeModalButton = $('#late-modal-close')
+    const submitModal = $('#late-modal-submit')
+    const deleteSelectedValueButton = $('#late-modal-delete')
+    let eventDate;
 
-function toggle_events_modal(){
-    $(events_modal).toggleClass('open')
-}
+    $(openModalButton).click((e)=>{
+        lateModal.openModal(e)
+    })
+    $(closeModalButton).click((e)=>{
+        lateModal.closeModal(e)
+    })
+    $(submitModal).click((e)=>{
+        submitForm(eventDate)
+    })
+    $(deleteSelectedValueButton).click((e)=>{
+        deleteSelectedValue(eventDate)
+    })
 
-$(events_modal_open_btn).click(function(){
-    event_date = this.id
-    $(events_modal_header_date).text(event_date)
-    toggle_events_modal()
-})
+    function openModal(e){
+        displayDate(e)
+        $(modal).addClass('open')
+    }
+    function closeModal(e){
+        $(modal).removeClass('open')
+    }
 
-$(events_modal_close_btn).click(function(){
-    toggle_events_modal()
-})
+    function displayDate(e){
+        eventDate = e?.currentTarget.id || undefined
+        $('#input-modal-header-date').text(eventDate)
+    }
 
-$(events_modal_delete_btn).click(function(){
-    send_late_ajax(event_date, 0, delete_current='True')
-    toggle_events_modal()
-    status_alert(2000, "Late Time Removed: " + event_date, "warning")
-})
+    function submitForm(eventDate){
+        const selectedValue = $('#events-modal-mins-late-dropdown :selected').val()
+        if(eventDate) { 
+            send_late_ajax(eventDate, selectedValue, deleteCurrent='False')
+            status_alert(2000, "Late Time Saved: " +eventDate +" " +selectedValue, "success")
+            lateModal.closeModal()
+        } else {
+            status_alert(2000, "Error Saving", "danger")
+        }
+    }
 
-$(events_modal_submit_btn).click(function(){
-    let selected_value = $('#events-modal-mins-late-dropdown :selected').val()
-    send_late_ajax(event_date, selected_value, delete_current='False')
-    toggle_events_modal()
-    status_alert(2000, "Late Time Saved: " +event_date +" " +selected_value, "success")
-})
+    function deleteSelectedValue(eventDate){
+        if(eventDate){
+            send_late_ajax(eventDate, 0, delete_current='True')
+            status_alert(2000, "Late Time Removed: " + eventDate, "warning")
+            lateModal.closeModal()
+        } else {
+            status_alert(2000, "Error Removing Time", "danger")
+        }
+    }
 
-
+    return {
+        openModal: openModal,
+        closeModal: closeModal,
+    }
+})();

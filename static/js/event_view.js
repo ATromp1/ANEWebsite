@@ -42,41 +42,11 @@ const class_buffs = {
     },
 }
 
-function boss_list_db_to_object(boss_list){
-    /*
-    // Rework the boss information we get from the DB into a more managable format
-    */
-    let bosses = {}
-    boss_list.forEach(boss => {
-        boss = boss.fields
-        bosses[boss.boss_id]={
-            'name': boss.boss_name,
-            'id':boss.boss_id,
-        }
-    })
-    return bosses
-}
 let boss_name_list = boss_list_db_to_object(boss_list)
-
-function roster_list_db_to_object(roster_list){
-    /*
-    // Rework the roster information we get from the DB into a more managable format
-    */
-    let roster_chars = []
-    for (let i in roster_list) {
-        let roles = roles_per_class[roster[i].playable_class]
-        roster_chars.push({
-            'name': roster[i].name,
-            'playable_class': roster[i].playable_class,
-            'roles': roles,
-        })
-    }
-    return roster_chars
-}
 let roster_characters = roster_list_db_to_object(roster)
 
-// is_past_event is variable sent through from backend. If true then we disable staff so group can't be altered
 if(is_past_event){
+    // is_past_event is variable sent through from backend. If true then we disable staff so group can't be altered
     is_staff = false
 }
 
@@ -403,25 +373,12 @@ class RosterPerBoss {
     }
 }
 
-function is_user_selected_for_boss(boss_id){
-    if(typeof(user_event_summary[boss_id]) !== "undefined"){
-        if(typeof(user_event_summary[boss_id].name) !== "undefined"){
-            return true
-        }
-        return false
-    }
-    return false
-}
-
-function display_summary_view(){
-    $('.event-view-boss-info').addClass('hidden')
-    $('body').css('backgroundImage', 'url('+static_url+'images/bossImages/Sepulcher/SepulcherBG.jpg'+')')
-    $('.event-view-header-bossname').text("Event Summary")
-    $('.boss-view-btn').removeClass('active');
-
-    $('.event-view-summary').removeClass("hidden")
-    $('.event-view-summary').empty()
-
+function create_summary_view(){
+    let summary_boss_container = $('<div/>',{
+        'class': 'summary-boss-container d-flex justify-content-center'
+    })
+    $('.event-view-summary').append(summary_boss_container)
+    
     let any_boss_is_shown = false
     jQuery.each(boss_name_list, function(){
         let players_in_boss_roster = raid_event.roster_per_boss_objects[this.id].selected_roster.length
@@ -434,7 +391,7 @@ function display_summary_view(){
                     'text': this.name,
                 })
             }))
-            $('.event-view-summary').append(boss_div)
+            $(summary_boss_container).append(boss_div)
 
             // Check if the data we get from DB is valid
             if(typeof(user_event_summary[this.id]) !== "undefined"){
@@ -472,6 +429,48 @@ function display_summary_view(){
     if(user_is_absent){
         $('.event-view-summary').empty()
     }
+    if(is_staff){
+        create_officer_summary_information()
+        create_great_vault()
+    }
+}
+
+function create_officer_summary_information(){
+    let officer_summary_div = ($('<div/>',{
+            'class': "event-view-summary-officer-info m-auto",
+            'html':$('<span/>',{
+                'class': 'd-block',
+                'text':  "Additional Officer Information",
+            })
+        })
+    )
+    $('.event-view-summary').append(officer_summary_div)
+    let missing_users = $('.event-view-missing-users').clone()
+    $(officer_summary_div).append(missing_users)
+}
+
+function display_summary_view(){
+    $('.event-view-boss-info').addClass('hidden')
+    $('body').css('backgroundImage', 'url('+static_url+'images/bossImages/Sepulcher/SepulcherBG.jpg'+')')
+    $('.event-view-header-bossname').text("Event Summary")
+    $('.boss-view-btn').removeClass('active');
+    $('.event-view-summary').removeClass("hidden")
+    display_player_summary()
+}
+
+function display_officer_summary_information(){
+    $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons, .event-view-summary-officer-info').removeClass('hidden')
+}
+
+function display_vault_information(){
+    $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons, .summary-vault-info').removeClass('hidden')
+}
+
+function display_player_summary(){
+    $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons, .summary-boss-container').removeClass('hidden')
 }
 
 function append_boss_summary(boss_div, char, players_in_boss_roster){
@@ -565,13 +564,24 @@ for(let boss in raid_event.bosses){
 }
 
 // Start page on summary
+create_summary_view()
 display_summary_view()
 
 $('.event-view-summary-btn').click(function(){
     // Summary button
     raid_event.switch_to_summary()
 })
-
+if(is_staff){
+$('.officer-player-summary').click(function(){
+    display_player_summary()
+})
+$('.officer-extra-information').click(function(){
+    display_officer_summary_information()
+})
+$('.officer-vault-info').click(function(){
+    display_vault_information()
+})
+}
 
 $('.boss-view-btn').click(function(){
     // If element with class '.boss-view-btn' gets clicked then get element id and call
@@ -623,15 +633,3 @@ if(is_staff){
     })
 }
 
-function char_moved_ajax(char_name, role, current_boss_id){
-    $.ajax({
-        url: window.location.href,
-        data: {
-            'name': char_name,
-            'role': role,
-            'boss_id': current_boss_id,
-        },
-        dataType: 'json',
-        timeout: 1000,
-    })
-}

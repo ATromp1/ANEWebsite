@@ -23,6 +23,7 @@ from core.views import (
     events_view,
     events_details_view,
     add_event_view,
+    edit_event,
 )
 from core.utils import decline_raid_button, attend_raid_button, delete_event_button, logout_user_button, \
     login_user_button, sync_bnet, toggle_staff_button, roster_update_button
@@ -44,6 +45,7 @@ urlpatterns = [
 
     path('events/', events_view, name='events'),
     path('events/<slug:event_date>/', events_details_view, name='events-details'),
+    path('edit/<slug:event_date>/', edit_event, name='edit-event'),
     path('add_event', add_event_view, name='add-event'),
     path('delete_event/<event_date>', delete_event_button, name='delete-event'),
 

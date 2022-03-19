@@ -70,9 +70,6 @@
                 </div>
                 <div class="event-view-header-buttons">
                     {% if is_past_event%}
-                    <div class="event-header-right-div">
-                        <p class="event-header-info-text info">This event has passed</p>
-                    </div>
                     {% else %}
                     {% if user_is_absent %}
                     <div class="event-view-attend header-btn">
@@ -93,13 +90,28 @@
                 </div>
             </div>
             <div class="event-view-attendance-status d-flex justify-content-center mt-2">
-            {% if user_is_absent %}
+            {% if is_past_event%}
+            <span>This Event has already <span style="color:#0d6dfd;">Passed</span></span>
+            {% elif user_is_absent %}
             <span>You are <span class="text-danger">Absent</span> from this event</span>
             {% elif user_is_late %}
             <span>You are marked <span class="text-warning">{{user_minutes_late}}</span> late for this event</span>
             {% endif %}
             </div>
             <div class="event-view-summary">
+                {% if user.is_staff %}
+                <div class="officer-summary-buttons d-flex align-items-center justify-content-center mb-3">
+                    <div class="officer-player-summary btn btn-primary btn-l">
+                        Player Summary
+                    </div>
+                    <div class="officer-extra-information btn btn-primary btn-l">
+                        Officer information
+                    </div>
+                    <div class="officer-vault-info btn btn-primary btn-l">
+                        The Great Vault
+                    </div>
+                </div>
+                {% endif %}
             </div>
             <div class="event-view-boss-info">
                 <div class="event-view-buff-info">
@@ -111,9 +123,6 @@
                         Save as Template
                     </div>
                     {% if is_past_event%}
-                    <div class="event-header-right-div">
-                        <p class="event-header-info-text info">This event has passed</p>
-                    </div>
                     </div>
                     {% else %}
                     <div class="event-view-load-template template-button">
@@ -174,19 +183,18 @@
                     {% if late_users|length > 0 or declined_users|length > 0 %}
                     <div class="event-view-missing-users">
                         {% if late_users|length > 0 %}
-                        <div class="event-view-late-users mb-3">
+                        <div class="event-view-late-users mb-3 d-flex flex-column">
                             <h4 class="mb-1">Late Users:</h4>
                             {% for late_user in late_users %}
-                                {{ late_user.user }} -- <span class="text-warning">{{ late_user.minutes_late }}</span>
+                                <span>{{ late_user.user }} -- <span class="text-warning">{{ late_user.minutes_late }}</span></span>
                             {% endfor %}
                         </div>
                         {% endif %}
                         {% if declined_users|length > 0 %}
-                        <div class="event-view-declined-users mt-3">
+                        <div class="event-view-declined-users mt-3 d-flex flex-column">
                             <h4 class="mb-1">Declined Users:</h4>
                             {% for declined_user in declined_users %}
-                                <span>{{declined_user.0}}</span><span class="text-secondary"> - {{declined_user.1}} </span>
-                                <br/>
+                                <span>{{declined_user.0}}<span class="text-secondary"> - {{declined_user.1}} </span></span>
                             {% endfor %}
                         </div>
                         {% endif %}
@@ -209,9 +217,12 @@
         let boss_rosters = {{ selected_roster|safe }}
         let user_event_summary = {{ user_char_selected|safe }}
     </script>
+    <script src="{% static '/js/event_view_utils.js' %}"></script>
+    <script src="{% static '/js/great_vault.js' %}"></script>
     <script src="{% static '/js/event_view.js' %}"></script>
     <script src="{% static '/js/modal.js' %}"></script>
     <script src="{% static '/js/roster_template.js' %}"></script>
+    
 
 
     {% endblock %}

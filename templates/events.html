@@ -47,8 +47,6 @@
         <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary events-list-add-event">Add Event</button>
     {% endif %}
     </div>
-
-
     <div class="event-list">
         <ul class="event-list-past_events">
             {% for event in past_events %}
@@ -60,7 +58,7 @@
                     </div>
                     <!-- Delete event // Only if staff member (officer) -->
                     {% if user.is_staff %}
-                        <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm delete-event-btn">Delete</a>
+                        <a href="{% url 'edit-event' event.date %}" class="btn btn-outline-danger btn-sm delete-event-btn">Edit</a>
                     {% endif %}
                 </li>
             {% endfor %}
@@ -86,7 +84,7 @@
                     </div>
                     <!-- Delete event // Only if staff member (officer) -->
                     {% if user.is_staff %}
-                        <a href="{% url 'delete-event' event.date %}" class="btn btn-outline-danger btn-sm delete-event-btn">Delete</a>
+                    <a href="{% url 'edit-event' event.date %}" class="btn btn-outline-primary btn-m delete-event-btn"style="margin-left:0.8rem;"><span class="material-icons">edit</span>Edit</a>
                     {% endif %}
             </li>
         {% endfor %}
