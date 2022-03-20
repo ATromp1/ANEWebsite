@@ -107,8 +107,8 @@ function save_roster_template(template_name){
             return
         }
 
-        let boss_id = raid_event.currently_selected_boss_roster
-        let roster_to_save = raid_event.roster_per_boss_objects[boss_id].selected_roster
+        let boss_id = raid_event.currentlySelectedRoster
+        let roster_to_save = raid_event.rosterPerBossObjects[boss_id].selectedRoster
         // Check if roster contains characters
         if(roster_to_save.length<1){
             status_alert(2000, "Cannot Save: Roster is Empty", "danger")
@@ -137,11 +137,11 @@ function load_roster_template(template_name){
     let roster_from_localstorage = localStorage.getItem(template_name)
     let parsed_roster = JSON.parse(roster_from_localstorage)
 
-    let boss_id = raid_event.currently_selected_boss_roster
-    raid_event.roster_per_boss_objects[boss_id].load_roster_from_roster_list(parsed_roster)
-    raid_event.roster_per_boss_objects[boss_id].display_selected_roster()
-    raid_event.roster_per_boss_objects[boss_id].display_benched_roster()
-    raid_event.roster_per_boss_objects[boss_id].display_buff_info()
+    let boss_id = raid_event.currentlySelectedRoster
+    raid_event.rosterPerBossObjects[boss_id].load_roster_from_roster_list(parsed_roster)
+    raid_event.rosterPerBossObjects[boss_id].display_selected_roster()
+    raid_event.rosterPerBossObjects[boss_id].display_benched_roster()
+    raid_event.rosterPerBossObjects[boss_id].display_buff_info()
 
     $.ajax({
         url: window.location.href,

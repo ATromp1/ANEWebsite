@@ -782,9 +782,12 @@ body {
       padding-bottom: 1.5em; }
       .event-view-container .event-view-boss-container .event-view-summary.hidden {
         display: none; }
-      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info {
-        width: 215px;
-        border-bottom: 1px solid #aaa; }
+      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info > div {
+        margin: 0 2rem; }
+      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info .publish-buttons-container {
+        width: 10rem; }
+        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info .publish-buttons-container .publish-button {
+          width: 45%; }
       .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss {
         display: flex;
         flex-direction: column;

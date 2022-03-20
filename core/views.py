@@ -16,7 +16,8 @@ from core.utils import (
     generate_calendar,
     get_user_display_name, select_player_ajax, create_roster_dict, selected_roster_from_db_to_json,
     user_attendance_status, save_late_user, load_roster_template, get_user_chars_per_event,
-    is_user_absent, is_user_officer, handle_event_ajax, get_past_events, get_upcoming_events, sync_bnet, get_declined_users_for_event
+    is_user_absent, is_user_officer, handle_event_ajax, get_past_events, get_upcoming_events, sync_bnet, get_declined_users_for_event,
+    publish_boss_ajax, publish_event_ajax
 )
 
 def sync_view(request):
@@ -128,6 +129,8 @@ def events_details_view(request, event_date):
     load_roster_template(current_raid, request.GET)
     select_player_ajax(request.GET, current_raid)
     handle_event_ajax(request, request.GET)
+    publish_boss_ajax(request.GET, current_raid)
+    publish_event_ajax(request.GET, current_raid)
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
                                                        raid_event=current_raid).exists()
     

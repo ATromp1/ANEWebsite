@@ -4,7 +4,7 @@ function roster_list_db_to_object(roster_list){
     */
     let roster_chars = []
     for (let i in roster_list) {
-        let roles = roles_per_class[roster[i].playable_class]
+        let roles = ROLES_PER_CLASS[roster[i].playable_class]
         roster_chars.push({
             'name': roster[i].name,
             'playable_class': roster[i].playable_class,

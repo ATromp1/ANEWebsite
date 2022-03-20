@@ -13,7 +13,7 @@ class BossAdmin(admin.ModelAdmin):
     list_display = ['boss_name', 'boss_id']
 
 class BossPerEventAdmin(admin.ModelAdmin):
-    list_display = ['dateDisplay', 'bossDisplay']
+    list_display = ['dateDisplay', 'bossDisplay', 'published']
     exclude = ['boss']
 
 class LateUserAdmin(admin.ModelAdmin):

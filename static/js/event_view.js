@@ -1,7 +1,7 @@
 const IMAGES_PATH_ROLES = 'images/roleIcons/'
 const IMAGES_PATH_CLASS = 'images/classIcons/'
 const IMAGES_PATH_BUFFS = 'images/buffIcons/'
-const roles_per_class = {
+const ROLES_PER_CLASS = {
     'Warrior': ['tank', 'mdps'],
     'Paladin': ['tank', 'mdps', 'healer'],
     'Hunter': ['rdps', 'mdps'],
@@ -15,7 +15,7 @@ const roles_per_class = {
     'Demon Hunter': ['tank', 'mdps'],
     'Death Knight': ['tank', 'mdps']
 }
-const class_buffs = {
+const CLASS_BUFFS = {
     0: {
         'playable_class':'Warrior',
         'buff':'battle_shout'
@@ -42,8 +42,8 @@ const class_buffs = {
     },
 }
 
-let boss_name_list = boss_list_db_to_object(boss_list)
-let roster_characters = roster_list_db_to_object(roster)
+let bossNameList = boss_list_db_to_object(boss_list)
+let rosterCharacters = roster_list_db_to_object(roster)
 
 if(is_past_event){
     // is_past_event is variable sent through from backend. If true then we disable staff so group can't be altered
@@ -54,33 +54,33 @@ class RaidEvent {
     /*
     Contains the information needed to display a roster for each boss
     */
-    constructor(bosses, initial_roster) {
+    constructor(bosses, initialRoster) {
         // Bosses in a raid
         this.bosses = bosses;
 
         // Initial roster is the roster we get from DB
-        this.initial_roster = initial_roster;
+        this.initialRoster = initialRoster;
 
         // Objects of class RosterPerBoss in an array to access them
-        this.roster_per_boss_objects = {}
+        this.rosterPerBossObjects = {}
 
         // This should be a boss_id
-        this.currently_selected_boss_roster = -1
+        this.currentlySelectedRoster = -1
     }
-    get_playable_class_by_char_name(char_name){
-        for(let i in this.initial_roster){
-            let char = this.initial_roster[i]
-            if(char.name == char_name){
+    get_playable_class_by_char_name(charName){
+        for(let i in this.initialRoster){
+            let char = this.initialRoster[i]
+            if(char.name == charName){
                 return char.playable_class
             }
         }
         return 'Character not in initial_roster'
     }
 
-    load_rosters_from_db(boss_rosters){
-        for(let boss in boss_rosters){
+    load_rosters_from_db(bossRosters){
+        for(let boss in bossRosters){
             let boss_id = boss
-            let boss_roster = boss_rosters[boss]
+            let boss_roster = bossRosters[boss]
             let selected_roster_for_boss = []
 
             for(let role in boss_roster){
@@ -94,10 +94,20 @@ class RaidEvent {
                     })
                 }
             }
-            this.roster_per_boss_objects[boss_id].load_roster_from_roster_list(selected_roster_for_boss)
+            this.rosterPerBossObjects[boss_id].load_roster_from_roster_list(selected_roster_for_boss)
         }
     }
 
+    update_published_status(bossRosters){
+        for(let boss in bossRosters){
+            // This is kinda shit but otherwise i dont know how to send through a False/True value through django
+            if(bossRosters[boss].published == 'False'){
+                this.rosterPerBossObjects[boss].published = false
+            } else {
+                this.rosterPerBossObjects[boss].published = true
+            }
+        }
+    }
 
     populate_boss_rosters() {
         /*
@@ -105,29 +115,64 @@ class RaidEvent {
         */
         for (let boss in this.bosses) {
             this.bosses[boss]
-            let current_roster = new RosterPerBoss(this.bosses[boss].id, this.initial_roster)
-            this.roster_per_boss_objects[this.bosses[boss].id] = current_roster
+            let current_roster = new RosterPerBoss(this.bosses[boss].id, this.initialRoster)
+            this.rosterPerBossObjects[this.bosses[boss].id] = current_roster
         }
 
     }
 
-    switch_to_roster(boss_id){
+    switch_to_roster(bossId){
         /*
         Switches to a different roster(boss) in the info view. Changes 'currently_selected_boss_roster' to the new boss
         */
-        if(boss_id != this.currently_selected_boss_roster){
-            this.currently_selected_boss_roster = boss_id
-            this.roster_per_boss_objects[boss_id].display_benched_roster()
-            this.roster_per_boss_objects[boss_id].display_selected_roster()
-            this.roster_per_boss_objects[boss_id].display_buff_info()
+        if(bossId != this.currentlySelectedRoster){
+            this.currentlySelectedRoster = bossId
+            let RosterPerBoss = this.rosterPerBossObjects[bossId]
+            RosterPerBoss.display_benched_roster()
+            RosterPerBoss.display_selected_roster()
+            RosterPerBoss.display_buff_info()
+            if(is_staff) RosterPerBoss.display_published_status()
         }
     }
 
     switch_to_summary(){
-        if(this.currently_selected_boss_roster != -1){
-            this.currently_selected_boss_roster = -1
+        if(this.currentlySelectedRoster != -1){
+            this.currentlySelectedRoster = -1
             display_summary_view()
         }
+    }
+
+    publishEvent(){
+        $.ajax({
+            data: {
+                'type':'publish_event',
+                'publish': 'True',
+            },
+            dataType: 'json',
+            timeout: 1000,
+        })
+        this.updatePublishStatusFromButton(true)
+        status_alert(2000, "Groups Published", "success")
+    }
+    undoPublication(){
+        $.ajax({
+            data: {
+                'type':'publish_event',
+                'publish': 'False',
+            },
+            dataType: 'json',
+            timeout: 1000,
+        })
+        this.updatePublishStatusFromButton(false)
+        status_alert(2000, "Publication revoked", "success")
+    }
+
+    updatePublishStatusFromButton(publish){
+        for(const[key,value] of Object.entries(this.bosses)){
+            this.rosterPerBossObjects[value.id].published=publish
+        }
+        if(this.currentlySelectedRoster != -1)
+            this.rosterPerBossObjects[this.currentlySelectedRoster].display_published_status()
     }
 }
 
@@ -135,61 +180,62 @@ class RosterPerBoss {
     /*
     Contains an array of benched players and selected players and has functions to display them in seperate columns
     */
-    constructor(boss, initial_roster) {
+    constructor(boss, initialRoster) {
         this.boss = boss;
-        this.initial_roster = initial_roster
-        this.benched_roster = initial_roster.slice()
-        this.selected_roster = []
+        this.published = false
+        this.initialRoster = initialRoster
+        this.benchedRoster = initialRoster.slice()
+        this.selectedRoster = []
     }
 
-    load_roster_from_roster_list(selected_roster){
+    load_roster_from_roster_list(selectedRoster){
         this.empty_selected_roster()
 
-        for(let i in selected_roster){
-            let char = selected_roster[i]
+        for(let i in selectedRoster){
+            let char = selectedRoster[i]
             this.move_from_bench_to_selected(char.name,char.role)
         }
     }
 
     empty_selected_roster(){
-        this.selected_roster = []
-        this.benched_roster = this.initial_roster.slice()
+        this.selectedRoster = []
+        this.benchedRoster = this.initialRoster.slice()
     }
 
-    remove_char_from_benched_roster(char_name){
-        for(let index in this.benched_roster){
-            let char = this.benched_roster[index]
-            if(char.name == char_name){
-                this.benched_roster.splice(index,1)
+    remove_char_from_benched_roster(charName){
+        for(let index in this.benchedRoster){
+            let char = this.benchedRoster[index]
+            if(char.name == charName){
+                this.benchedRoster.splice(index,1)
                 return index
             }
         }
     }   
 
-    add_char_to_benched_roster(char_name){
-        for(let index in this.initial_roster){
-            let char = this.initial_roster[index]
-            if(char.name == char_name){
-                this.benched_roster.push(char)
+    add_char_to_benched_roster(charName){
+        for(let index in this.initialRoster){
+            let char = this.initialRoster[index]
+            if(char.name == charName){
+                this.benchedRoster.push(char)
             }
         }
     }
 
-    remove_char_from_selected_roster(char_name){
-        for(let index in this.selected_roster){
-            let char = this.selected_roster[index]
-            if(char.name == char_name){
-                this.selected_roster.splice(index,1)
+    remove_char_from_selected_roster(charName){
+        for(let index in this.selectedRoster){
+            let char = this.selectedRoster[index]
+            if(char.name == charName){
+                this.selectedRoster.splice(index,1)
             }
         }
     }
 
-    add_char_to_selected_roster(char_name, role){
+    add_char_to_selected_roster(charName, role){
         // Assume char is in the benched roster.
-        for(let index in this.benched_roster){
-            let char = this.benched_roster[index]
-            if(char.name == char_name){
-                this.selected_roster.push({
+        for(let index in this.benchedRoster){
+            let char = this.benchedRoster[index]
+            if(char.name == charName){
+                this.selectedRoster.push({
                     'name': char.name,
                     'playable_class': char.playable_class,
                     'role': role,
@@ -200,8 +246,8 @@ class RosterPerBoss {
 
     get_amount_of_role_in_selected_roster(role){
         let count = 0
-        for(let index in this.selected_roster){
-            let char = this.selected_roster[index]
+        for(let index in this.selectedRoster){
+            let char = this.selectedRoster[index]
             if(char.role == role){
                 count++;
             }
@@ -209,11 +255,11 @@ class RosterPerBoss {
         return count
     }
 
-    move_from_bench_to_selected(char_name, role, display_change){
-        display_change = false || display_change
-        this.add_char_to_selected_roster(char_name, role);
-        let char_removed_at_index = this.remove_char_from_benched_roster(char_name)
-        if(display_change){
+    move_from_bench_to_selected(charName, role, displayChange){
+        displayChange = false || displayChange
+        this.add_char_to_selected_roster(charName, role);
+        let char_removed_at_index = this.remove_char_from_benched_roster(charName)
+        if(displayChange){
             this.remove_from_benched_display_at_index(char_removed_at_index)
             this.display_selected_roster()
             this.display_buff_info()
@@ -221,11 +267,11 @@ class RosterPerBoss {
         update_boss_buttons_status(this.boss)
     }
 
-    move_from_selected_to_bench(char_name, display_change){
-        display_change = false || display_change
-        this.add_char_to_benched_roster(char_name)
-        this.remove_char_from_selected_roster(char_name);
-        if(display_change){
+    move_from_selected_to_bench(charName, displayChange){
+        displayChange = false || displayChange
+        this.add_char_to_benched_roster(charName)
+        this.remove_char_from_selected_roster(charName);
+        if(displayChange){
             this.display_benched_roster()
             this.display_selected_roster()
             this.display_buff_info()
@@ -255,12 +301,12 @@ class RosterPerBoss {
         $('.event-view-selected-roster-mdps').append(header_element_mdps)
         $('.event-view-selected-roster-rdps').append(header_element_rdps)
 
-        if(this.selected_roster.length > 20){
+        if(this.selectedRoster.length > 20){
             $('.event-view-selected-roster-totalcount').addClass('overcapacity')
         }else{
             $('.event-view-selected-roster-totalcount').removeClass('overcapacity')
         }
-        $('.event-view-selected-roster-totalcount').text('Total: '+this.selected_roster.length)
+        $('.event-view-selected-roster-totalcount').text('Total: '+this.selectedRoster.length)
         $('.event-view-selected-roster-tankcount').text(' - ' + this.get_amount_of_role_in_selected_roster('tank'))
         $('.event-view-selected-roster-healercount').text(' - ' + this.get_amount_of_role_in_selected_roster('healer'))
         $('.event-view-selected-roster-mdpscount').text(' - ' + this.get_amount_of_role_in_selected_roster('mdps'))
@@ -270,9 +316,9 @@ class RosterPerBoss {
         if(is_staff){
             additional_staff_info = ' class="is-staff"'
         }
-        for(let index in this.selected_roster){
+        for(let index in this.selectedRoster){
 
-            let char = this.selected_roster[index]
+            let char = this.selectedRoster[index]
             $('.event-view-selected-roster-'+char.role).append('<div class="'+css_classes[char.playable_class]+' event-view-selected-roster-char">'+
             '<img src="'+static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png" alt="Tank" class="event-view-role-icon">'+
             '<span'+additional_staff_info+'>'+char.name+'</span></div>')
@@ -298,7 +344,7 @@ class RosterPerBoss {
 
         let roles = ['tank', 'healer', 'mdps', 'rdps']
         let td_css_class = "event-view-role-icon"
-        jQuery.each(this.benched_roster, function(){
+        jQuery.each(this.benchedRoster, function(){
             let $tr = $('<tr/>',{'class':'benched-roster-row'})
 
             $tr.append($('<td/>',{
@@ -330,7 +376,7 @@ class RosterPerBoss {
 
     classes_in_roster(){
         let classes_in_roster = []
-        jQuery.each(this.selected_roster, function(){
+        jQuery.each(this.selectedRoster, function(){
             if(!classes_in_roster.includes(this.playable_class)){
                 classes_in_roster.push(this.playable_class)
             }
@@ -347,18 +393,18 @@ class RosterPerBoss {
             }))
             let classes_in_roster = this.classes_in_roster()
             let any_buff_is_shown = true
-            jQuery.each(class_buffs, function(index){
-                if(!classes_in_roster.includes(class_buffs[index].playable_class)){
+            jQuery.each(CLASS_BUFFS, function(index){
+                if(!classes_in_roster.includes(CLASS_BUFFS[index].playable_class)){
                     any_buff_is_shown = false
                     let $buff_div = $('<div/>',{'class':'event-view-buff'})
                     $buff_div.append($('<img/>',{
                         'class': 'event-view-buff-icon',
-                        'src': static_url+IMAGES_PATH_BUFFS+class_buffs[index].buff+'.png',
+                        'src': static_url+IMAGES_PATH_BUFFS+CLASS_BUFFS[index].buff+'.png',
                     }))
                     $buff_div.append($('<span/>',{
-                        'id': class_buffs[index],
+                        'id': CLASS_BUFFS[index],
                         'class':'event-view-buff-text',
-                        'text': unslugify_string(class_buffs[index].buff),
+                        'text': unslugify_string(CLASS_BUFFS[index].buff),
                     }))
                     $('.event-view-buff-info').append($buff_div)
                 }
@@ -371,6 +417,70 @@ class RosterPerBoss {
             
         }
     }
+
+    // TODO -- CSS on publish buttons and text -- Publish Whole event
+    display_published_status(){
+        if(!is_staff) return
+        const publishDiv = $('.event-view-published-information')
+        publishDiv.empty()
+        if(this.published){
+            publishDiv.append($('<span/>',{
+                'text': 'This group has been published'
+            }))
+            const publishButton = $('<button/>',{
+                'class': 'publish-button publish btn btn-primary',
+                'text': 'Undo Publication',
+            })
+            $(publishButton).click(() =>{
+                this.undo_publication()
+            })
+            publishDiv.append(publishButton)
+        } else {
+            publishDiv.append($('<span/>',{
+                'text': 'This group has NOT been published'
+            }))
+            const publishButton = $('<button/>',{
+                'class': 'publish-button undo-publish btn btn-primary',
+                'text': 'Publish Group',
+            })
+            $(publishButton).click(() =>{
+                this.publish_boss()
+            })
+            publishDiv.append(publishButton)
+        }
+    }
+
+    publish_boss(){
+        if(this.selectedRoster.length > 0){
+            $.ajax({
+                data: {
+                    'boss_id': this.boss,
+                    'publish': 'True',
+                },
+                dataType: 'json',
+                timeout: 1000,
+            })
+            this.published = true
+            this.display_published_status()
+            status_alert(2000, "Group Published", "success")
+        } else {
+            status_alert(2000, "You can't publish an empty group", "warning")
+        }
+    }
+
+    undo_publication(){
+        $.ajax({
+            data: {
+                'boss_id': this.boss,
+                'publish': 'False',
+            },
+            dataType: 'json',
+            timeout: 1000,
+        })
+        this.published = false
+        this.display_published_status()
+        status_alert(2000, "Publication revoked", "success")
+    }
 }
 
 function create_summary_view(){
@@ -380,9 +490,9 @@ function create_summary_view(){
     $('.event-view-summary').append(summary_boss_container)
     
     let any_boss_is_shown = false
-    jQuery.each(boss_name_list, function(){
-        let players_in_boss_roster = raid_event.roster_per_boss_objects[this.id].selected_roster.length
-        if(players_in_boss_roster>=18){
+    jQuery.each(bossNameList, function(){
+        let players_in_boss_roster = raid_event.rosterPerBossObjects[this.id].selectedRoster.length
+        if(raid_event.rosterPerBossObjects[this.id].published){
             any_boss_is_shown = true
             let boss_div = ($('<div/>',{
                 'class': 'event-view-summary-boss',
@@ -436,17 +546,40 @@ function create_summary_view(){
 }
 
 function create_officer_summary_information(){
-    let officer_summary_div = ($('<div/>',{
-            'class': "event-view-summary-officer-info m-auto",
-            'html':$('<span/>',{
-                'class': 'd-block',
-                'text':  "Additional Officer Information",
-            })
+    const OFFICER_SUMMARY_DIV = ($('<div/>',{
+            'class': "event-view-summary-officer-info m-auto d-flex",
         })
     )
-    $('.event-view-summary').append(officer_summary_div)
+    createPublishEventButtons(OFFICER_SUMMARY_DIV)
+    $('.event-view-summary').append(OFFICER_SUMMARY_DIV)
     let missing_users = $('.event-view-missing-users').clone()
-    $(officer_summary_div).append(missing_users)
+    $(OFFICER_SUMMARY_DIV).append(missing_users)
+}
+function createPublishEventButtons(elementToAppendTo){
+    const PUBLISH_BUTTON = $('<button/>',{
+        'class': 'publish-button undo-publish btn btn-primary',
+        'text': 'Publish Groups',
+    })
+    const UNDO_PUBLISH_BUTTON = $('<button/>',{
+        'class': 'publish-button undo-publish btn btn-primary',
+        'text': 'Undo Publish',
+    })
+    const PUBLISH_BUTTONS_DIV = $('<div/>',{
+        'class': 'publish-buttons-container',
+    })
+    PUBLISH_BUTTONS_DIV.append(PUBLISH_BUTTON, UNDO_PUBLISH_BUTTON)
+    PUBLISH_BUTTONS_DIV.append($('<span/>',{
+        'class': 'text-secondary',
+        'text':'Note, these buttons will override any previous selections'
+    }))
+    elementToAppendTo.append(PUBLISH_BUTTONS_DIV)
+
+    $(PUBLISH_BUTTON).click(()=>{
+        raid_event.publishEvent()
+    })
+    $(UNDO_PUBLISH_BUTTON).click(()=>{
+        raid_event.undoPublication()
+    })
 }
 
 function display_summary_view(){
@@ -511,15 +644,16 @@ function append_boss_summary(boss_div, char, players_in_boss_roster){
 
 function create_new_raid_event(){
     // Create new raid_event and populate that object with rosters
-    raid_event = new RaidEvent(boss_name_list, roster_characters)
+    raid_event = new RaidEvent(bossNameList, rosterCharacters)
     raid_event.populate_boss_rosters()
     raid_event.load_rosters_from_db(boss_rosters)
+    raid_event.update_published_status(boss_rosters)
 }
 create_new_raid_event()
 
 
 function create_boss_buttons(){
-    jQuery.each(boss_name_list, function(){
+    jQuery.each(bossNameList, function(){
         $('.event-view-boss-list').append($('<div/>',{
             'class':'boss-view-btn',
             'id':this.id,
@@ -534,7 +668,7 @@ function update_boss_buttons_status(boss_id){
 
     $(boss_btn_element).removeClass('empty-roster in-progress roster-complete '+
     'empty-roster-staff in-progress-staff roster-complete-staff')
-    let players_in_boss_roster = raid_event.roster_per_boss_objects[boss_id].selected_roster.length
+    let players_in_boss_roster = raid_event.rosterPerBossObjects[boss_id].selectedRoster.length
     let boss_roster_status = ''
     if(is_staff){
         if(players_in_boss_roster == 0){
@@ -544,10 +678,8 @@ function update_boss_buttons_status(boss_id){
         } else {
             boss_roster_status = 'roster-complete'
         }
-    } else{
-        if(players_in_boss_roster >= 20){
+    } else if(raid_event.rosterPerBossObjects[boss_id].published){
             boss_roster_status = 'roster-complete'
-        }
         if(!is_user_selected_for_boss(boss_id)){
             boss_roster_status = boss_roster_status + ' benched'
         }
@@ -594,11 +726,11 @@ $('.boss-view-btn').click(function(){
     function swap_background_image(boss_id){
         let boss_image_path = get_boss_image_path_from_id(boss_id)
         $('body').css('backgroundImage', 'url('+boss_image_path+')')
-        $('.event-view-header-bossname').text(boss_name_list[boss_id].name)
+        $('.event-view-header-bossname').text(bossNameList[boss_id].name)
     }
     
     function get_boss_image_path_from_id(boss_id){
-        let boss_name = boss_name_list[boss_id].name
+        let boss_name = bossNameList[boss_id].name
         let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
         return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
     }
@@ -614,8 +746,8 @@ if(is_staff){
         if(this.id){
             role = this.id
             char_name = jQuery(this).siblings('td').first()[0].innerHTML
-            current_boss_id = raid_event.currently_selected_boss_roster
-            raid_event.roster_per_boss_objects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
+            current_boss_id = raid_event.currentlySelectedRoster
+            raid_event.rosterPerBossObjects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
             char_moved_ajax(char_name, role, current_boss_id)
         }
     })
@@ -626,9 +758,9 @@ if(is_staff){
     */
     $('.event-view-selected-roster').on('click','.event-view-selected-roster-char span', function(){
         char_name = this.innerHTML
-        current_boss_id = raid_event.currently_selected_boss_roster
+        current_boss_id = raid_event.currentlySelectedRoster
         role = this.parentElement.parentElement.id
-        raid_event.roster_per_boss_objects[current_boss_id].move_from_selected_to_bench(char_name, role, true)
+        raid_event.rosterPerBossObjects[current_boss_id].move_from_selected_to_bench(char_name, role, true)
         char_moved_ajax(char_name, role, current_boss_id)
     })
 }

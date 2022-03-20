@@ -280,6 +280,19 @@ def save_late_user(request, ajax_data):
         else:
             LateUser.objects.filter(raid_event=current_raid).update(minutes_late=minutes_late)
 
+def publish_boss_ajax(ajax_data, current_raid):
+    if ajax_data.get('publish') is not None and ajax_data.get('boss_id') is not None:
+        boss_id = ajax_data.get('boss_id')
+        publish = ajax_data.get('publish')
+        boss = Boss.objects.get(boss_id=boss_id)
+        BossPerEvent.objects.filter(boss=boss, raid_event=current_raid).update(published=publish)
+
+def publish_event_ajax(ajax_data, current_raid):
+    if ajax_data.get('publish') is not None and ajax_data.get('type') is not None:
+        if ajax_data.get('type') == 'publish_event':
+            publish = ajax_data.get('publish')
+            BossPerEvent.objects.filter(raid_event=current_raid).update(published=publish)
+        
 
 def select_player_ajax(ajax_data, current_raid):
     """
@@ -332,10 +345,12 @@ def selected_roster_from_db_to_json(current_raid):
     json file that serves as context in the event-details view
     """
     boss_roster = BossPerEvent.objects.filter(raid_event=current_raid)
+
     roster = {}
     for boss in boss_roster:
         boss_id = boss.boss.boss_id
         roster[boss_id] = {}
+        roster[boss_id]['published'] = str(boss.published)
         tanks = []
         for char in boss.tank.all():
             tanks.append(char.name)

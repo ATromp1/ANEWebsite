@@ -117,20 +117,7 @@
                 <div class="event-view-buff-info">
                 </div>
                 <div class="event-view-selected-group">
-                    {% if user.is_staff %}
-                    <div class="event-view-template-buttons">
-                    <div class="event-view-save-template template-button">
-                        Save as Template
-                    </div>
-                    {% if is_past_event%}
-                    </div>
-                    {% else %}
-                    <div class="event-view-load-template template-button">
-                        Load a Template
-                    </div>
-                    </div>
-                    {% endif %}
-                    {% endif %}
+                    <div class="event-view-published-information d-flex flex-column pb-2"></div>
                     <div class="event-view-selected-roster">
                         {% if user.is_staff %}
                             <span class="event-view-selected-roster-totalcount">Total: </span>
@@ -166,6 +153,20 @@
                     </div>
                 </div>
                 <div class="event-view-benched-roster">
+                    {% if user.is_staff %}
+                    <div class="event-view-template-buttons">
+                    <div class="event-view-save-template template-button">
+                        Save as Template
+                    </div>
+                    {% if is_past_event%}
+                    </div>
+                    {% else %}
+                    <div class="event-view-load-template template-button">
+                        Load a Template
+                    </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
                     <div class="event-view-benched-roster-header">
                         Bench
                     </div>
@@ -208,14 +209,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         const static_url = "{% get_static_prefix %}"
-        const is_past_event = {{ is_past_event|yesno:"true,false"}}
-        const user_is_absent = {{ user_is_absent|yesno:"true,false" }}
-        let is_staff = {{ user.is_staff|yesno:"true,false" }}
-        let boss_list = {{bosses | safe}}
-        let roster = {{roster_dict | safe}}
-        let css_classes = {{css_classes | safe}}
-        let boss_rosters = {{ selected_roster|safe }}
-        let user_event_summary = {{ user_char_selected|safe }}
+        const is_past_event = {{is_past_event|yesno:"true,false"}}
+        const user_is_absent = {{user_is_absent|yesno:"true,false"}}
+        let is_staff = {{user.is_staff|yesno:"true,false"}}
+        let boss_list = {{bosses|safe}}
+        let roster = {{roster_dict|safe}}
+        let css_classes = {{css_classes|safe}}
+        let boss_rosters = {{selected_roster|safe}}
+        let user_event_summary = {{user_char_selected|safe}}
     </script>
     <script src="{% static '/js/event_view_utils.js' %}"></script>
     <script src="{% static '/js/great_vault.js' %}"></script>
