@@ -383,13 +383,13 @@ body {
       .calendar-grid-container .calendar-grid .calendar-grid-item .calendar-grid-date {
         margin-left: 5px; }
       .calendar-grid-container .calendar-grid .calendar-grid-item:hover {
-        transform: scale(1.1, 1.1);
-        /*                 background-color: var(--main-text-color);
-                color: var(--white-color); */ }
+        transform: scale(1.1, 1.1); }
       .calendar-grid-container .calendar-grid .calendar-grid-item.disabled {
         border-color: var(--bg-active-color);
-        pointer-events: none;
-        color: var(--text-disabled-color); }
+        color: var(--text-disabled-color);
+        transition: none; }
+        .calendar-grid-container .calendar-grid .calendar-grid-item.disabled:hover {
+          transform: none; }
       .calendar-grid-container .calendar-grid .calendar-grid-item.active {
         border: #0d6efd 2px solid; }
         .calendar-grid-container .calendar-grid .calendar-grid-item.active .calendar-grid-date {
@@ -435,7 +435,9 @@ body {
       .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.absent:hover {
         background-color: var(--danger-bg-hover); }
     .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.past {
-      background-color: #6E7276; }
+      background-color: #6e7377; }
+      .calendar-grid-container .calendar-grid-item-content .calendar-grid-event-btn.past:hover {
+        background-color: #888c91; }
   @media screen and (max-width: 1300px) {
     .calendar-grid-container {
       width: 80%; } }
