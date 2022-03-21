@@ -216,7 +216,7 @@ def delete_event_button(request, event_date):
 
 
 def get_past_events():
-    events = RaidEvent.objects.all().order_by('date')
+    events = RaidEvent.objects.all().order_by('-date')
     past_events = []
     if events.exists():
         for event in events:
