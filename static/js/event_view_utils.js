@@ -84,7 +84,7 @@ function loadBossViewFromSessionStorage(){
     }
 }
 $(document).ready(()=>{
-    loadBossViewFromSessionStorage()
+    if(is_staff) loadBossViewFromSessionStorage()
 })
 
 // Bootstrap Tooltips
