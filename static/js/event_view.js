@@ -15,32 +15,36 @@ const ROLES_PER_CLASS = {
     'Demon Hunter': ['tank', 'mdps'],
     'Death Knight': ['tank', 'mdps']
 }
-const CLASS_BUFFS = {
-    0: {
+const CLASS_BUFFS = [
+    {
         'playable_class':'Warrior',
-        'buff':'battle_shout'
+        'buff_name':'battle_shout'
     },
-    1:{
+    {
         'playable_class': 'Priest',
-        'buff': 'fortitude',
+        'buff_name': 'fortitude',
     },
-    2:{
+    {
         'playable_class':'Mage',
-        'buff':'intellect',
+        'buff_name':'intellect',
     },
-    3:{
+    {
         'playable_class':'Warlock',
-        'buff':'soulstone',
+        'buff_name':'soulstone',
     },
-    4:{
+    {
         'playable_class':'Monk',
-        'buff':'mystic_touch',
+        'buff_name':'mystic_touch',
     },
-    5:{
+    {
         'playable_class':'Demon Hunter',
-        'buff':'chaos_brand',
+        'buff_name':'chaos_brand',
     },
-}
+    {
+        'playable_class':'Shaman',
+        'buff_name':'windfury',
+    },
+]
 
 let bossNameList = boss_list_db_to_object(boss_list)
 let rosterCharacters = roster_list_db_to_object(roster)
@@ -132,6 +136,7 @@ class RaidEvent {
             RosterPerBoss.display_selected_roster()
             RosterPerBoss.display_buff_info()
             if(is_staff) RosterPerBoss.display_published_status()
+            setLastVisitedBossView(this.currentlySelectedRoster)
         }
     }
 
@@ -139,6 +144,7 @@ class RaidEvent {
         if(this.currentlySelectedRoster != -1){
             this.currentlySelectedRoster = -1
             display_summary_view()
+            setLastVisitedBossView(null)
         }
     }
 
@@ -384,6 +390,18 @@ class RosterPerBoss {
         return classes_in_roster
     }
 
+    windfuryInRoster(){
+        let windfuryInRoster = false
+        this.selectedRoster.forEach((char)=>{
+            if(char.playable_class == 'Shaman'){
+                if(char.role == 'mdps'){
+                    windfuryInRoster = true
+                }
+            }
+        })
+        return windfuryInRoster
+    }
+
     display_buff_info(){
         if(is_staff){
             $('.event-view-buff-info').empty()
@@ -392,24 +410,34 @@ class RosterPerBoss {
                 'class':'event-view-missing-buffs-text',
             }))
             let classes_in_roster = this.classes_in_roster()
-            let any_buff_is_shown = true
-            jQuery.each(CLASS_BUFFS, function(index){
-                if(!classes_in_roster.includes(CLASS_BUFFS[index].playable_class)){
-                    any_buff_is_shown = false
-                    let $buff_div = $('<div/>',{'class':'event-view-buff'})
-                    $buff_div.append($('<img/>',{
-                        'class': 'event-view-buff-icon',
-                        'src': static_url+IMAGES_PATH_BUFFS+CLASS_BUFFS[index].buff+'.png',
-                    }))
-                    $buff_div.append($('<span/>',{
-                        'id': CLASS_BUFFS[index],
-                        'class':'event-view-buff-text',
-                        'text': unslugify_string(CLASS_BUFFS[index].buff),
-                    }))
-                    $('.event-view-buff-info').append($buff_div)
+            console.log(classes_in_roster)
+            let noBuffIsShown = true
+            CLASS_BUFFS.forEach((buff)=>{
+                if(buff.playable_class == 'Shaman'){
+                    if(!this.windfuryInRoster()){
+                        appendBuff(buff)
+                    }
+                } else if(!classes_in_roster.includes(buff.playable_class)){
+                    noBuffIsShown = false
+                    appendBuff(buff)
                 }
-            });
-            if(any_buff_is_shown){
+            })
+
+            function appendBuff(buff){
+                const $buffDiv = $('<div/>',{'class':'event-view-buff'})
+                $buffDiv.append($('<img/>',{
+                    'class': 'event-view-buff-icon',
+                    'src': static_url+IMAGES_PATH_BUFFS+buff.buff_name+'.png',
+                }))
+                $buffDiv.append($('<span/>',{
+                    'id': buff,
+                    'class':'event-view-buff-text',
+                    'text': unslugify_string(buff.buff_name),
+                }))
+                $('.event-view-buff-info').append($buffDiv)
+            }
+
+            if(noBuffIsShown){
                 $('.event-view-buff-info').append($('<span/>',{
                     'text': 'All Buffs in Group'
                 }))
@@ -718,23 +746,25 @@ $('.officer-vault-info').click(function(){
 $('.boss-view-btn').click(function(){
     // If element with class '.boss-view-btn' gets clicked then get element id and call
     // RaidEvent.switch_to_roster() with boss id same as button
+    changeBossView(this.id)
+})
+
+function changeBossView(bossId){
     $('.event-view-boss-info').removeClass('hidden')
     $('.event-view-summary').addClass("hidden")
-    raid_event.switch_to_roster(this.id)
-    swap_background_image(this.id)
-
-    function swap_background_image(boss_id){
-        let boss_image_path = get_boss_image_path_from_id(boss_id)
-        $('body').css('backgroundImage', 'url('+boss_image_path+')')
-        $('.event-view-header-bossname').text(bossNameList[boss_id].name)
-    }
-    
-    function get_boss_image_path_from_id(boss_id){
-        let boss_name = bossNameList[boss_id].name
-        let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
-        return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
-    }
-})
+    raid_event.switch_to_roster(bossId)
+    swap_background_image(bossId)
+}
+function swap_background_image(bossId){
+    let boss_image_path = get_boss_image_path_from_id(bossId)
+    $('body').css('backgroundImage', 'url('+boss_image_path+')')
+    $('.event-view-header-bossname').text(bossNameList[bossId].name)
+}
+function get_boss_image_path_from_id(bossId){
+    let boss_name = bossNameList[bossId].name
+    let stripped_boss_name = boss_name.replace(/[^A-Z0-9]/ig, "")
+    return static_url+'images/bossImages/Sepulcher/'+stripped_boss_name + "BG.jpg"
+}
 
 if(is_staff){
     /* 

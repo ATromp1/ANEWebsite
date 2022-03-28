@@ -234,6 +234,26 @@ def get_upcoming_events():
                 upcoming_events.append(event)
     return upcoming_events
 
+def get_events():
+    events = RaidEvent.objects.all().order_by('date')
+    if events.exists():
+        return events
+    else: 
+        return None
+
+def get_next_raid(current_raid):
+    events = get_events()
+    for i, event in enumerate(events):
+        if event == current_raid and i != len(events)-1:
+            return events[i+1]
+    return current_raid
+
+def get_previous_raid(current_raid):
+    events = get_events()
+    for i, event in enumerate(events):
+        if event == current_raid and i != 0:
+            return events[i-1]
+    return current_raid
 
 def logout_user_button():
     return redirect('/accounts/logout/')
@@ -430,7 +450,7 @@ def toggle_staff_button(request):
         request.user.is_staff = False
         request.user.save()
         return redirect('home')
-    if not request.user.is_staff and is_user_officer(request) == True:
+    if not request.user.is_staff and is_user_officer(request):
         request.user.is_staff = True
         request.user.save()
         return redirect('home')

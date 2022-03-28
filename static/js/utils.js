@@ -19,6 +19,13 @@ function unslugify_string(slug) {
 function strip_href_string(str){
     return str.split('/',2).join('/')
 }
+function resetLastVisitedBossView(){
+    sessionStorage.setItem('lastVisitedBossView', null)
+}
+if(strip_href_string(window.location.pathname) != "/events"){
+    resetLastVisitedBossView()
+}
+
 $(document).ready(function(){
     /*
     Highlight the current button on navbar depending on page
@@ -41,6 +48,7 @@ $('.hamburger-menu-toggle-button').click(function(){
     $('.navbar-hamburger-menu-content').toggleClass('open');
     $('.navbar-hamburger-menu').toggleClass('open');
 });
+
 if(strip_href_string(window.location.pathname) == "/events"){
     console.log("Preloaded Boss Images not in Cache")
     var images = [];

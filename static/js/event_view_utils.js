@@ -72,3 +72,22 @@ function get_playable_class_by_char_name(char_name){
     }
     return 'Character not in roster'
 }
+
+// reset when leaving event view page
+function setLastVisitedBossView(view){
+    sessionStorage.setItem('lastVisitedBossView', view)
+}
+function loadBossViewFromSessionStorage(){
+    const lastVisitedBossView = eval(sessionStorage.getItem('lastVisitedBossView'))
+    if(lastVisitedBossView != null){
+        changeBossView(lastVisitedBossView)
+    }
+}
+$(document).ready(()=>{
+    loadBossViewFromSessionStorage()
+})
+
+// Bootstrap Tooltips
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})

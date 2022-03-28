@@ -7,6 +7,8 @@
   --main-text-color: #ddd;
   --text-disabled-color: #aaa;
   --white-color: #fff;
+  --container-bg: rgba(53, 56, 64, 0.85);
+  --container-bg-hover: rgba(63, 66, 74, 0.85);
   --danger-bg-color: #aa2234;
   --danger-bg-hover: #d52a41;
   --success-bg-color: #22915d;
@@ -153,7 +155,7 @@ html {
 .auth-container {
   width: 90%;
   min-height: 90vh;
-  background-color: rgba(53, 56, 64, 0.85);
+  background-color: var(--container-bg);
   border-radius: var(--border-radius-size);
   backdrop-filter: brightness(50%);
   position: relative;
@@ -989,6 +991,31 @@ body {
         list-style: none; }
         .event-view-container .event-view-boss-container .event-view-boss-list .boss-view-roster-list.open {
           display: block; }
+
+.event-view-raid-links {
+  position: absolute;
+  display: flex;
+  background-color: rgba(53, 56, 64, 0.5);
+  border-radius: var(--border-radius-size);
+  transition: all 150ms ease-in-out;
+  vertical-align: middle;
+  top: 50%;
+  transform: translateY(-50%); }
+  .event-view-raid-links a {
+    text-decoration: none;
+    color: var(--white-color);
+    display: block;
+    padding: 5em 1em; }
+  .event-view-raid-links:hover {
+    background-color: rgba(63, 66, 74, 0.85);
+    transform: translateY(-56%); }
+  .event-view-raid-links span {
+    display: block;
+    text-align: center; }
+  .event-view-raid-links.previous-raid {
+    left: 1em; }
+  .event-view-raid-links.next-raid {
+    right: 1em; }
 
 /* /.................// Mediaquery @600px //................./ */
 /* Navbar (Hamburger menu) -- Calendar  */

@@ -53,7 +53,20 @@
             </div>
         </div>
     </div>
-
+    <div class="event-view-raid-links previous-raid">
+        <a href="{% url 'events-details' previous_raid %}" data-toggle="tooltip" data-placement="right" title="Previous Raid">
+            <span class="material-icons">
+                arrow_back_ios
+            </span>
+        </a>
+    </div>
+    <div class="event-view-raid-links next-raid">
+        <a href="{% url 'events-details' next_raid %}" data-toggle="tooltip" data-placement="left" title="Next Raid">
+            <span class="material-icons">
+                arrow_forward_ios
+            </span>
+        </a>
+    </div>
     <div class="event-view-container">
         <div class="event-view-boss-container">
             <div class="event-view-boss-list">
@@ -68,6 +81,8 @@
                 <div class="event-view-header-bossname">
                     Event Summary
                 </div>
+                
+                
                 <div class="event-view-header-buttons">
                     {% if is_past_event%}
                     {% else %}
