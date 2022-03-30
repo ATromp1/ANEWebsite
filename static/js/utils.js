@@ -72,3 +72,9 @@ if(strip_href_string(window.location.pathname) == "/events"){
         "/static/images/bossImages/Sepulcher/TheJailerBG.jpg"
     )
 }
+
+
+// Enable Bootstrap Tooltips
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
