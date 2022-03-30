@@ -1,7 +1,8 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+import requests
 
-from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.models import SocialAccount, SocialToken
 from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 
@@ -421,6 +422,14 @@ def sync_bnet(request):
     their class and account_id will be linked in Roster. Officers will be added to a django admin group and
     given staff status.
     """
+    acc = SocialAccount.objects.get(user=request.user)
+    token_expiration_date = SocialToken.objects.get(account=acc).expires_at
+    current_date = datetime.now()
+    current_date = current_date.replace(tzinfo=timezone.utc)
+
+    if token_expiration_date < current_date:
+        return redirect('login-user-button')
+
     all_user_characters = get_user_profile_data(request)
     populate_user_characters(all_user_characters)
     set_account_id_and_class(all_user_characters)
