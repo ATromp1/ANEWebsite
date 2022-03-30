@@ -198,6 +198,9 @@ def attend_raid_button(request, event_date):
 
 
 def roster_update_button(request):
+    if check_token_life(request):
+        return redirect('login-user-button')
+
     api_roster = get_guild_roster(request)
     populate_roster_db(api_roster)
     sync_roster_from_user_characters()
@@ -422,12 +425,7 @@ def sync_bnet(request):
     their class and account_id will be linked in Roster. Officers will be added to a django admin group and
     given staff status.
     """
-    acc = SocialAccount.objects.get(user=request.user)
-    token_expiration_date = SocialToken.objects.get(account=acc).expires_at
-    current_date = datetime.now()
-    current_date = current_date.replace(tzinfo=timezone.utc)
-
-    if token_expiration_date < current_date:
+    if check_token_life(request):
         return redirect('login-user-button')
 
     all_user_characters = get_user_profile_data(request)
@@ -435,6 +433,16 @@ def sync_bnet(request):
     set_account_id_and_class(all_user_characters)
     set_officer_staff(request)
     return redirect('home')
+
+
+def check_token_life(request):
+    acc = SocialAccount.objects.get(user=request.user)
+    token_expiration_date = SocialToken.objects.get(account=acc).expires_at
+    dt = datetime.now()
+    dt = dt.replace(tzinfo=timezone.utc)
+    if token_expiration_date < dt:
+        return True
+
 
 
 def set_officer_staff(request):
