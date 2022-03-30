@@ -44,8 +44,11 @@
         </div>
         <div class="navbar-user">
             <div class="navbar-user-menu">
+                {% if user.is_staff %}
+                <span><a href="/admin" title="Admin Page">{{ social_user }}</a></span>
+                {% else %}
                 <span>{{ social_user }}</span>
-
+                {% endif %}
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         {% if request.user.is_authenticated %}

@@ -79,6 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ANEProject.error_hander.ErrorHandlerMiddleware'
 ]
 
 ROOT_URLCONF = 'ANEProject.urls'
