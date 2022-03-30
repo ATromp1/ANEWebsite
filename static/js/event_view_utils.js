@@ -87,7 +87,3 @@ $(document).ready(()=>{
     if(is_staff) loadBossViewFromSessionStorage()
 })
 
-// Bootstrap Tooltips
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-})
