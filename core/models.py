@@ -20,7 +20,7 @@ class Roster(models.Model):
     name = models.CharField(max_length=20, unique=True)
     rank = models.IntegerField(choices=Rank.choices)
     character_id = models.IntegerField(unique=True)
-    account_id = models.IntegerField(null=True, blank=True)
+    account_id = models.IntegerField(default=0, blank=True)
     playable_class = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
