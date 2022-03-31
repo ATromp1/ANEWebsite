@@ -358,7 +358,8 @@ def create_roster_dict(current_raid):
         if roster.get(name=character).playable_class is not None:
             roster_dict[character.id] = {
                 'name': character.name,
-                'playable_class': character.playable_class
+                'playable_class': character.playable_class,
+                'account_id': character.account_id if character.account_id is not None else "",
             }
     return roster_dict
 
