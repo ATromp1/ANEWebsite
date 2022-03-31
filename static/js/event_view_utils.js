@@ -9,6 +9,7 @@ function roster_list_db_to_object(roster_list){
             'name': roster[i].name,
             'playable_class': roster[i].playable_class,
             'roles': roles,
+            'account_id': roster[i].account_id
         })
     }
     return roster_chars
@@ -87,3 +88,18 @@ $(document).ready(()=>{
     if(is_staff) loadBossViewFromSessionStorage()
 })
 
+function groupBy(array, key){
+    return array.reduce((group, element) => {
+        const keyValue = element[key]
+        return { ...group, [keyValue]: [...(group[keyValue] ?? []),
+        element] }
+    }, {})
+}
+
+function removeValueFromArray(arr, value){
+    var index = arr.indexOf(value);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+    return arr;
+}

@@ -192,6 +192,7 @@ class RosterPerBoss {
         this.initialRoster = initialRoster
         this.benchedRoster = initialRoster.slice()
         this.selectedRoster = []
+        this.accountIdsInRoster = []
     }
 
     load_roster_from_roster_list(selectedRoster){
@@ -231,7 +232,9 @@ class RosterPerBoss {
         for(let index in this.selectedRoster){
             let char = this.selectedRoster[index]
             if(char.name == charName){
+                this.accountIdsInRoster = removeValueFromArray(this.accountIdsInRoster, char.account_id)
                 this.selectedRoster.splice(index,1)
+                break
             }
         }
     }
@@ -245,7 +248,9 @@ class RosterPerBoss {
                     'name': char.name,
                     'playable_class': char.playable_class,
                     'role': role,
+                    'account_id': char.account_id,
                 })
+                if(!this.accountIdsInRoster.includes(char.account_id)) this.accountIdsInRoster.push(char.account_id)
             }
         }
     }
@@ -264,9 +269,10 @@ class RosterPerBoss {
     move_from_bench_to_selected(charName, role, displayChange){
         displayChange = false || displayChange
         this.add_char_to_selected_roster(charName, role);
-        let char_removed_at_index = this.remove_char_from_benched_roster(charName)
+        this.remove_char_from_benched_roster(charName)
         if(displayChange){
-            this.remove_from_benched_display_at_index(char_removed_at_index)
+            //this.remove_from_benched_display_at_index(char_removed_at_index)
+            this.display_benched_roster()
             this.display_selected_roster()
             this.display_buff_info()
         }
@@ -337,8 +343,6 @@ class RosterPerBoss {
         This function doesn't change any variables, simply updates the display to this RosterPerBoss class
         It only updates the display
         */
-
-
         // First clear all old buttons
         $('.boss-view-btn').removeClass('active');
 
@@ -346,39 +350,79 @@ class RosterPerBoss {
         $('.boss-view-btn#'+this.boss).addClass('active')
 
         // Clear the table first
-        $('.event-view-benched-roster-table').empty();
+        const ROSTER_TABLE = $('.event-view-benched-roster-table')
+        $(ROSTER_TABLE).empty();
 
-        let roles = ['tank', 'healer', 'mdps', 'rdps']
-        let td_css_class = "event-view-role-icon"
-        jQuery.each(this.benchedRoster, function(){
+        const ALREADY_SELECTED = $('<div/>',{
+            'class':'d-flex flex-column already-selected-roster',
+        })
+        $(ROSTER_TABLE).append(ALREADY_SELECTED)
+
+        const ROLES = ['tank', 'healer', 'mdps', 'rdps']
+        const TD_CSS_CLASSES = "event-view-role-icon"
+        this.benchedRoster.forEach((char)=>{
             let $tr = $('<tr/>',{'class':'benched-roster-row'})
-
-            $tr.append($('<td/>',{
-                'class': css_classes[this.playable_class],
-                'text': this.name
-            }))
+            const accountIdInRoster = this.accountIdsInRoster.includes(char.account_id) ? char.account_id != "" : undefined
+            if(accountIdInRoster){
+                $tr.append($('<td/>',{
+                    'class': "text-secondary",
+                    'text': char.name
+                }))
+            } else {
+                $tr.append($('<td/>',{
+                    'class': css_classes[char.playable_class],
+                    'text': char.name
+                }))
+            }   
 
             // Don't append the role icons if user is not staff
             if(is_staff){
-                for(let role in roles){
-                    role = roles[role]
-                    if(this.roles.includes(role)){
-                        $tr.append($('<td/>',{
-                            'id': role,
-                            'class':'event-view-role-icon',
-                            'html':$('<img/>',{
-                                'src': static_url+IMAGES_PATH_ROLES+role+'.png',
-                                'class':td_css_class,
-                            })
-                        }))
-                    } else { $tr.append($('<td/>')) }
+                if(!accountIdInRoster){
+                    for(let role in ROLES){
+                        role = ROLES[role]
+                        if(char.roles.includes(role)){
+                            $tr.append($('<td/>',{
+                                'id': role,
+                                'class':'event-view-role-icon',
+                                'html':$('<img/>',{
+                                    'src': static_url+IMAGES_PATH_ROLES+role+'.png',
+                                    'class':TD_CSS_CLASSES,
+                                })
+                            }))
+                        } else { $tr.append($('<td/>')) }
+                    }
+                } else {
+                    let charInRoster = this.getAccountsCharInRoster(char.account_id)
+                    console.log(charInRoster)
+                    const $td = $('<td/>',{
+                        'class':'position-absolute',
+                        'text': "In as: "
+                    })
+                    $td.append($('<span/>',{
+                        'class': css_classes[charInRoster.playable_class],
+                        'text': charInRoster.name,
+                    }))
+                    $tr.append($td)
                 }
             }
-            $('.event-view-benched-roster-table').append($tr)
 
-        });
-
-    } 
+            if(accountIdInRoster){
+                $(ROSTER_TABLE).append($tr)
+            } else {
+                $(ROSTER_TABLE).prepend($tr)
+            }
+        })
+    }
+    
+    getAccountsCharInRoster(account_id){
+        let charInRoster
+        this.selectedRoster.forEach((char) => {
+            if(char.account_id == account_id){
+                charInRoster = char
+            }
+        })
+        return charInRoster || ""
+    }
 
     classes_in_roster(){
         let classes_in_roster = []
@@ -410,7 +454,6 @@ class RosterPerBoss {
                 'class':'event-view-missing-buffs-text',
             }))
             let classes_in_roster = this.classes_in_roster()
-            console.log(classes_in_roster)
             let noBuffIsShown = true
             CLASS_BUFFS.forEach((buff)=>{
                 if(buff.playable_class == 'Shaman'){
@@ -452,34 +495,30 @@ class RosterPerBoss {
         const publishDiv = $('.event-view-published-information')
         publishDiv.empty()
         if(this.published){
-            publishDiv.append($('<span/>',{
-                'text': 'This group has been published'
-            }))
             const publishButton = $('<button/>',{
                 'class': 'publish-button publish btn btn-primary',
                 'text': 'Undo Publication',
             })
-            $(publishButton).click(() =>{
-                this.undo_publication()
-            })
-            publishDiv.append(publishButton)
-        } else {
-            publishDiv.append($('<span/>',{
-                'text': 'This group has NOT been published'
+            publishDiv.append(publishButton, $('<span/>', {
+                'text': 'This group has been published'
             }))
+            $(publishButton).click(() => { this.undo_publication() })
+        } else {
             const publishButton = $('<button/>',{
                 'class': 'publish-button undo-publish btn btn-primary',
                 'text': 'Publish Group',
             })
-            $(publishButton).click(() =>{
-                this.publish_boss()
-            })
-            publishDiv.append(publishButton)
+            publishDiv.append(publishButton, $('<span/>', {
+                'text': 'This group has NOT been published'
+            }))
+            $(publishButton).click(() => { this.publish_boss() })
         }
     }
 
     publish_boss(){
-        if(this.selectedRoster.length > 0){
+        if(this.selectedRoster.length == 0){
+            status_alert(2000, "You can't publish an empty group", "warning")
+        } else {
             $.ajax({
                 data: {
                     'boss_id': this.boss,
@@ -491,8 +530,6 @@ class RosterPerBoss {
             this.published = true
             this.display_published_status()
             status_alert(2000, "Group Published", "success")
-        } else {
-            status_alert(2000, "You can't publish an empty group", "warning")
         }
     }
 
