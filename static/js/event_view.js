@@ -354,64 +354,70 @@ class RosterPerBoss {
         $(ROSTER_TABLE).empty();
 
         const ALREADY_SELECTED = $('<div/>',{
-            'class':'d-flex flex-column already-selected-roster',
+            'class':'py-2',
+            'style': 'margin-left:0.4rem; margin-bottom:0;',
+            //'text': "Alts"
         })
         $(ROSTER_TABLE).append(ALREADY_SELECTED)
-
+        
+        let groupedRoster = groupBy(this.benchedRoster, 'playable_class')
         const ROLES = ['tank', 'healer', 'mdps', 'rdps']
         const TD_CSS_CLASSES = "event-view-role-icon"
-        this.benchedRoster.forEach((char)=>{
-            let $tr = $('<tr/>',{'class':'benched-roster-row'})
-            const accountIdInRoster = this.accountIdsInRoster.includes(char.account_id) ? char.account_id != "" : undefined
-            if(accountIdInRoster){
-                $tr.append($('<td/>',{
-                    'class': "text-secondary",
-                    'text': char.name
-                }))
-            } else {
-                $tr.append($('<td/>',{
-                    'class': css_classes[char.playable_class],
-                    'text': char.name
-                }))
-            }   
-
-            // Don't append the role icons if user is not staff
-            if(is_staff){
-                if(!accountIdInRoster){
-                    for(let role in ROLES){
-                        role = ROLES[role]
-                        if(char.roles.includes(role)){
-                            $tr.append($('<td/>',{
-                                'id': role,
-                                'class':'event-view-role-icon',
-                                'html':$('<img/>',{
-                                    'src': static_url+IMAGES_PATH_ROLES+role+'.png',
-                                    'class':TD_CSS_CLASSES,
-                                })
-                            }))
-                        } else { $tr.append($('<td/>')) }
-                    }
-                } else {
-                    let charInRoster = this.getAccountsCharInRoster(char.account_id)
-                    console.log(charInRoster)
-                    const $td = $('<td/>',{
-                        'class':'position-absolute',
-                        'text': "In as: "
-                    })
-                    $td.append($('<span/>',{
-                        'class': css_classes[charInRoster.playable_class],
-                        'text': charInRoster.name,
+        for(let i in groupedRoster){
+            let playable_class = groupedRoster[i]
+            playable_class.forEach((char)=>{
+                let $tr = $('<tr/>',{'class':'benched-roster-row'})
+                const accountIdInRoster = this.accountIdsInRoster.includes(char.account_id) ? char.account_id != "" : undefined
+                if(accountIdInRoster){
+                    $tr.append($('<td/>',{
+                        'class': "text-secondary",
+                        'text': char.name
                     }))
-                    $tr.append($td)
+                } else {
+                    $tr.append($('<td/>',{
+                        'class': css_classes[char.playable_class],
+                        'text': char.name
+                    }))
+                }   
+    
+                // Don't append the role icons if user is not staff
+                if(is_staff){
+                    if(!accountIdInRoster){
+                        for(let role in ROLES){
+                            role = ROLES[role]
+                            if(char.roles.includes(role)){
+                                $tr.append($('<td/>',{
+                                    'id': role,
+                                    'class':'event-view-role-icon',
+                                    'html':$('<img/>',{
+                                        'src': static_url+IMAGES_PATH_ROLES+role+'.png',
+                                        'class':TD_CSS_CLASSES,
+                                    })
+                                }))
+                            } else { $tr.append($('<td/>')) }
+                        }
+                    } else {
+                        let charInRoster = this.getAccountsCharInRoster(char.account_id)
+                        const $td = $('<td/>',{
+                            'class':'position-absolute',
+                            'text': "In as: "
+                        })
+                        $td.append($('<span/>',{
+                            'class': css_classes[charInRoster.playable_class],
+                            'text': charInRoster.name,
+                        }))
+                        $tr.append($td)
+                    }
                 }
-            }
-
-            if(accountIdInRoster){
-                $(ROSTER_TABLE).append($tr)
-            } else {
-                $(ROSTER_TABLE).prepend($tr)
-            }
-        })
+    
+                if(accountIdInRoster){
+                    $(ROSTER_TABLE).append($tr)
+                } else {
+                    $(ROSTER_TABLE).prepend($tr)
+                }
+                
+            })
+        }
     }
     
     getAccountsCharInRoster(account_id){

@@ -78,3 +78,4 @@ if(strip_href_string(window.location.pathname) == "/events"){
 $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 })
+
