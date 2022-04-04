@@ -46,16 +46,18 @@ class MyUser(SocialAccount):
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField(unique=True)
-    roster = models.ManyToManyField(Roster, blank=True, default=True, related_name='roster')
+    rosterFK = models.ForeignKey(Roster, blank=True, default=True, related_name='roster', on_delete=models.CASCADE)
+    roster = Roster.objects.prefetch_related('roster')
     bosses = models.ManyToManyField(Boss, through='BossPerEvent')
-    late = models.ManyToManyField(MyUser, through='LateUser')
-
+    late = models.ManyToManyField(MyUser, through='LateUser')        
+        
     def __str__(self):
         return str(self.date)
 
     def populate_roster(self):
-        for character in Roster.objects.all():
-            self.roster.add(Roster.objects.get(name=character))
+        pass
+        #for character in Roster.objects.all():
+        #    self.roster.add(Roster.objects.get(name=character))
 
     def decline_raid(self, characters):
         for item in characters:
