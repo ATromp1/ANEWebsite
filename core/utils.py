@@ -543,10 +543,10 @@ def get_user_chars_per_event(current_raid, request):
 
 def is_user_absent(event, request, account_id=0):
     account_id = get_current_user_data(request)['id'] if account_id == 0 else account_id
-    if event.roster.filter(account_id=account_id).exists():
-        return False
-    else:
+    if AbsentUser.objects.filter(raid_event=event, account_id=account_id).exists():
         return True
+    else:
+        return False
 
 
 def is_raider(request):
