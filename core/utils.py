@@ -1,12 +1,14 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+import requests
 
-from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.models import SocialAccount, SocialToken
 from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 
 from core.models import RaidEvent, BossPerEvent, Boss, Roster, LateUser, MyUser, get_user_profile_data, \
-    set_account_id_and_class, get_guild_roster, populate_roster_db, populate_user_characters, sync_roster_from_user_characters
+    set_account_id_and_class, get_guild_roster, populate_roster_db, populate_user_characters, \
+    sync_roster_from_user_characters, AbsentUser
 
 
 def get_playable_classes_as_css_classes():
@@ -50,7 +52,7 @@ def generate_future_events():
             RaidEvent.objects.get(date=day)
         except RaidEvent.DoesNotExist:
             obj = RaidEvent.objects.create(date=day)
-            obj.populate_roster()
+            # obj.populate_roster()
 
 
 def generate_calendar(events):
@@ -177,7 +179,10 @@ def decline_raid_button(request, event_date):
             name = user_chars[boss]['name']
             boss_obj.remove_from_role(role, name)
 
-    event_obj.decline_raid(get_user_chars_in_roster(request))
+    AbsentUser.objects.update_or_create(user=MyUser.objects.get(user=request.user),
+                                        raid_event=event_obj,
+                                        account_id=get_current_user_data(request)['id'])
+
     remove_late_user(event_obj)
 
     return redirect('events')
@@ -192,11 +197,16 @@ def remove_late_user(event_obj):
 def attend_raid_button(request, event_date):
     """Current user can sign himself back in, if signed off before."""
     event_obj = RaidEvent.objects.get(date=event_date)
-    event_obj.attend_raid(get_user_chars_in_roster(request))
+    result = AbsentUser.objects.get(user=MyUser.objects.get(user=request.user), raid_event=event_obj)
+    result.delete()
+
     return redirect('events')
 
 
 def roster_update_button(request):
+    if check_token_life(request):
+        return redirect('login-user-button')
+
     api_roster = get_guild_roster(request)
     populate_roster_db(api_roster)
     sync_roster_from_user_characters()
@@ -234,26 +244,30 @@ def get_upcoming_events():
                 upcoming_events.append(event)
     return upcoming_events
 
+
 def get_events():
     events = RaidEvent.objects.all().order_by('date')
     if events.exists():
         return events
-    else: 
+    else:
         return None
+
 
 def get_next_raid(current_raid):
     events = get_events()
     for i, event in enumerate(events):
-        if event == current_raid and i != len(events)-1:
-            return events[i+1]
+        if event == current_raid and i != len(events) - 1:
+            return events[i + 1]
     return current_raid
+
 
 def get_previous_raid(current_raid):
     events = get_events()
     for i, event in enumerate(events):
         if event == current_raid and i != 0:
-            return events[i-1]
+            return events[i - 1]
     return current_raid
+
 
 def logout_user_button():
     return redirect('/accounts/logout/')
@@ -265,7 +279,7 @@ def login_user_button(request):
 
 def handle_event_ajax(request, ajax_data):
     """
-    Events takes 3 types of ajax request: late and decline. 
+    Events takes 3 types of ajax request: late and decline.
     Call different functions depending on which one is specified in type
     """
     if ajax_data.get('type') is not None:
@@ -300,6 +314,7 @@ def save_late_user(request, ajax_data):
         else:
             LateUser.objects.filter(raid_event=current_raid).update(minutes_late=minutes_late)
 
+
 def publish_boss_ajax(ajax_data, current_raid):
     if ajax_data.get('publish') is not None and ajax_data.get('boss_id') is not None:
         boss_id = ajax_data.get('boss_id')
@@ -307,12 +322,13 @@ def publish_boss_ajax(ajax_data, current_raid):
         boss = Boss.objects.get(boss_id=boss_id)
         BossPerEvent.objects.filter(boss=boss, raid_event=current_raid).update(published=publish)
 
+
 def publish_event_ajax(ajax_data, current_raid):
     if ajax_data.get('publish') is not None and ajax_data.get('type') is not None:
         if ajax_data.get('type') == 'publish_event':
             publish = ajax_data.get('publish')
             BossPerEvent.objects.filter(raid_event=current_raid).update(published=publish)
-        
+
 
 def select_player_ajax(ajax_data, current_raid):
     """
@@ -394,10 +410,12 @@ def selected_roster_from_db_to_json(current_raid):
 def user_attendance_status(event, request):
     if not is_raider(request):
         return 'Click For Details'
-    for user_char in get_user_chars_in_roster(request):
-        if not event.roster.all().filter(name=user_char).exists():
-            return 'absent'
 
+    user = get_current_user_data(request)['id']
+    if AbsentUser.objects.filter(raid_event=event, account_id=user).exists():
+        return 'absent'
+
+    for user_char in get_user_chars_in_roster(request):
         for boss in BossPerEvent.objects.filter(raid_event=event):
             roles = ['tank', 'healer', 'rdps', 'mdps']
             for role in roles:
@@ -422,11 +440,23 @@ def sync_bnet(request):
     their class and account_id will be linked in Roster. Officers will be added to a django admin group and
     given staff status.
     """
+    if check_token_life(request):
+        return redirect('login-user-button')
+
     all_user_characters = get_user_profile_data(request)
     populate_user_characters(all_user_characters)
     set_account_id_and_class(all_user_characters)
     set_officer_staff(request)
     return redirect('home')
+
+
+def check_token_life(request):
+    acc = SocialAccount.objects.get(user=request.user)
+    token_expiration_date = SocialToken.objects.get(account=acc).expires_at
+    dt = datetime.now()
+    dt = dt.replace(tzinfo=timezone.utc)
+    if token_expiration_date < dt:
+        return True
 
 
 def set_officer_staff(request):
@@ -536,11 +566,8 @@ def get_declined_users_for_event(request, current_raid):
     Returns a list of users declined for current raid.
     """
     declined_users = []
-    roster = Roster.objects.all()
-    for character in roster.all():
-        if is_user_absent(current_raid, request, character.account_id):
-            user_btag = user_btag_from_account_id(character.account_id)
-            if not any(user_btag in x for x in declined_users): # Cryptic if statement checks if user_btag exists anywhere in multidimensional array
-                declined_users.append([user_btag, character.name])
-                
+    absent_user = AbsentUser.objects.filter(raid_event=current_raid)
+    for user in absent_user:
+        character_name = Roster.objects.filter(account_id=user.account_id).first().name
+        declined_users.append([user, character_name])
     return declined_users

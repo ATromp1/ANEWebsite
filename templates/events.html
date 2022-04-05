@@ -76,7 +76,7 @@
                         <a href="{% url 'opt-out' event.date %}" class="event-list-opt-out" id="opt-out">Decline</a>
                     {% endif %}
                     <!-- Button open modal -->
-                    {% if not event.absent == True %}
+                    {% if not event.absent_variable == True %}
                         <button type="button" id="{{event}}" class="events_modal_open_btn" >
                             Late
                         </button>
