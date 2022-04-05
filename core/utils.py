@@ -365,14 +365,25 @@ def create_roster_dict(current_raid):
     Creates a json dictionary containing the default roster (everyone) and class except players that have signed off
     """
     roster_dict = {}
-    roster = current_raid.roster
-    for character in roster.all():
-        if roster.get(name=character).playable_class is not None:
-            roster_dict[character.id] = {
-                'name': character.name,
-                'playable_class': character.playable_class,
-                'account_id': character.account_id if character.account_id is not None else "",
-            }
+
+    roster = Roster.objects.all()
+
+    absent_user_list = []
+    for user in AbsentUser.objects.all():
+        absent_user_list.append(user.account_id)
+    roster_list = []
+    for char in roster:
+        if char.account_id not in absent_user_list:
+            roster_list.append(char.name)
+
+    for character in roster:
+        if character.playable_class is not None:
+            if character.name in roster_list:
+                roster_dict[character.id] = {
+                    'name': character.name,
+                    'playable_class': character.playable_class,
+                    'account_id': character.account_id if character.account_id is not None else "",
+                }
     return roster_dict
 
 
