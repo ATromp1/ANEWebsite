@@ -2,7 +2,7 @@ from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from core.forms import Eventform,EditEventForm
+from core.forms import Eventform, EditEventForm
 from core.models import (
     Roster,
     RaidEvent,
@@ -16,13 +16,16 @@ from core.utils import (
     generate_calendar,
     get_user_display_name, select_player_ajax, create_roster_dict, selected_roster_from_db_to_json,
     user_attendance_status, save_late_user, load_roster_template, get_user_chars_per_event,
-    is_user_absent, is_user_officer, handle_event_ajax, get_past_events, get_upcoming_events, sync_bnet, get_declined_users_for_event,
+    is_user_absent, is_user_officer, handle_event_ajax, get_past_events, get_upcoming_events, sync_bnet,
+    get_declined_users_for_event,
     publish_boss_ajax, publish_event_ajax, get_previous_raid, get_next_raid
 )
+
 
 def sync_view(request):
     sync_bnet(request)
     return redirect('home')
+
 
 def home_view(request):
     events = get_upcoming_events()
@@ -31,8 +34,6 @@ def home_view(request):
         if events:
             for event in events:
                 event.status = user_attendance_status(event, request)
-                if is_user_absent(event, request):
-                    event.absent = True
 
     try:
         event = events[0]
@@ -55,7 +56,7 @@ def events_view(request):
         for event in events:
             event.status = user_attendance_status(event, request)
             if is_user_absent(event, request):
-                event.absent = True
+                event.absent_variable = True
 
     save_late_user(request, request.GET)
 
@@ -76,8 +77,6 @@ def add_event_view(request):
         form = Eventform(request.POST)
         if form.is_valid():
             form.save()
-            date = request.POST['date']
-            RaidEvent.objects.get(date=date).populate_roster()
             return redirect('events')
     else:
         form = Eventform
@@ -91,6 +90,7 @@ def add_event_view(request):
         'is_officer': is_user_officer(request),
     }
     return render(request, 'add_event.html', context)
+
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def edit_event(request, event_date):
@@ -107,16 +107,16 @@ def edit_event(request, event_date):
             return redirect('events')
     else:
         form = EditEventForm(initial={
-            'name':current_raid.name,
-            'date':event_date,
-            })
+            'name': current_raid.name,
+            'date': event_date,
+        })
 
-    
     context = {
         'form': form,
         'event': current_raid,
     }
     return render(request, 'edit_event.html', context)
+
 
 @login_required(login_url='/accounts/battlenet/login/?process=login')
 def events_details_view(request, event_date):
@@ -133,11 +133,12 @@ def events_details_view(request, event_date):
     publish_event_ajax(request.GET, current_raid)
     check_user_in_late_users = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
                                                        raid_event=current_raid).exists()
-    
+
     user_minutes_late = None
     if check_user_in_late_users:
-        user_minutes_late = LateUser.objects.filter(user=MyUser.objects.get(user=request.user), raid_event=current_raid).first().minutes_late
-        
+        user_minutes_late = LateUser.objects.filter(user=MyUser.objects.get(user=request.user),
+                                                    raid_event=current_raid).first().minutes_late
+
     context = {
         'event': current_raid,
         'user_char_selected': get_user_chars_per_event(current_raid, request),

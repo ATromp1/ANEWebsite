@@ -46,32 +46,32 @@ class MyUser(SocialAccount):
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField(unique=True)
-    roster = models.ManyToManyField(Roster, blank=True, default=True, related_name='roster')
+    rosterFK = models.ForeignKey(Roster, blank=True, default=True, related_name='roster', on_delete=models.CASCADE)
+    roster = Roster.objects.prefetch_related('roster')
     bosses = models.ManyToManyField(Boss, through='BossPerEvent')
-    late = models.ManyToManyField(MyUser, through='LateUser')
+    late = models.ManyToManyField(MyUser, through='LateUser', related_name='late_user')
+    absent = models.ManyToManyField(MyUser, through='AbsentUser', related_name='absent_user')
 
     def __str__(self):
         return str(self.date)
-
-    def populate_roster(self):
-        for character in Roster.objects.all():
-            self.roster.add(Roster.objects.get(name=character))
-
-    def decline_raid(self, characters):
-        for item in characters:
-            self.roster.remove(Roster.objects.get(name=item.name))
-            self.save()
-
-    def attend_raid(self, characters):
-        for item in characters:
-            self.roster.add(Roster.objects.get(name=item.name))
-            self.save()
 
 
 class LateUser(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
     minutes_late = models.CharField(max_length=20)
+
+    def __str__(self):
+        return str(self.user.extra_data['battletag'])
+
+    def date(self):
+        return str(self.raid_event.date)
+
+
+class AbsentUser(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    account_id = models.IntegerField(default=0)
+    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return str(self.user.extra_data['battletag'])
@@ -88,7 +88,7 @@ class BossPerEvent(models.Model):
     mdps = models.ManyToManyField(Roster, blank=True, related_name='rel_mdps')
     rdps = models.ManyToManyField(Roster, blank=True, related_name='rel_rdps')
     published = models.BooleanField(default=False)
-    
+
     def __str__(self):
         return str(self.boss.boss_name)
 

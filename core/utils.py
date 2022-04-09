@@ -7,7 +7,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 
 from core.models import RaidEvent, BossPerEvent, Boss, Roster, LateUser, MyUser, get_user_profile_data, \
-    set_account_id_and_class, get_guild_roster, populate_roster_db, populate_user_characters, sync_roster_from_user_characters
+    set_account_id_and_class, get_guild_roster, populate_roster_db, populate_user_characters, \
+    sync_roster_from_user_characters, AbsentUser
 
 
 def get_playable_classes_as_css_classes():
@@ -51,7 +52,7 @@ def generate_future_events():
             RaidEvent.objects.get(date=day)
         except RaidEvent.DoesNotExist:
             obj = RaidEvent.objects.create(date=day)
-            obj.populate_roster()
+            # obj.populate_roster()
 
 
 def generate_calendar(events):
@@ -178,7 +179,10 @@ def decline_raid_button(request, event_date):
             name = user_chars[boss]['name']
             boss_obj.remove_from_role(role, name)
 
-    event_obj.decline_raid(get_user_chars_in_roster(request))
+    AbsentUser.objects.update_or_create(user=MyUser.objects.get(user=request.user),
+                                        raid_event=event_obj,
+                                        account_id=get_current_user_data(request)['id'])
+
     remove_late_user(event_obj)
 
     return redirect('events')
@@ -193,7 +197,9 @@ def remove_late_user(event_obj):
 def attend_raid_button(request, event_date):
     """Current user can sign himself back in, if signed off before."""
     event_obj = RaidEvent.objects.get(date=event_date)
-    event_obj.attend_raid(get_user_chars_in_roster(request))
+    result = AbsentUser.objects.get(user=MyUser.objects.get(user=request.user), raid_event=event_obj)
+    result.delete()
+
     return redirect('events')
 
 
@@ -238,26 +244,30 @@ def get_upcoming_events():
                 upcoming_events.append(event)
     return upcoming_events
 
+
 def get_events():
     events = RaidEvent.objects.all().order_by('date')
     if events.exists():
         return events
-    else: 
+    else:
         return None
+
 
 def get_next_raid(current_raid):
     events = get_events()
     for i, event in enumerate(events):
-        if event == current_raid and i != len(events)-1:
-            return events[i+1]
+        if event == current_raid and i != len(events) - 1:
+            return events[i + 1]
     return current_raid
+
 
 def get_previous_raid(current_raid):
     events = get_events()
     for i, event in enumerate(events):
         if event == current_raid and i != 0:
-            return events[i-1]
+            return events[i - 1]
     return current_raid
+
 
 def logout_user_button():
     return redirect('/accounts/logout/')
@@ -269,7 +279,7 @@ def login_user_button(request):
 
 def handle_event_ajax(request, ajax_data):
     """
-    Events takes 3 types of ajax request: late and decline. 
+    Events takes 3 types of ajax request: late and decline.
     Call different functions depending on which one is specified in type
     """
     if ajax_data.get('type') is not None:
@@ -304,6 +314,7 @@ def save_late_user(request, ajax_data):
         else:
             LateUser.objects.filter(raid_event=current_raid).update(minutes_late=minutes_late)
 
+
 def publish_boss_ajax(ajax_data, current_raid):
     if ajax_data.get('publish') is not None and ajax_data.get('boss_id') is not None:
         boss_id = ajax_data.get('boss_id')
@@ -311,12 +322,13 @@ def publish_boss_ajax(ajax_data, current_raid):
         boss = Boss.objects.get(boss_id=boss_id)
         BossPerEvent.objects.filter(boss=boss, raid_event=current_raid).update(published=publish)
 
+
 def publish_event_ajax(ajax_data, current_raid):
     if ajax_data.get('publish') is not None and ajax_data.get('type') is not None:
         if ajax_data.get('type') == 'publish_event':
             publish = ajax_data.get('publish')
             BossPerEvent.objects.filter(raid_event=current_raid).update(published=publish)
-        
+
 
 def select_player_ajax(ajax_data, current_raid):
     """
@@ -353,14 +365,25 @@ def create_roster_dict(current_raid):
     Creates a json dictionary containing the default roster (everyone) and class except players that have signed off
     """
     roster_dict = {}
-    roster = current_raid.roster
-    for character in roster.all():
-        if roster.get(name=character).playable_class is not None:
-            roster_dict[character.id] = {
-                'name': character.name,
-                'playable_class': character.playable_class,
-                'account_id': character.account_id if character.account_id is not None else "",
-            }
+
+    roster = Roster.objects.all()
+
+    absent_user_list = []
+    for user in AbsentUser.objects.all():
+        absent_user_list.append(user.account_id)
+    roster_list = []
+    for char in roster:
+        if char.account_id not in absent_user_list:
+            roster_list.append(char.name)
+
+    for character in roster:
+        if character.playable_class is not None:
+            if character.name in roster_list:
+                roster_dict[character.id] = {
+                    'name': character.name,
+                    'playable_class': character.playable_class,
+                    'account_id': character.account_id if character.account_id is not None else "",
+                }
     return roster_dict
 
 
@@ -398,19 +421,28 @@ def selected_roster_from_db_to_json(current_raid):
 def user_attendance_status(event, request):
     if not is_raider(request):
         return 'Click For Details'
-    for user_char in get_user_chars_in_roster(request):
-        if not event.roster.all().filter(name=user_char).exists():
-            return 'absent'
 
+    user = get_current_user_data(request)['id']
+    if AbsentUser.objects.filter(raid_event=event, account_id=user).exists():
+        return 'absent'
+    
+    boss_obj = BossPerEvent.objects.filter(raid_event=event)
+    if not boss_obj.exists():
+        return 'Pending'
+
+    published_bosses = 0
+    for boss in boss_obj:
+        if boss.published:
+            published_bosses += 1
+    if published_bosses == 0:
+        return "Pending"
+    
+    for user_char in get_user_chars_in_roster(request):
         for boss in BossPerEvent.objects.filter(raid_event=event):
             roles = ['tank', 'healer', 'rdps', 'mdps']
             for role in roles:
                 if boss.check_exists(role, user_char):
                     return 'selected'
-
-    boss_obj = BossPerEvent.objects.filter(raid_event=event)
-    if not boss_obj.exists():
-        return 'Pending'
 
     for boss in boss_obj:
         total_roster_count = boss.tank.count() + boss.healer.count() + boss.rdps.count() + boss.mdps.count()
@@ -443,7 +475,6 @@ def check_token_life(request):
     dt = dt.replace(tzinfo=timezone.utc)
     if token_expiration_date < dt:
         return True
-
 
 
 def set_officer_staff(request):
@@ -530,10 +561,10 @@ def get_user_chars_per_event(current_raid, request):
 
 def is_user_absent(event, request, account_id=0):
     account_id = get_current_user_data(request)['id'] if account_id == 0 else account_id
-    if event.roster.filter(account_id=account_id).exists():
-        return False
-    else:
+    if AbsentUser.objects.filter(raid_event=event, account_id=account_id).exists():
         return True
+    else:
+        return False
 
 
 def is_raider(request):
@@ -553,11 +584,8 @@ def get_declined_users_for_event(request, current_raid):
     Returns a list of users declined for current raid.
     """
     declined_users = []
-    roster = Roster.objects.all()
-    for character in roster.all():
-        if is_user_absent(current_raid, request, character.account_id):
-            user_btag = user_btag_from_account_id(character.account_id)
-            if not any(user_btag in x for x in declined_users): # Cryptic if statement checks if user_btag exists anywhere in multidimensional array
-                declined_users.append([user_btag, character.name])
-                
+    absent_user = AbsentUser.objects.filter(raid_event=current_raid)
+    for user in absent_user:
+        character_name = Roster.objects.filter(account_id=user.account_id).first().name
+        declined_users.append([user, character_name])
     return declined_users
