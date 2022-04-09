@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-bvv(o_xhsqtaa#4rrp-1pk(qwk%h3)(!x80&qjk9=ob$hp5)jx')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 1#str(os.environ.get('DEBUG')) == '1'
+DEBUG = str(os.environ.get('DEBUG')) == '1'
 
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
