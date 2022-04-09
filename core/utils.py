@@ -425,17 +425,24 @@ def user_attendance_status(event, request):
     user = get_current_user_data(request)['id']
     if AbsentUser.objects.filter(raid_event=event, account_id=user).exists():
         return 'absent'
+    
+    boss_obj = BossPerEvent.objects.filter(raid_event=event)
+    if not boss_obj.exists():
+        return 'Pending'
 
+    published_bosses = 0
+    for boss in boss_obj:
+        if boss.published:
+            published_bosses += 1
+    if published_bosses == 0:
+        return "Pending"
+    
     for user_char in get_user_chars_in_roster(request):
         for boss in BossPerEvent.objects.filter(raid_event=event):
             roles = ['tank', 'healer', 'rdps', 'mdps']
             for role in roles:
                 if boss.check_exists(role, user_char):
                     return 'selected'
-
-    boss_obj = BossPerEvent.objects.filter(raid_event=event)
-    if not boss_obj.exists():
-        return 'Pending'
 
     for boss in boss_obj:
         total_roster_count = boss.tank.count() + boss.healer.count() + boss.rdps.count() + boss.mdps.count()
