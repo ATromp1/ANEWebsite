@@ -54,7 +54,22 @@ class RaidEvent(models.Model):
 
     def __str__(self):
         return str(self.date)
-
+    
+    
+    def event_is_published(self):
+        bosses = BossPerEvent.objects.filter(raid_event=self)
+        if not bosses.exists():
+            return False
+        
+        published_bosses = 0
+        for boss in bosses:
+            if boss.published:
+                published_bosses += 1
+        if published_bosses == 0:
+            return False
+        return True
+        
+        
 
 class LateUser(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)

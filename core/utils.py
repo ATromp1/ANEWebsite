@@ -365,16 +365,16 @@ def create_roster_dict(current_raid):
     Creates a json dictionary containing the default roster (everyone) and class except players that have signed off
     """
     roster_dict = {}
-
     roster = Roster.objects.all()
-
-    absent_user_list = []
-    for user in AbsentUser.objects.all():
-        absent_user_list.append(user.account_id)
-    roster_list = []
-    for char in roster:
-        if char.account_id not in absent_user_list:
-            roster_list.append(char.name)
+    
+    # List Comprehension https://realpython.com/list-comprehension-python/
+    # >>> sentence = 'the rocket came back from mars'
+    # >>> vowels = [i for i in sentence if i in 'aeiou']
+    # >>> vowels
+    # ['e', 'o', 'e', 'a', 'e', 'a', 'o', 'a']    
+    
+    absent_user_list = [user.account_id for user in AbsentUser.objects.filter(raid_event=current_raid)]
+    roster_list = [char.name for char in roster if char.account_id not in absent_user_list]
 
     for character in roster:
         if character.playable_class is not None:
@@ -398,30 +398,20 @@ def selected_roster_from_db_to_json(current_raid):
     for boss in boss_roster:
         boss_id = boss.boss.boss_id
         roster[boss_id] = {}
+        
         roster[boss_id]['published'] = str(boss.published)
-        tanks = []
-        for char in boss.tank.all():
-            tanks.append(char.name)
-        roster[boss_id]['tank'] = tanks
-        healers = []
-        for char in boss.healer.all():
-            healers.append(char.name)
-        roster[boss_id]['healer'] = healers
-        rdps = []
-        for char in boss.rdps.all():
-            rdps.append(char.name)
-        roster[boss_id]['rdps'] = rdps
-        mdps = []
-        for char in boss.mdps.all():
-            mdps.append(char.name)
-        roster[boss_id]['mdps'] = mdps
+        roster[boss_id]['tank'] = [char.name for char in boss.tank.all()]
+        roster[boss_id]['healer'] = [char.name for char in boss.healer.all()]
+        roster[boss_id]['rdps'] = [char.name for char in boss.rdps.all()]
+        roster[boss_id]['mdps'] = [char.name for char in boss.mdps.all()]
+        
     return roster
 
 
 def user_attendance_status(event, request):
     if not is_raider(request):
         return 'Click For Details'
-
+    
     user = get_current_user_data(request)['id']
     if AbsentUser.objects.filter(raid_event=event, account_id=user).exists():
         return 'absent'
@@ -429,12 +419,8 @@ def user_attendance_status(event, request):
     boss_obj = BossPerEvent.objects.filter(raid_event=event)
     if not boss_obj.exists():
         return 'Pending'
-
-    published_bosses = 0
-    for boss in boss_obj:
-        if boss.published:
-            published_bosses += 1
-    if published_bosses == 0:
+    
+    if not event.event_is_published():
         return "Pending"
     
     for user_char in get_user_chars_in_roster(request):
@@ -555,7 +541,7 @@ def get_user_chars_per_event(current_raid, request):
                                                     'role': 'rdps'}
             if char in boss_obj.mdps.all():
                 user_chars_selected_per_raid[id] = {'name': char.name, 'playable_class': char.playable_class,
-                                                    'role': 'mdps'}
+                                                    'role': 'mdps'} 
     return user_chars_selected_per_raid
 
 
@@ -589,3 +575,10 @@ def get_declined_users_for_event(request, current_raid):
         character_name = Roster.objects.filter(account_id=user.account_id).first().name
         declined_users.append([user, character_name])
     return declined_users
+
+def get_all_declined_users():
+    res = AbsentUser.objects.all()
+    declined_users = []
+    for user in res:
+        if user.user not in declined_users:
+            declined_users.append(user.user)
