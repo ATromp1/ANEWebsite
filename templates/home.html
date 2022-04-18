@@ -47,7 +47,8 @@
             {% if request.user.is_authenticated %}
             <div class="home-sync-bnet">
                 <span>{{ social_user }}</br></span>
-                <a class="btn btn-primary" href="{% url 'sync-bnet' %}">Re-Sync Bnet Data</a>
+                <a class="ane-btn ane-btn-info" style="max-width: 200px;margin:auto;padding:.5rem 0;" href="{% url 'sync-bnet' %}">Re-Sync Bnet Data</a>
+                <a class="ane-btn ane-btn-info" style="max-width: 200px;margin:auto;padding:.5rem 0;margin-top:1rem;" href="{% url 'boss-wishes' %}">Boss Wishes</a>
             </div>
             {% else %}
             <div class="home-not-logged-in">
@@ -58,7 +59,7 @@
             <div class="home-staff-options">
                 <span class="home-staff-options-header">Officer Options</span>
                 <div class="home-update-roster">
-                    <a class="btn btn-primary" href="{% url 'update-roster' %}">Update Roster</a>
+                    <a class="ane-btn ane-btn-info" style="max-width:200px;margin:auto;" href="{% url 'update-roster' %}">Update Roster</a>
                 </div>
             </div>
             {% endif %}

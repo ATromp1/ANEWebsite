@@ -35,6 +35,7 @@
             {% endfor %}
             {% if user.is_staff and request.user.is_authenticated %}
                 <div class="roster-view unsorted">
+                    <h4 style="margin-bottom: 2rem">Extra Officer Info</h4>
                     {% for char in roster %}
                         {% if char.playable_class == None %}
                             <p><b>Character has no class saved in db</b><br> {{ char.name }}</p>

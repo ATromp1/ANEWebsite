@@ -70,153 +70,160 @@
     <div class="event-view-container">
         <div class="event-view-boss-container">
             <div class="event-view-boss-list">
+                <div class="mt-3"><h3 class="pt-1">Bosses</h3></div>
             </div>
-            <div class="event-view-info-header">
-                <div class="event-view-header-left-div">
-                    <div class="event-view-header-date">
-                        <span class="event-view-name" style="font-size:1.2em;">{{ event.name }}</span>
-                        <span class="event-view-date text-secondary" style="font-size:1em;"> - {{ event.date }}</span>
+            <div class="boss-detail-container">
+                <div class="event-view-info-header">
+                    <div class="event-view-header-left-div">
+                        <div class="event-view-header-date">
+                            <span class="event-view-name" style="font-size:1.2em;">{{ event.name }}</span>
+                            <span class="event-view-date text-secondary" style="font-size:1em;"> - {{ event.date }}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="event-view-header-bossname">
-                    Event Summary
-                </div>
-                
-                
-                <div class="event-view-header-buttons">
-                    {% if is_past_event%}
-                    {% else %}
-                    {% if user_is_absent %}
-                    <div class="event-view-attend header-btn">
-                        <a onclick="attend_raid(this)" class="event-view-attendance-btn" id="{{event}}">Attend</a>
-                    </div>
-                    {% else %}
-                    <div class="event-view-decline header-btn">
-                        <a onclick="confirm_decline_raid(this)" class="event-view-attendance-btn" id="{{event}}"><span class="material-icons">thumb_down</span>Decline</a>
-                    </div>
-                    <div class="event-view-late header-btn events_modal_open_btn" id="{{event}}">
-                        <a><span class="material-icons">directions_run</span>Late</a>
-                    </div>
-                    {% endif %}
-                    {% endif %}
-                    <div class="event-view-summary-btn header-btn" id="-1">
+                    <div class="event-view-header-bossname">
                         Event Summary
                     </div>
-                </div>
-            </div>
-            <div class="event-view-attendance-status d-flex justify-content-center mt-2">
-            {% if is_past_event%}
-            <span>This Event has already <span style="color:#0d6dfd;">Passed</span></span>
-            {% elif user_is_absent %}
-            <span>You are <span class="text-danger">Absent</span> from this event</span>
-            {% elif user_is_late %}
-            <span>You are marked <span class="text-warning">{{user_minutes_late}}</span> late for this event</span>
-            {% endif %}
-            </div>
-            <div class="event-view-summary">
-                {% if user.is_staff %}
-                <div class="officer-summary-buttons d-flex align-items-center justify-content-center mb-3">
-                    <div class="officer-player-summary btn btn-primary btn-l">
-                        Player Summary
-                    </div>
-                    <div class="officer-extra-information btn btn-primary btn-l">
-                        Officer information
-                    </div>
-                    <div class="officer-vault-info btn btn-primary btn-l">
-                        The Great Vault
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            <div class="event-view-boss-info">
-                <div class="event-view-buff-info">
-                </div>
-                <div class="event-view-selected-group">
-                    <div class="event-view-published-information d-flex flex-column pb-2"></div>
-                    <div class="event-view-selected-roster">
-                        {% if user.is_staff %}
-                            <span class="event-view-selected-roster-totalcount">Total: </span>
+                    
+                    
+                    <div class="event-view-header-buttons">
+                        {% if is_past_event%}
+                        {% else %}
+                        {% if user_is_absent %}
+                        <div class="event-view-attend header-btn">
+                            <a onclick="attend_raid(this)" class="event-view-attendance-btn" id="{{event}}">Attend</a>
+                        </div>
+                        {% else %}
+                        <div class="event-view-decline header-btn">
+                            <a onclick="confirm_decline_raid(this)" class="event-view-attendance-btn" id="{{event}}"><span class="material-icons">thumb_down</span>Decline</a>
+                        </div>
+                        <div class="event-view-late header-btn events_modal_open_btn" id="{{event}}">
+                            <a><span class="material-icons">directions_run</span>Late</a>
+                        </div>
                         {% endif %}
-                        <div class="event-view-selected-roster-tank" id="tank">
-                            <div class="event-view-selected-roster-header">
-                                <img src="{% static 'images/roleIcons/tank.png' %}" alt="Tank Icon" class="event-view-role-icon">
-                                <span>Tank</span>
-                                <span class="event-view-selected-roster-tankcount"></span>
-                            </div>
-                        </div>
-                        <div class="event-view-selected-roster-healer" id="healer">
-                            <div class="event-view-selected-roster-header">
-                                <img src="{% static 'images/roleIcons/healer.png' %}" alt="Healer Icon" class="event-view-role-icon">
-                                <span>Healer</span>
-                                <span class="event-view-selected-roster-healercount"></span>
-                            </div>
-                        </div>
-                        <div class="event-view-selected-roster-mdps" id="mdps">
-                            <div class="event-view-selected-roster-header">
-                                <img src="{% static 'images/roleIcons/mdps.png' %}" alt="Melee Icon" class="event-view-role-icon">
-                                <span>Melee</span>
-                                <span class="event-view-selected-roster-mdpscount"></span>
-                            </div>
-                        </div>
-                        <div class="event-view-selected-roster-rdps" id="rdps">
-                            <div class="event-view-selected-roster-header">
-                                <img src="{% static 'images/roleIcons/rdps.png' %}" alt="Ranged Icon" class="event-view-role-icon">
-                                <span>Ranged</span>
-                                <span class="event-view-selected-roster-rdpscount"></span>
-                            </div>
+                        {% endif %}
+                        <div class="event-view-summary-btn header-btn ane-btn ane-btn-info" id="-1">
+                            Event Summary
                         </div>
                     </div>
                 </div>
-                <div class="event-view-benched-roster">
+                <div class="event-view-attendance-status d-flex justify-content-center mt-2">
+                {% if is_past_event%}
+                    <span>This Event has already <span style="color:#0d6dfd;">Passed</span></span>
+                {% elif user_is_absent %}
+                    <span>You are <span class="text-danger">Absent</span> from this event</span>
+                {% elif user_is_late %}
+                    <span>You are marked <span class="text-warning">{{user_minutes_late}}</span> late for this event</span>
+                {% endif %}
+                </div>
+                <div class="event-view-summary">
                     {% if user.is_staff %}
-                    <div class="event-view-template-buttons">
-                    <div class="event-view-save-template template-button">
-                        Save as Template
-                    </div>
-                    {% if is_past_event%}
-                    </div>
-                    {% else %}
-                    <div class="event-view-load-template template-button">
-                        Load a Template
-                    </div>
+                    <div class="officer-summary-buttons d-flex align-items-center justify-content-center mb-3">
+                        <div class="officer-player-summary ane-btn p-2 mx-1">
+                            Player Summary
+                        </div>
+                        <div class="officer-extra-information ane-btn p-2 mx-1">
+                            Officer Options
+                        </div>
+                        <div class="officer-vault-info ane-btn p-2 mx-1">
+                            The Great Vault
+                        </div>
                     </div>
                     {% endif %}
-                    {% endif %}
-                    <div class="event-view-benched-roster-header">
-                        Bench
-                    </div>
-                    <table class="event-view-benched-roster-table">
-                            <tr>
-                                <th>No Boss Selected</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                    </table>
                 </div>
-                {% if user.is_staff %}
-                    {% if late_users|length > 0 or declined_users|length > 0 %}
-                    <div class="event-view-missing-users">
-                        {% if late_users|length > 0 %}
-                        <div class="event-view-late-users mb-3 d-flex flex-column">
-                            <h4 class="mb-1">Late Users:</h4>
-                            {% for late_user in late_users %}
-                                <span>{{ late_user.user }} -- <span class="text-warning">{{ late_user.minutes_late }}</span></span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        {% if declined_users|length > 0 %}
-                        <div class="event-view-declined-users mt-3 d-flex flex-column">
-                            <h4 class="mb-1">Declined Users:</h4>
-                            {% for declined_user in declined_users %}
-                                <span>{{declined_user.0}}<span class="text-secondary"> - {{declined_user.1}} </span></span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
+                <div class="event-view-boss-info">
+                    <div class="event-view-buff-info">
                     </div>
+                    <div class="event-view-selected-group">
+                        <div class="event-view-published-information d-flex flex-column pb-2"></div>
+                        <div class="event-view-selected-roster">
+                            {% if user.is_staff %}
+                                <span class="event-view-selected-roster-totalcount">Total: </span>
+                            {% endif %}
+                            <div class="event-view-selected-roster-tank" id="tank">
+                                <div class="event-view-selected-roster-header">
+                                    <img src="{% static 'images/roleIcons/tank.png' %}" alt="Tank Icon" class="event-view-role-icon">
+                                    <span>Tank</span>
+                                    <span class="event-view-selected-roster-tankcount"></span>
+                                </div>
+                            </div>
+                            <div class="event-view-selected-roster-healer" id="healer">
+                                <div class="event-view-selected-roster-header">
+                                    <img src="{% static 'images/roleIcons/healer.png' %}" alt="Healer Icon" class="event-view-role-icon">
+                                    <span>Healer</span>
+                                    <span class="event-view-selected-roster-healercount"></span>
+                                </div>
+                            </div>
+                            <div class="event-view-selected-roster-mdps" id="mdps">
+                                <div class="event-view-selected-roster-header">
+                                    <img src="{% static 'images/roleIcons/mdps.png' %}" alt="Melee Icon" class="event-view-role-icon">
+                                    <span>Melee</span>
+                                    <span class="event-view-selected-roster-mdpscount"></span>
+                                </div>
+                            </div>
+                            <div class="event-view-selected-roster-rdps" id="rdps">
+                                <div class="event-view-selected-roster-header">
+                                    <img src="{% static 'images/roleIcons/rdps.png' %}" alt="Ranged Icon" class="event-view-role-icon">
+                                    <span>Ranged</span>
+                                    <span class="event-view-selected-roster-rdpscount"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-view-benched-roster">
+
+                        <!-- START Template buttons -->
+                        {% if user.is_staff %}
+                        <div class="event-view-template-buttons">
+                        <div class="event-view-save-template template-button ane-btn ane-btn-success">
+                            Save as Template
+                        </div>
+                        {% if is_past_event%}
+                        </div>
+                        {% else %}
+                        <div class="event-view-load-template template-button ane-btn ane-btn-info">
+                            Load a Template
+                        </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        <!-- END Template buttons -->
+
+                        <div class="event-view-benched-roster-header">
+                            Bench
+                        </div>
+                        <table class="event-view-benched-roster-table">
+                                <tr>
+                                    <th>No Boss Selected</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                        </table>
+                    </div>
+                    {% if user.is_staff %}
+                        {% if late_users|length > 0 or declined_users|length > 0 %}
+                        <div class="event-view-missing-users">
+                            {% if late_users|length > 0 %}
+                            <div class="event-view-late-users mb-3 d-flex flex-column">
+                                <h4 class="mb-1">Late Users:</h4>
+                                {% for late_user in late_users %}
+                                    <span>{{ late_user.user }} -- <span class="text-warning">{{ late_user.minutes_late }}</span></span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if declined_users|length > 0 %}
+                            <div class="event-view-declined-users mt-3 d-flex flex-column">
+                                <h4 class="mb-1">Declined Users:</h4>
+                                {% for declined_user in declined_users %}
+                                    <span>{{declined_user.0}}<span class="text-secondary"> - {{declined_user.1}} </span></span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>

@@ -42,7 +42,7 @@
 <div class="events-list-container">
     <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">event_available</span><span class="page-header-text">Raids</span></div>
     <div class="event-list-header-btns">
-        <span class="event-list-header-past-events">Show old Raids</span>
+        <button class="event-list-header-past-events" style="border:none;">Show old Raids</button>
     {% if user.is_staff and not user.is_superuser %}
         <button type="button" onclick="location.href='{% url 'add-event' %}'" class="btn btn-primary events-list-add-event">Add Event</button>
     {% endif %}
@@ -101,7 +101,25 @@
         display_past_events()
     })
     function display_past_events(){
-        $('.event-list-past_events').toggleClass("active")
+        const HEADER = $('.event-list-header-past-events')
+        const LIST = $('.event-list-past_events')
+        const LIST_ELEMENT_HEIGHT = 125
+        let listHeight = $('.event-list-past_events > *').length * LIST_ELEMENT_HEIGHT;
+
+        document.documentElement.style.setProperty('--past_events_list_height', listHeight+"px")
+        LIST.toggleClass("active")
+        
+        $(HEADER).prop( "disabled", true )
+        LIST.on('transitionend', () => {
+            if(HEADER.text()[0] == "H"){
+                HEADER.text("Show old Raids")
+                
+            } else {
+                HEADER.text("Hide old Raids")
+            }
+            LIST.unbind()
+            $(HEADER).prop( "disabled", false )
+        })
     }
 </script>
 

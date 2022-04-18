@@ -465,6 +465,7 @@ class RosterPerBoss {
                 if(buff.playable_class == 'Shaman'){
                     if(!this.windfuryInRoster()){
                         appendBuff(buff)
+                        noBuffIsShown = false
                     }
                 } else if(!classes_in_roster.includes(buff.playable_class)){
                     noBuffIsShown = false
@@ -495,14 +496,13 @@ class RosterPerBoss {
         }
     }
 
-    // TODO -- CSS on publish buttons and text -- Publish Whole event
     display_published_status(){
         if(!is_staff) return
         const publishDiv = $('.event-view-published-information')
         publishDiv.empty()
         if(this.published){
             const publishButton = $('<button/>',{
-                'class': 'publish-button publish btn btn-primary',
+                'class': 'publish-button publish ane-btn ane-btn-warning py-2',
                 'text': 'Undo Publication',
             })
             publishDiv.append(publishButton, $('<span/>', {
@@ -511,7 +511,7 @@ class RosterPerBoss {
             $(publishButton).click(() => { this.undo_publication() })
         } else {
             const publishButton = $('<button/>',{
-                'class': 'publish-button undo-publish btn btn-primary',
+                'class': 'publish-button undo-publish ane-btn ane-btn-success py-2',
                 'text': 'Publish Group',
             })
             publishDiv.append(publishButton, $('<span/>', {
@@ -572,7 +572,7 @@ function create_summary_view(){
                     'text': this.name,
                 })
             }))
-            $(summary_boss_container).append(boss_div)
+            if(!user_is_absent) $(summary_boss_container).append(boss_div)
 
             // Check if the data we get from DB is valid
             if(typeof(user_event_summary[this.id]) !== "undefined"){
@@ -608,7 +608,7 @@ function create_summary_view(){
     }
     // If current user remove bosses on summary
     if(user_is_absent){
-        $('.event-view-summary').empty()
+        //$('.event-view-summary').empty()
     }
     if(is_staff){
         create_officer_summary_information()
@@ -628,11 +628,11 @@ function create_officer_summary_information(){
 }
 function createPublishEventButtons(elementToAppendTo){
     const PUBLISH_BUTTON = $('<button/>',{
-        'class': 'publish-button undo-publish btn btn-primary',
+        'class': 'publish-button undo-publish ane-btn ane-btn-success',
         'text': 'Publish Groups',
     })
     const UNDO_PUBLISH_BUTTON = $('<button/>',{
-        'class': 'publish-button undo-publish btn btn-primary',
+        'class': 'publish-button undo-publish ane-btn ane-btn-warning',
         'text': 'Undo Publish',
     })
     const PUBLISH_BUTTONS_DIV = $('<div/>',{
@@ -664,16 +664,22 @@ function display_summary_view(){
 
 function display_officer_summary_information(){
     $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons > div').removeClass('active')
+    $('.officer-extra-information').addClass('active')
     $('.officer-summary-buttons, .event-view-summary-officer-info').removeClass('hidden')
 }
 
 function display_vault_information(){
     $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons > div').removeClass('active')
+    $('.officer-vault-info').addClass('active')
     $('.officer-summary-buttons, .summary-vault-info').removeClass('hidden')
 }
 
 function display_player_summary(){
     $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons > div').removeClass('active')
+    $('.officer-player-summary').addClass('active')
     $('.officer-summary-buttons, .summary-boss-container').removeClass('hidden')
 }
 
@@ -726,7 +732,7 @@ create_new_raid_event()
 function create_boss_buttons(){
     jQuery.each(bossNameList, function(){
         $('.event-view-boss-list').append($('<div/>',{
-            'class':'boss-view-btn',
+            'class':'boss-view-btn ane-btn',
             'id':this.id,
             'text':this.name
         }));
@@ -735,7 +741,7 @@ function create_boss_buttons(){
 
 function update_boss_buttons_status(boss_id){
     // Set the colour depending on the rosters status
-    let boss_btn_element = $('.boss-view-btn#'+boss_id)
+    let boss_btn_element = $('.boss-view-btn#' + boss_id)
 
     $(boss_btn_element).removeClass('empty-roster in-progress roster-complete '+
     'empty-roster-staff in-progress-staff roster-complete-staff')
