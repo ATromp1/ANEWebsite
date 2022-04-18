@@ -2,11 +2,11 @@ function status_alert(time_to_display, text, status_type){
     status_type = status_type || "info"
     e = $('.status-alert')
     setTimeout(() => {
-        $(e).toggleClass('active ' + status_type)
+        $(e).addClass('active ' + status_type)
         $(e).first().text(text)
     },200)
     setTimeout(() => {
-        $(e).toggleClass('active ' + status_type)
+        $(e).removeClass('active ' + status_type)
     }, time_to_display)
 }
 
@@ -79,3 +79,14 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 })
 
+function getQuerySetFields(querySet){
+    let res = []
+    querySet.forEach(e => {
+        res.push(e.fields)
+    });
+    return res
+}
+
+function clamp(number, min, max) {
+    return Math.max(min, Math.min(number, max));
+}
