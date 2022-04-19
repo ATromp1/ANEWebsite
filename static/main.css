@@ -1065,20 +1065,21 @@ body {
             cursor: pointer; }
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row:hover {
           outline: 1px solid #aaa; }
-    .event-view-container .event-view-boss-container .event-view-template-buttons .template-button {
-      display: inline-block;
-      background-color: var(--info-bg-color);
-      width: calc(100% / 2 - 3px * 2); }
-      .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template {
-        background-color: var(--success-bg-color);
-        margin-right: 3px; }
-        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template:hover {
-          background-color: var(--success-bg-hover); }
-      .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template {
+    .event-view-container .event-view-boss-container .event-view-template-buttons {
+      display: flex; }
+      .event-view-container .event-view-boss-container .event-view-template-buttons .template-button {
         background-color: var(--info-bg-color);
-        margin-left: 3px; }
-        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template:hover {
-          background-color: var(--info-bg-hover); }
+        width: calc(100% / 2 - 3px * 2); }
+        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template {
+          background-color: var(--success-bg-color);
+          margin-right: 3px; }
+          .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template:hover {
+            background-color: var(--success-bg-hover); }
+        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template {
+          background-color: var(--info-bg-color);
+          margin-left: 3px; }
+          .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template:hover {
+            background-color: var(--info-bg-hover); }
 
 .event-view-raid-links {
   position: absolute;

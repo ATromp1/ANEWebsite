@@ -375,14 +375,26 @@ class RosterPerBoss {
                     }))
                 } else {
                     let bossWish = char.wishes[raid_event.currentlySelectedRoster] || '-'
-                    const classTD = $('<td/>',{
+                    $tr.append($('<td/>',{
                         'class': css_classes[char.playable_class],
                         'text': char.name
-                    })
-                    classTD.append($('<span/>', {
-                        text: ` [ ${bossWish} ]`,
                     }))
-                    $tr.append(classTD)
+                    // If is staff append the boss wishes to the character
+                    if(is_staff){
+                        let bossWishCssClass;
+                        if(bossWish == '99'){
+                            bossWishCssClass = 'text-secondary'
+                        } else if (bossWish == '0'){
+                            bossWishCssClass = 'text-danger'
+                        } else {
+                            bossWishCssClass = ''
+                        }
+                        $tr.append($('<td/>', {
+                            style: 'width:3rem;',
+                            class: bossWishCssClass,
+                            text: ` [ ${bossWish} ]`,
+                        }))
+                    }
                 }   
     
                 // Don't append the role icons if user is not staff
@@ -829,7 +841,7 @@ if(is_staff){
     $('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
         if(this.id){
             role = this.id
-            // Remove the following: ] [ - 'whitespace' numbers 0 - 9
+            // Remove the following: ] [ - 'whitespace' numbers 0-9
             const regex = /[\[\]\s\-0-9']/g
             char_name = jQuery(this).closest('.benched-roster-row').first().text().replace(regex, '')
             current_boss_id = raid_event.currentlySelectedRoster
