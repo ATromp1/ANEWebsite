@@ -57,7 +57,7 @@
             <div class="officer-grid-bossname-col">
             <div class="dummy-boss" style="height:75px;"></div>
             {% for boss in bosses %}
-                <div class=""><input class="boss-visibility-checkbox" type="checkbox" {% if boss.visible%}checked{%endif%}>{{boss.name}}</div>
+                <div class=""><input class="boss-visibility-checkbox" type="checkbox" id="{{boss.id}}" {% if boss.visible%}checked{%endif%}>{{boss.name}}</div>
             {% endfor %} {% comment %} End {boss in bosses} {% endcomment %}
             <div class="ane-btn ane-btn-disabled boss-visibity-save-btn">Save</div>
             </div>
@@ -163,6 +163,31 @@
             $(bossVisibitySaveBtn).removeClass('ane-btn-disabled')
             $(bossVisibitySaveBtn).addClass('ane-btn-success')
         })
+
+        $(bossVisibitySaveBtn).on('click', ()=> {
+            $(bossVisibitySaveBtn).removeClass('ane-btn-success')
+            $(bossVisibitySaveBtn).addClass('ane-btn-disabled')
+            saveBossVisibilityToDb()
+        })
+
+        function saveBossVisibilityToDb() {
+            const bossWishBossCol = $('.officer-grid-bossname-col')
+            let checkboxes = $(bossWishBossCol).find('input');
+            let visibility = {};
+            [...checkboxes].forEach((checkbox)=>{
+                visibility[checkbox.id] = $(checkbox).is(':checked') ? "True" : "False"
+            })
+
+            $.ajax({
+                url: window.location.href,
+                data: {
+                    'type': 'visibility',
+                    'visibility': JSON.stringify(visibility)
+                },
+                dataType: 'json',
+                timeout: 1000,
+            })
+        }
     })
 </script>
 {% endif %}

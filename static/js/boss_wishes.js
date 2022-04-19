@@ -50,6 +50,7 @@ class SortableList {
         this.userCharacterId = $(listContainer).attr('id')
         this.listElements = this.listElementsFromParent()
         this.orderedIdList = this.createOrderedIdList()
+        this.amountOfListElements = this.listElements.length
         if(initialState) this.loadDataFromDb(initialState) 
     }
 
@@ -87,11 +88,11 @@ class SortableList {
         let benchMeBosses = wishValues.filter(x => x==0).length
         let disabledBosses = canHelpBosses + benchMeBosses
 
-        let newValue = clamp(userValue, 0, Object.keys(bosses).length - disabledBosses) - arrayStartAtZeroOffset
+        let newValue = clamp(userValue, 0, this.amountOfListElements - disabledBosses) - arrayStartAtZeroOffset
         if(userValue == 99)
-            newValue = (Object.keys(bosses).length - 1) - benchMeBosses
+            newValue = (this.amountOfListElements - 1) - benchMeBosses
         if(userValue == 0)
-            newValue = Object.keys(bosses).length
+            newValue = this.amountOfListElements
         
         this.orderedIdList = this.moveItemInArray(this.orderedIdList, this.orderedIdList.indexOf(bossId), newValue)
     } 
@@ -140,7 +141,7 @@ class SortableList {
         /* 
         Makes the element of the list draggable to their correct position.
         */
-        const AMOUNT_OF_BOSSES = Object.keys(bosses).length;
+        const AMOUNT_OF_BOSSES = this.amountOfListElements;
         const LIST_ELEMENT_HEIGHT = parseInt($(this.listContainer).find('.bosswish-boss').css('height'));
         [...this.listElements].forEach((element, index)=> {
             $(()=>{

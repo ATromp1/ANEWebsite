@@ -12,6 +12,7 @@ from core.models import (
 )
 
 from core.utils import (
+    update_boss_visibility,
     get_all_bosswishes,
     get_boss_wishes_by_account_id,
     get_current_user_data,
@@ -177,6 +178,7 @@ def boss_wishes_view(request):
         serialized_wishes.append(serializers.serialize("json", char))
 
     update_boss_wish_data(request.GET)
+    update_boss_visibility(request.GET)
     context = {
         'is_officer': is_user_officer(request),
         'social_user': get_user_display_name(request),
