@@ -58,7 +58,8 @@
             <div class="dummy-boss" style="height:75px;"></div>
             {% for boss in bosses %}
                 <div class=""><input class="boss-visibility-checkbox" type="checkbox" id="{{boss.id}}" {% if boss.visible%}checked{%endif%}>{{boss.name}}</div>
-            {% endfor %} {% comment %} End {boss in bosses} {% endcomment %}
+            {% endfor %} 
+            {% comment %} End {boss in bosses} {% endcomment %}
             <div class="ane-btn ane-btn-disabled boss-visibity-save-btn">Save</div>
             </div>
             {% for char in all_char_bosswishes %}

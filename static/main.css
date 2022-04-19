@@ -10,6 +10,7 @@
   transition: all 150ms ease-in-out;
   color: #fff;
   box-sizing: border-box;
+  border-radius: 2px;
   background-color: #343A40; }
   .ane-btn:hover {
     color: #fff; }

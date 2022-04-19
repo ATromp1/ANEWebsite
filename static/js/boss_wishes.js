@@ -48,25 +48,52 @@ class SortableList {
     constructor(listContainer, initialState) {
         this.listContainer = listContainer;
         this.userCharacterId = $(listContainer).attr('id')
-        this.listElements = this.listElementsFromParent()
-        this.orderedIdList = this.createOrderedIdList()
+        this.listElements = this.getListElements()
+        this.visibleBossIds = [...this.listElements].map((e) => {
+            return e.id
+        })
         this.amountOfListElements = this.listElements.length
+        if(initialState){
+            this.valuesArray = Object.keys(initialState).map((key) => { 
+                if(this.visibleBossIds.includes(key)){
+                    return initialState[key]
+                }
+                return '-'
+            })
+        } else this.valuesArray = this.defaultValueArray()
+
+        this.orderedIdList = this.createOrderedIdList()
         if(initialState) this.loadDataFromDb(initialState) 
     }
 
+    defaultValueArray(){
+        let defaultValues = [];
+        [...this.listElements].forEach(()=>{
+            defaultValues.push('99')
+        })
+        return defaultValues
+    }
+
     loadDataFromDb(initialState){
+        // We want to update the values before we go and update the orderedList
+        // Otherwise we will have an incorrect amount of disabled bosses
+        // Which means some bosses will be incorrectly placed
         for (const [id, val] of Object.entries(initialState)){
             const input = $(this.listContainer).find('#'+id).find('input')
             let inputVal = val
             if(val == '-') inputVal = 99
             $(input).val(inputVal)
-            this.updateOrderedIdList(inputVal, id)   
         }
+        for (const [id, val] of Object.entries(initialState)){
+            const input = $(this.listContainer).find('#'+id).find('input')
+            let inputVal = $(input).val()
+            if(val != '-') this.updateOrderedIdList(inputVal, id)   
+        }
+        // Lastly update the data-order attribute to position the elements correctly
         this.updateDataOrderAttribute()
-        this.updateInputValue()
     }
 
-    listElementsFromParent(){
+    getListElements(){
         return $(this.listContainer).children()
     }
 
@@ -79,21 +106,18 @@ class SortableList {
     }
 
     updateOrderedIdList(userValue, bossId) {
-        let wishValues = [];
-        [...this.listElements].forEach((e)=>{
-            wishValues.push($(e).find('input').val())
-        })
+        this.updateValuesArray()
         const arrayStartAtZeroOffset = 1
-        let canHelpBosses = wishValues.filter(x => x==99).length
-        let benchMeBosses = wishValues.filter(x => x==0).length
+        let canHelpBosses = this.valuesArray.filter(x => x==99).length
+        let benchMeBosses = this.valuesArray.filter(x => x==0).length
         let disabledBosses = canHelpBosses + benchMeBosses
 
         let newValue = clamp(userValue, 0, this.amountOfListElements - disabledBosses) - arrayStartAtZeroOffset
         if(userValue == 99)
-            newValue = (this.amountOfListElements - 1) - benchMeBosses
+            newValue = this.amountOfListElements - benchMeBosses - arrayStartAtZeroOffset
         if(userValue == 0)
-            newValue = this.amountOfListElements
-        
+            newValue = this.amountOfListElements - arrayStartAtZeroOffset
+       
         this.orderedIdList = this.moveItemInArray(this.orderedIdList, this.orderedIdList.indexOf(bossId), newValue)
     } 
 
@@ -159,12 +183,14 @@ class SortableList {
                     if($(element).attr('dragging')){
                         let elementPosition = getMouseYPosition(event) - Math.abs(mousePositionOffset)
                         $(element).css('top', clamp(elementPosition, 0, (AMOUNT_OF_BOSSES - 1) * LIST_ELEMENT_HEIGHT)) // Continously update the elements position while moving mouse (clamp within list boundaries)
-                        console.log((AMOUNT_OF_BOSSES - 1) * LIST_ELEMENT_HEIGHT)
                         let value = calculateClosestDataOrderPosition(elementPosition)
                         if(lastCalculatedDataOrder != value){ // If the DataOrder changes then we know to move the other elements
                             $(element).attr('data-order', value)
                             $(element).find('input').val(value)
                             this.updateOrderedIdList(value, element.id)
+                            this.valuesArray = [...this.listElements].map((e) => {
+                                return $(e).find('input').val()
+                            });
                             this.updateDataOrderAttribute()
                             this.updateInputValue()
                         }
@@ -208,6 +234,12 @@ class SortableList {
         const saveBtn = $('.save-wishes')
         saveBtn.removeClass('ane-btn-disabled')
 
+    }
+
+    updateValuesArray() {
+        this.valuesArray = [...this.listElements].map((e) => {
+            return $(e).find('input').val()
+        });
     }
 
     updateDataOrderAttribute() {
@@ -293,6 +325,7 @@ function initSortableList(list){
     setTimeout(()=> {
         list.updateDataOrderAttribute()
         list.updateInputValue()
+        list.updateDataOrderAttribute()
     },50)
 }
 
