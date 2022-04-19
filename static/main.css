@@ -1052,7 +1052,8 @@ body {
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-role-icon {
         height: 1.5rem; }
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster {
-        width: 250px; }
+        min-width: 250px;
+        max-width: 500px; }
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .event-view-benched-roster-header {
           font-size: 1.5rem; }
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row td {

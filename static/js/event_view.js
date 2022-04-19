@@ -374,10 +374,15 @@ class RosterPerBoss {
                         'text': char.name
                     }))
                 } else {
-                    $tr.append($('<td/>',{
+                    let bossWish = char.wishes[raid_event.currentlySelectedRoster] || '-'
+                    const classTD = $('<td/>',{
                         'class': css_classes[char.playable_class],
                         'text': char.name
+                    })
+                    classTD.append($('<span/>', {
+                        text: ` [ ${bossWish} ]`,
                     }))
+                    $tr.append(classTD)
                 }   
     
                 // Don't append the role icons if user is not staff
@@ -824,7 +829,9 @@ if(is_staff){
     $('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
         if(this.id){
             role = this.id
-            char_name = jQuery(this).siblings('td').first()[0].innerHTML
+            // Remove the following: ] [ - 'whitespace' numbers 0 - 9
+            const regex = /[\[\]\s\-0-9']/g
+            char_name = jQuery(this).closest('.benched-roster-row').first().text().replace(regex, '')
             current_boss_id = raid_event.currentlySelectedRoster
             raid_event.rosterPerBossObjects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
             char_moved_ajax(char_name, role, current_boss_id)

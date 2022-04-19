@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import requests
 
 from allauth.socialaccount.models import SocialAccount, SocialToken
+from django.core import serializers
 from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 
@@ -351,7 +352,6 @@ def select_player_ajax(ajax_data, current_raid):
 
         boss_obj = BossPerEvent.objects.update_or_create(
             boss=boss, raid_event=current_raid)
-
         update_selected_roster(boss_obj, name, role)
 
 
@@ -388,10 +388,13 @@ def create_roster_dict(current_raid):
     for character in roster:
         if character.playable_class is not None:
             if character.name in roster_list:
+                wishes = BossWishes.objects.filter(
+                    character_id=character.character_id).only('wishes')
                 roster_dict[character.id] = {
                     'name': character.name,
                     'playable_class': character.playable_class,
                     'account_id': character.account_id if character.account_id is not None else "",
+                    'wishes': serializers.serialize("json", wishes),
                 }
     return roster_dict
 
