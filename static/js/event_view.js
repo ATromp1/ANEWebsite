@@ -275,6 +275,7 @@ class RosterPerBoss {
             this.display_benched_roster()
             this.display_selected_roster()
             this.display_buff_info()
+            this.display_published_status()
         }
         update_boss_buttons_status(this.boss)
     }
@@ -287,6 +288,7 @@ class RosterPerBoss {
             this.display_benched_roster()
             this.display_selected_roster()
             this.display_buff_info()
+            this.display_published_status()
         }
         update_boss_buttons_status(this.boss)
     }
@@ -334,7 +336,6 @@ class RosterPerBoss {
             $('.event-view-selected-roster-'+char.role).append('<div class="'+css_classes[char.playable_class]+' event-view-selected-roster-char">'+
             '<img src="'+static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png" alt="Tank" class="event-view-role-icon">'+
             '<span'+additional_staff_info+'>'+char.name+'</span></div>')
-
         }
     }
 
@@ -516,25 +517,33 @@ class RosterPerBoss {
     display_published_status(){
         if(!is_staff) return
         const publishDiv = $('.event-view-published-information')
-        publishDiv.empty()
-        if(this.published){
-            const publishButton = $('<button/>',{
-                'class': 'publish-button publish ane-btn ane-btn-warning py-2',
+        let publishButton = $(publishDiv).find('.publish-button')
+        if(publishButton.length == 0) {
+            publishButton = $('<button/>',{
+                'class': 'publish-button publish ane-btn ane-btn-warning py-1',
                 'text': 'Undo Publication',
             })
-            publishDiv.append(publishButton, $('<span/>', {
-                'text': 'This group has been published'
-            }))
+            $(publishDiv).append(publishButton)
+        }
+
+        if(this.published) {
+            $(publishButton).text('Undo Publication')
+            $(publishButton).removeClass('ane-btn-disabled, ane-btn-success')
+            $(publishButton).addClass('ane-btn-warning')
             $(publishButton).click(() => { this.undo_publication() })
         } else {
-            const publishButton = $('<button/>',{
-                'class': 'publish-button undo-publish ane-btn ane-btn-success py-2',
-                'text': 'Publish Group',
-            })
-            publishDiv.append(publishButton, $('<span/>', {
-                'text': 'This group has NOT been published'
-            }))
-            $(publishButton).click(() => { this.publish_boss() })
+            if(this.selectedRoster.length == 0) {
+                $(publishButton).text('Publish Group')
+                $(publishButton).removeClass('ane-btn-success, ane-btn-warning')
+                $(publishButton).addClass('ane-btn-disabled')
+                $(publishButton).click(() => { this.undo_publication() })
+            } else {
+                $(publishButton).text('Publish Group')
+                $(publishButton).removeClass('ane-btn-warning')
+                $(publishButton).removeClass('ane-btn-disabled')
+                $(publishButton).addClass('ane-btn-success')
+                $(publishButton).click(() => { this.publish_boss() })
+            }
         }
     }
 

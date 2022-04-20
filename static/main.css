@@ -10,7 +10,7 @@
   transition: all 150ms ease-in-out;
   color: #fff;
   box-sizing: border-box;
-  border-radius: 2px;
+  border-radius: 5px;
   background-color: #343A40; }
   .ane-btn:hover {
     color: #fff; }
@@ -19,7 +19,7 @@
   .ane-btn:hover {
     background-color: #6E7276; }
   .ane-btn.ane-btn-success {
-    background-color: #447A46;
+    background-color: #22915d;
     border-color: transparent; }
     .ane-btn.ane-btn-success:hover {
       background-color: #2cba77; }
@@ -29,12 +29,12 @@
     .ane-btn.ane-btn-warning:hover {
       background-color: #c19c0b; }
   .ane-btn.ane-btn-danger {
-    background-color: #A64A44;
+    background-color: #aa2234;
     border-color: transparent; }
     .ane-btn.ane-btn-danger:hover {
       background-color: #d52a41; }
   .ane-btn.ane-btn-info {
-    background-color: #4351D5;
+    background-color: #106df9;
     border-color: transparent; }
     .ane-btn.ane-btn-info:hover {
       background-color: #3f8bfd; }
@@ -132,12 +132,12 @@
   --success-bg-hover: #2cba77;
   --warning-bg-color: #917508;
   --warning-bg-hover: #c19c0b;
-  --info-bg-color: #0d6dfd;
+  --info-bg-color: #106df9;
   --info-bg-hover: #3f8bfd;
-  --info-bg-color: #4351D5;
-  --success-bg-color: #447A46;
-  --warning-bg-color: #8c741d;
-  --danger-bg-color: #A64A44;
+  /*     --info-bg-color: #4351D5;
+    --success-bg-color: #447A46;
+    --warning-bg-color: #8c741d;
+    --danger-bg-color: #A64A44; */
   --active-border-color: #0d6efd;
   /* Class colors WoW */
   --classcolor-warrior: #C69B6D;
@@ -347,7 +347,6 @@ body {
   display: flex;
   width: 50%;
   text-align: center;
-  justify-content: center;
   align-items: center;
   flex-direction: column; }
   .home-container .home-upcoming-event-container .home-upcoming-event-header {
@@ -857,45 +856,18 @@ body {
         align-items: center;
         margin-right: 2rem; }
         .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn {
-          text-align: center;
-          margin-right: 3px;
-          position: relative;
-          display: inline-block;
-          cursor: pointer;
-          background-color: var(--info-bg-color);
-          border-radius: var(--border-radius-size);
+          margin: 2px;
           height: 45px;
-          width: 165px;
+          width: 100%;
           transition: 200ms all ease-in-out; }
-          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn:hover {
-            background-color: var(--info-bg-hover); }
-          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-summary-btn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 0; }
-          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn a {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-            height: 100%;
-            width: 100%; }
-            .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn a .material-icons {
-              font-size: 0.9em; }
-          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-decline, .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-late, .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-attend {
-            border-radius: 0;
-            background-color: var(--bg-hover-color);
-            border: 2px solid #aaa; }
-            .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-decline:hover, .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-late:hover, .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-attend:hover {
-              background-color: var(--bg-active-color); }
-          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-attend:hover {
-            border-color: var(--success-bg-color); }
-          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-decline:hover {
-            border-color: var(--danger-bg-color); }
-          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn.event-view-late:hover {
-            border-color: var(--warning-bg-color); }
+          .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .header-btn .material-icons {
+            font-size: 0.9em; }
+        .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .event-view-decline,
+        .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .event-view-late,
+        .event-view-container .event-view-boss-container .event-view-info-header .event-view-header-buttons .event-view-summary-btn {
+          min-width: 100px;
+          display: flex;
+          justify-content: center; }
       .event-view-container .event-view-boss-container .event-view-info-header .event-header-info-text {
         float: right;
         margin: 0;
@@ -970,11 +942,13 @@ body {
           width: 45%;
           display: inline-block;
           margin: 0 3px 1rem 3px; }
+      .event-view-container .event-view-boss-container .event-view-summary .summary-boss-container {
+        flex-wrap: wrap; }
       .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss {
         display: flex;
         flex-direction: column;
         min-width: 200px;
-        margin-bottom: 1em; }
+        margin: 0 0.5rem 1rem 0.5rem; }
         .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-boss-name {
           font-size: 1.7em;
           text-align: center; }
@@ -999,9 +973,12 @@ body {
             height: 1.5em; }
     .event-view-container .event-view-boss-container .event-view-boss-info {
       display: flex;
+      flex-wrap: wrap;
       margin-top: 2rem;
       justify-content: space-evenly;
       padding-bottom: 1.5em; }
+      .event-view-container .event-view-boss-container .event-view-boss-info > div {
+        margin-bottom: 1rem; }
       .event-view-container .event-view-boss-container .event-view-boss-info.hidden {
         display: none; }
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-buff-info .event-view-buff {
@@ -1052,7 +1029,7 @@ body {
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-role-icon {
         height: 1.5rem; }
       .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster {
-        min-width: 250px;
+        min-width: 280px;
         max-width: 500px; }
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .event-view-benched-roster-header {
           font-size: 1.5rem; }
