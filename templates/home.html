@@ -56,10 +56,10 @@
             </div>
             {% endif %}
             {% if user.is_staff %}
-            <div class="home-staff-options">
+            <div class="home-staff-options" style="margin-top:1rem;">
                 <span class="home-staff-options-header">Officer Options</span>
                 <div class="home-update-roster">
-                    <a class="ane-btn ane-btn-info" style="max-width:200px;margin:auto;" href="{% url 'update-roster' %}">Update Roster</a>
+                    <a class="ane-btn ane-btn-info" style="max-width: 200px;margin:auto;padding:.5rem 0;" href="{% url 'update-roster' %}">Update Roster</a>
                 </div>
             </div>
             {% endif %}
