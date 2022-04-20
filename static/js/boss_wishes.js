@@ -117,7 +117,7 @@ class SortableList {
             newValue = this.amountOfListElements - benchMeBosses - arrayStartAtZeroOffset
         if(userValue == 0)
             newValue = this.amountOfListElements - arrayStartAtZeroOffset
-       
+        if(isNaN(newValue)) return
         this.orderedIdList = this.moveItemInArray(this.orderedIdList, this.orderedIdList.indexOf(bossId), newValue)
     } 
 
