@@ -134,6 +134,9 @@ class SortableList {
                 }
                 const bossId = element.id
                 let userValue = $(input).val()
+                // If the input value is the same as the one we have stored then we ignore the input
+                if(this.valuesArray[bossId] == userValue) return
+
                 if(userValue > 100){
                     $(input).val(99)
                     userValue = 99 }
