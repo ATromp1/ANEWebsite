@@ -1098,7 +1098,8 @@ body {
 
 :root {
   --list-item-height: 50px;
-  --dummy-boss-height: 20px; }
+  --dummy-boss-height: 20px;
+  --wish-table-total: auto-fit; }
 
 .bosswish-officer-header {
   max-width: 400px;
@@ -1109,9 +1110,12 @@ body {
     width: 45%; }
 
 .bosswish-officer-grid {
+  margin: auto;
   display: grid;
-  justify-content: center;
-  grid-template-columns: 10em repeat(auto-fit, 25px);
+  grid-template-columns: 10em repeat(var(--wish-table-total), 25px);
+  --grid-width: calc(10em + var(--wish-table-total) * 25px);
+  width: Min(var(--grid-width), 100%);
+  overflow-x: scroll;
   padding-bottom: 2rem; }
 
 .officer-grid-bossname-col {

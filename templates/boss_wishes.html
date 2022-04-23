@@ -164,6 +164,16 @@
         }
     }
 
+    $(document).ready(()=>{
+        function setWishTableGridVariables() {
+            const grid = $('.bosswish-officer-grid')
+            const gridCharsAmount = $(grid).find('.officer-grid-char').length
+            $(":root").css("--wish-table-total", gridCharsAmount)
+        }
+
+        setWishTableGridVariables()
+    })
+
 </script>
 {% if user.is_staff %}
 <script>
