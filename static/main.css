@@ -1413,6 +1413,7 @@ input[type=number] {
     right: .5rem;
     height: 50px;
     width: 50px;
+    cursor: pointer;
     display: flex !important;
     align-items: center;
     justify-content: center;
