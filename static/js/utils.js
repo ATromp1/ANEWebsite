@@ -97,8 +97,6 @@ function loadingButton(btn, statusText="", statusType="info", func) {
     btn.attr('loading',true)
     let xPadding = (parseInt($(btn).css('padding-left') || 0) + parseInt($(btn).css('padding-right') || 0) + (borderThickness * 2)) / 2
     let yPadding = (parseInt($(btn).css('padding-top')  || 0) + parseInt($(btn).css('padding-bottom')|| 0) + (borderThickness * 2)) / 2
-    console.log(xPadding)
-    console.log(yPadding)
     $(btn).css('padding-left', xPadding);
     $(btn).css('padding-right', xPadding);
     $(btn).css('padding-bottom', yPadding);

@@ -681,8 +681,6 @@ def update_boss_visibility(ajax_data):
         for boss in visibility.items():
             boss_id = boss[0]
             # Workaround to get the JS true/false as python bool
-            print(boss[1])
             visible = True if boss[1] == 'True' else False
-            # print(visible)
             Boss.objects.filter(boss_id=boss_id).update(
                 boss_wishes_visible=visible)
