@@ -2,11 +2,11 @@ function status_alert(time_to_display, text, status_type){
     status_type = status_type || "info"
     e = $('.status-alert')
     setTimeout(() => {
-        $(e).toggleClass('active ' + status_type)
+        $(e).addClass('active ' + status_type)
         $(e).first().text(text)
     },200)
     setTimeout(() => {
-        $(e).toggleClass('active ' + status_type)
+        $(e).removeClass('active ' + status_type)
     }, time_to_display)
 }
 
@@ -79,3 +79,35 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 })
 
+function getQuerySetFields(querySet){
+    let res = []
+    querySet.forEach(e => {
+        res.push(e.fields)
+    });
+    return res
+}
+
+function clamp(number, min, max) {
+    return Math.max(min, Math.min(number, max));
+}
+
+function loadingButton(btn, statusText="", statusType="info", func) {
+    const borderThickness = 2;
+    btn.addClass('ane-btn-disabled')
+    btn.attr('loading',true)
+    let xPadding = (parseInt($(btn).css('padding-left') || 0) + parseInt($(btn).css('padding-right') || 0) + (borderThickness * 2)) / 2
+    let yPadding = (parseInt($(btn).css('padding-top')  || 0) + parseInt($(btn).css('padding-bottom')|| 0) + (borderThickness * 2)) / 2
+    $(btn).css('padding-left', xPadding);
+    $(btn).css('padding-right', xPadding);
+    $(btn).css('padding-bottom', yPadding);
+    $(btn).css('padding-top', yPadding);
+    setTimeout(()=>{
+        btn.removeAttr('loading')
+        btn.removeAttr('style')
+        if(statusText != "")
+            status_alert(1500, statusText, statusType)
+        if(func)
+            func()
+    },(Math.random()+0.1)*1000*1.5)
+
+}

@@ -24,6 +24,7 @@ from core.views import (
     events_details_view,
     add_event_view,
     edit_event,
+    boss_wishes_view,
 )
 from core.utils import decline_raid_button, attend_raid_button, delete_event_button, logout_user_button, \
     login_user_button, sync_bnet, toggle_staff_button, roster_update_button
@@ -51,5 +52,5 @@ urlpatterns = [
 
     path('sign_off_user/<event_date>/*', decline_raid_button, name='opt-out'),
     path('sign_in_user/<event_date>/*', attend_raid_button, name='opt-in'),
-
+    path('boss-wishes/', boss_wishes_view, name='boss-wishes')
 ]

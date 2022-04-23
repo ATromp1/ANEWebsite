@@ -4,15 +4,27 @@ function roster_list_db_to_object(roster_list){
     */
     let roster_chars = []
     for (let i in roster_list) {
+        let wishes = unpackWishes(roster[i].wishes)
         let roles = ROLES_PER_CLASS[roster[i].playable_class]
         roster_chars.push({
             'name': roster[i].name,
             'playable_class': roster[i].playable_class,
             'roles': roles,
-            'account_id': roster[i].account_id
+            'account_id': roster[i].account_id,
+            'wishes': wishes,
         })
     }
     return roster_chars
+}
+
+function unpackWishes(wishesDb) {
+    // 0 Refers to first object, there will only ever be 1
+    parsedWishes = JSON.parse(wishesDb)[0]
+    if(parsedWishes) {
+        wishes = parsedWishes.fields.wishes
+        return wishes
+    }
+    return []
 }
 
 function boss_list_db_to_object(boss_list){
@@ -63,6 +75,7 @@ function is_char_selected_for_boss(boss_id, char_name){
     return false
 }
 
+// Rework this function. Very inefficient to get the roster list every time.
 function get_playable_class_by_char_name(char_name){
     let roster_list = roster_list_db_to_object(roster)
     for(let i in roster_list){

@@ -275,6 +275,7 @@ class RosterPerBoss {
             this.display_benched_roster()
             this.display_selected_roster()
             this.display_buff_info()
+            this.display_published_status()
         }
         update_boss_buttons_status(this.boss)
     }
@@ -287,6 +288,7 @@ class RosterPerBoss {
             this.display_benched_roster()
             this.display_selected_roster()
             this.display_buff_info()
+            this.display_published_status()
         }
         update_boss_buttons_status(this.boss)
     }
@@ -334,7 +336,6 @@ class RosterPerBoss {
             $('.event-view-selected-roster-'+char.role).append('<div class="'+css_classes[char.playable_class]+' event-view-selected-roster-char">'+
             '<img src="'+static_url+IMAGES_PATH_CLASS+css_classes[char.playable_class]+'.png" alt="Tank" class="event-view-role-icon">'+
             '<span'+additional_staff_info+'>'+char.name+'</span></div>')
-
         }
     }
 
@@ -374,10 +375,27 @@ class RosterPerBoss {
                         'text': char.name
                     }))
                 } else {
+                    let bossWish = char.wishes[raid_event.currentlySelectedRoster] || '-'
                     $tr.append($('<td/>',{
                         'class': css_classes[char.playable_class],
                         'text': char.name
                     }))
+                    // If is staff append the boss wishes to the character
+                    if(is_staff){
+                        let bossWishCssClass;
+                        if(bossWish == '99'){
+                            bossWishCssClass = 'text-secondary'
+                        } else if (bossWish == '0'){
+                            bossWishCssClass = 'text-danger'
+                        } else {
+                            bossWishCssClass = ''
+                        }
+                        $tr.append($('<td/>', {
+                            style: 'width:3rem;',
+                            class: bossWishCssClass,
+                            text: ` [ ${bossWish} ]`,
+                        }))
+                    }
                 }   
     
                 // Don't append the role icons if user is not staff
@@ -465,6 +483,7 @@ class RosterPerBoss {
                 if(buff.playable_class == 'Shaman'){
                     if(!this.windfuryInRoster()){
                         appendBuff(buff)
+                        noBuffIsShown = false
                     }
                 } else if(!classes_in_roster.includes(buff.playable_class)){
                     noBuffIsShown = false
@@ -495,29 +514,36 @@ class RosterPerBoss {
         }
     }
 
-    // TODO -- CSS on publish buttons and text -- Publish Whole event
     display_published_status(){
         if(!is_staff) return
         const publishDiv = $('.event-view-published-information')
-        publishDiv.empty()
-        if(this.published){
-            const publishButton = $('<button/>',{
-                'class': 'publish-button publish btn btn-primary',
+        let publishButton = $(publishDiv).find('.publish-button')
+        if(publishButton.length == 0) {
+            publishButton = $('<button/>',{
+                'class': 'publish-button publish ane-btn ane-btn-warning py-1',
                 'text': 'Undo Publication',
             })
-            publishDiv.append(publishButton, $('<span/>', {
-                'text': 'This group has been published'
-            }))
+            $(publishDiv).append(publishButton)
+        }
+
+        if(this.published) {
+            $(publishButton).text('Undo Publication')
+            $(publishButton).removeClass('ane-btn-disabled, ane-btn-success')
+            $(publishButton).addClass('ane-btn-warning')
             $(publishButton).click(() => { this.undo_publication() })
         } else {
-            const publishButton = $('<button/>',{
-                'class': 'publish-button undo-publish btn btn-primary',
-                'text': 'Publish Group',
-            })
-            publishDiv.append(publishButton, $('<span/>', {
-                'text': 'This group has NOT been published'
-            }))
-            $(publishButton).click(() => { this.publish_boss() })
+            if(this.selectedRoster.length == 0) {
+                $(publishButton).text('Publish Group')
+                $(publishButton).removeClass('ane-btn-success, ane-btn-warning')
+                $(publishButton).addClass('ane-btn-disabled')
+                $(publishButton).click(() => { this.undo_publication() })
+            } else {
+                $(publishButton).text('Publish Group')
+                $(publishButton).removeClass('ane-btn-warning')
+                $(publishButton).removeClass('ane-btn-disabled')
+                $(publishButton).addClass('ane-btn-success')
+                $(publishButton).click(() => { this.publish_boss() })
+            }
         }
     }
 
@@ -572,7 +598,7 @@ function create_summary_view(){
                     'text': this.name,
                 })
             }))
-            $(summary_boss_container).append(boss_div)
+            if(!user_is_absent) $(summary_boss_container).append(boss_div)
 
             // Check if the data we get from DB is valid
             if(typeof(user_event_summary[this.id]) !== "undefined"){
@@ -608,7 +634,7 @@ function create_summary_view(){
     }
     // If current user remove bosses on summary
     if(user_is_absent){
-        $('.event-view-summary').empty()
+        //$('.event-view-summary').empty()
     }
     if(is_staff){
         create_officer_summary_information()
@@ -628,11 +654,11 @@ function create_officer_summary_information(){
 }
 function createPublishEventButtons(elementToAppendTo){
     const PUBLISH_BUTTON = $('<button/>',{
-        'class': 'publish-button undo-publish btn btn-primary',
+        'class': 'publish-button undo-publish ane-btn ane-btn-success',
         'text': 'Publish Groups',
     })
     const UNDO_PUBLISH_BUTTON = $('<button/>',{
-        'class': 'publish-button undo-publish btn btn-primary',
+        'class': 'publish-button undo-publish ane-btn ane-btn-warning',
         'text': 'Undo Publish',
     })
     const PUBLISH_BUTTONS_DIV = $('<div/>',{
@@ -664,16 +690,22 @@ function display_summary_view(){
 
 function display_officer_summary_information(){
     $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons > div').removeClass('active')
+    $('.officer-extra-information').addClass('active')
     $('.officer-summary-buttons, .event-view-summary-officer-info').removeClass('hidden')
 }
 
 function display_vault_information(){
     $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons > div').removeClass('active')
+    $('.officer-vault-info').addClass('active')
     $('.officer-summary-buttons, .summary-vault-info').removeClass('hidden')
 }
 
 function display_player_summary(){
     $('.event-view-summary > div').addClass('hidden')
+    $('.officer-summary-buttons > div').removeClass('active')
+    $('.officer-player-summary').addClass('active')
     $('.officer-summary-buttons, .summary-boss-container').removeClass('hidden')
 }
 
@@ -726,7 +758,7 @@ create_new_raid_event()
 function create_boss_buttons(){
     jQuery.each(bossNameList, function(){
         $('.event-view-boss-list').append($('<div/>',{
-            'class':'boss-view-btn',
+            'class':'boss-view-btn ane-btn',
             'id':this.id,
             'text':this.name
         }));
@@ -735,7 +767,7 @@ function create_boss_buttons(){
 
 function update_boss_buttons_status(boss_id){
     // Set the colour depending on the rosters status
-    let boss_btn_element = $('.boss-view-btn#'+boss_id)
+    let boss_btn_element = $('.boss-view-btn#' + boss_id)
 
     $(boss_btn_element).removeClass('empty-roster in-progress roster-complete '+
     'empty-roster-staff in-progress-staff roster-complete-staff')
@@ -818,7 +850,9 @@ if(is_staff){
     $('.event-view-benched-roster').on('click', '.benched-roster-row td', function(){
         if(this.id){
             role = this.id
-            char_name = jQuery(this).siblings('td').first()[0].innerHTML
+            // Remove the following: ] [ - 'whitespace' numbers 0-9
+            const regex = /[\[\]\s\-0-9']/g
+            char_name = jQuery(this).closest('.benched-roster-row').first().text().replace(regex, '')
             current_boss_id = raid_event.currentlySelectedRoster
             raid_event.rosterPerBossObjects[current_boss_id].move_from_bench_to_selected(char_name, role, true)
             char_moved_ajax(char_name, role, current_boss_id)

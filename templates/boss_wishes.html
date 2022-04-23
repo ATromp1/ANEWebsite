@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "base.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Boss Wishes</title>
+</head>
+<body>
+{% block content %}
+{% load static %}
+<!-- Alert message -->
+<div class="status-alert">
+    <span>Late Time Saved</span>
+</div>
+<!-- Modal -->
+<div class="input-modal" id="events-late-modal">
+    <div class="input-modal-container">
+        <div class="input-modal-header">
+            <span id="input-modal-header-span">Report Late for <span id="input-modal-header-date">{{upcoming_event.date}}</span></span>
+        </div>
+
+        <select class="input-modal-dropdown" id="events-modal-mins-late-dropdown">
+            <option value="15m" selected="selected">15min</option>
+            <option value="30m">30m</option>
+            <option value="45m">45m</option>
+            <option value="1h">1h</option>
+            <option value="1h15m">1h15m</option>
+            <option value="1h30m">1h30m</option>
+            <option value="After Break">After Break</option>
+        </select>
+        <div class="input-modal-action-btns">
+            <span class="input-modal-btn close-btn" id="late-modal-close">Cancel</span>
+            <span class="input-modal-btn delete-btn" id="late-modal-delete">Delete</span>
+            <span class="input-modal-btn submit-btn" id="late-modal-submit">Submit</span>
+        </div>
+    </div>
+</div>
+
+<div class="bosswish-container">
+    {% load account %}
+    <div class="bosswish-content-container">    
+        <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">view_list</span><span class="page-header-text">Boss Wishes</span></div>
+        {% if user.is_staff %}
+            <div class="bosswish-officer-header">
+                <div class="ane-btn p-2 active" id="switchToBossWish">Boss Wishes</div>
+                <div class="ane-btn p-2" id="switchToWishSummary">Wish Table</div>
+            </div>
+        <!-- 
+        #    
+        #  Start Officer Summary
+        #
+        -->
+        <div class="bosswish-officer-summary hidden">
+            <div class="bosswish-officer-grid">
+            <div class="officer-grid-bossname-col">
+            <div class="dummy-boss" style="height:75px;"></div>
+            {% for boss in bosses %}
+                <div class=""><input class="boss-visibility-checkbox" type="checkbox" id="{{boss.id}}" {% if boss.visible%}checked{%endif%}>{{boss.name}}</div>
+            {% endfor %} 
+            {% comment %} End {boss in bosses} {% endcomment %}
+            <div class="ane-btn ane-btn-disabled boss-visibity-save-btn">Save</div>
+            </div>
+            {% for char in all_char_bosswishes %}
+                <div class="officer-grid-char">
+                <div class="officer-grid-charname | wow-class-text {{char.css_class}} |">
+                    {{char.character_name}}
+                </div>
+                {% for boss_id, boss_wish in char.wishes.items %}
+
+                <div class="officer-grid-bosswish bossid-{{boss_id}}{% if boss_wish == '0' %} bench-me{% endif %}{% if boss_wish == '99' %} can-help{% endif %}">
+                    {{boss_wish}}
+                </div>
+                {% endfor %}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+
+        <!-- 
+        #    
+        #  End Officer Summary
+        #
+        -->
+        {% endif %}
+
+
+        <!-- 
+        #    
+        #  Start Boss Wishes
+        #
+        -->
+        <div class="wish-toolbar">
+            <button class="save-wishes ane-btn ane-btn-success ane-btn-disabled">
+                Save Wishes
+            </button>
+            <div class="wish-info">
+                <p>[ 1-{{bosses|length}} ] Prioritize your boss wishes</p>
+                <p><span class="text-secondary">[ 99 ]</span> Means you don't need loot but want to kill</p>
+                <p><span class="text-danger">[ 0 ]</span> Means you want to be benched</p>
+            </div>
+        </div>
+        <div class="bosswish-grid">
+        {% for char in user_chars %}
+            <div class="bosswish-char-col">
+            <div class="bosswish-char | wow-class-text {{char.css_class}} |">{{char}}</div>
+            <div class="draggable-list" id="{{char.character_id}}">
+            {% for boss in bosses %}
+                {% if boss.visible %}
+                <div class="bosswish-boss" id="{{boss.id}}" data-order="{{forloop.counter}}">
+                    <span class="material-icons draggable-icon">
+                        drag_handle
+                    </span>
+                    <span class="bosswish-bossname">{{boss.name}}</span>
+                    <input type="number" id="{{boss.id}}" name="boss_wish" min="0" max="100" value="{{forloop.counter}}" onfocus="this.select()">
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            </div>
+        {% endfor %}
+        </div>
+        <!-- 
+        #    
+        #  End Boss Wishes
+        #
+        -->
+    </div> 
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    const userCharsDB = {{ user_chars_js|safe }}
+    const bossesDB = {{ bosses_js|safe }}
+    const playableClassCssClass = {{css_classes|safe}}
+    const bossWishes = {{boss_wishes|safe}}
+</script>
+
+{% if user.is_staff%}
+<script>
+    $('#switchToBossWish').on('click', switchView)
+    $('#switchToWishSummary').on('click', switchView)
+    function switchView(e) {
+        let btn = e.target
+        let id = btn.id
+        if(id == 'switchToBossWish'){
+            $('#switchToBossWish').addClass('active')
+            $('#switchToWishSummary').removeClass('active')
+            $('.wish-toolbar, .bosswish-grid').removeClass('hidden')
+            $('.bosswish-officer-summary').addClass('hidden')
+        } else {
+            $('#switchToWishSummary').addClass('active')
+            $('#switchToBossWish').removeClass('active')
+            $('.bosswish-officer-summary').removeClass('hidden')
+            $('.wish-toolbar, .bosswish-grid').addClass('hidden')
+        }
+    }
+
+    $(document).ready(()=>{
+        const bossVisibitySaveBtn = $('.boss-visibity-save-btn')
+        $('.boss-visibility-checkbox').on('change', (e)=>{
+            $(bossVisibitySaveBtn).removeClass('ane-btn-disabled')
+            $(bossVisibitySaveBtn).addClass('ane-btn-success')
+        })
+
+        $(bossVisibitySaveBtn).on('click', ()=> {
+            loadingButton(bossVisibitySaveBtn, "Saved", "success", ()=>saveBossVisibilityToDb())
+        })
+
+        function saveBossVisibilityToDb() {
+            const bossWishBossCol = $('.officer-grid-bossname-col')
+            let checkboxes = $(bossWishBossCol).find('input');
+            let visibility = {};
+            [...checkboxes].forEach((checkbox)=>{
+                visibility[checkbox.id] = $(checkbox).is(':checked') ? "True" : "False"
+            })
+
+            $.ajax({
+                url: window.location.href,
+                data: {
+                    'type': 'visibility',
+                    'visibility': JSON.stringify(visibility)
+                },
+                dataType: 'json',
+                timeout: 1000,
+            })
+        }
+    })
+</script>
+{% endif %}
+<script src="{% static '/js/modal.js' %}"></script>
+<script src="{% static '/js/boss_wishes.js' %}"></script>
+
+{% endblock %}
+
+</body>
+</html>

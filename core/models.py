@@ -30,6 +30,7 @@ class Roster(models.Model):
 class Boss(models.Model):
     boss_name = models.CharField(max_length=50, null=True, blank=True)
     boss_id = models.IntegerField(null=True, blank=True, unique=True)
+    boss_wishes_visible = models.BooleanField(default=False)
 
     def __str__(self):
         return self.boss_name
@@ -46,21 +47,23 @@ class MyUser(SocialAccount):
 class RaidEvent(models.Model):
     name = models.CharField(max_length=30, default='Raid')
     date = models.DateField(unique=True)
-    rosterFK = models.ForeignKey(Roster, blank=True, default=True, related_name='roster', on_delete=models.CASCADE)
+    rosterFK = models.ForeignKey(
+        Roster, blank=True, default=True, related_name='roster', on_delete=models.CASCADE)
     roster = Roster.objects.prefetch_related('roster')
     bosses = models.ManyToManyField(Boss, through='BossPerEvent')
-    late = models.ManyToManyField(MyUser, through='LateUser', related_name='late_user')
-    absent = models.ManyToManyField(MyUser, through='AbsentUser', related_name='absent_user')
+    late = models.ManyToManyField(
+        MyUser, through='LateUser', related_name='late_user')
+    absent = models.ManyToManyField(
+        MyUser, through='AbsentUser', related_name='absent_user')
 
     def __str__(self):
         return str(self.date)
-    
-    
+
     def event_is_published(self):
         bosses = BossPerEvent.objects.filter(raid_event=self)
         if not bosses.exists():
             return False
-        
+
         published_bosses = 0
         for boss in bosses:
             if boss.published:
@@ -68,12 +71,12 @@ class RaidEvent(models.Model):
         if published_bosses == 0:
             return False
         return True
-        
-        
+
 
 class LateUser(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
+    raid_event = models.ForeignKey(
+        RaidEvent, on_delete=models.CASCADE, null=True)
     minutes_late = models.CharField(max_length=20)
 
     def __str__(self):
@@ -86,7 +89,8 @@ class LateUser(models.Model):
 class AbsentUser(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     account_id = models.IntegerField(default=0)
-    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
+    raid_event = models.ForeignKey(
+        RaidEvent, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return str(self.user.extra_data['battletag'])
@@ -97,9 +101,11 @@ class AbsentUser(models.Model):
 
 class BossPerEvent(models.Model):
     boss = models.ForeignKey(Boss, on_delete=models.CASCADE, null=True)
-    raid_event = models.ForeignKey(RaidEvent, on_delete=models.CASCADE, null=True)
+    raid_event = models.ForeignKey(
+        RaidEvent, on_delete=models.CASCADE, null=True)
     tank = models.ManyToManyField(Roster, blank=True, related_name='rel_tank')
-    healer = models.ManyToManyField(Roster, blank=True, related_name='rel_healer')
+    healer = models.ManyToManyField(
+        Roster, blank=True, related_name='rel_healer')
     mdps = models.ManyToManyField(Roster, blank=True, related_name='rel_mdps')
     rdps = models.ManyToManyField(Roster, blank=True, related_name='rel_rdps')
     published = models.BooleanField(default=False)
@@ -130,6 +136,11 @@ class UserCharacters(models.Model):
     playable_class = models.CharField(max_length=30)
 
 
+class BossWishes(models.Model):
+    character_id = models.IntegerField(unique=True, blank=True)
+    wishes = models.JSONField()
+
+
 def set_account_id_and_class(char_json):
     """
     Updates the account id and playable class in the Roster with the data received from the API after someone logs in
@@ -153,8 +164,10 @@ def sync_roster_from_user_characters():
     unsynced = Roster.objects.filter(account_id__isnull=True)
     for character in unsynced:
         if UserCharacters.objects.filter(character_id=character.character_id).exists():
-            character.account_id = UserCharacters.objects.get(character_id=character.character_id).account_id
-            character.playable_class = UserCharacters.objects.get(character_id=character.character_id).playable_class
+            character.account_id = UserCharacters.objects.get(
+                character_id=character.character_id).account_id
+            character.playable_class = UserCharacters.objects.get(
+                character_id=character.character_id).playable_class
             character.save()
 
 
@@ -202,7 +215,8 @@ def populate_roster_db(api_roster):
             try:
                 Roster.objects.get(name=name)
             except Roster.DoesNotExist:
-                Roster.objects.create(name=name, rank=rank, character_id=character_id)
+                Roster.objects.create(
+                    name=name, rank=rank, character_id=character_id)
             else:
                 Roster.objects.filter(name=name).update(rank=rank,
                                                         character_id=character_id)
