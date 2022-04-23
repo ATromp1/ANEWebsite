@@ -87,7 +87,7 @@ class SortableList {
         for (const [id, val] of Object.entries(initialState)){
             const input = $(this.listContainer).find('#'+id).find('input')
             let inputVal = $(input).val()
-            if(val != '-') this.updateOrderedIdList(inputVal, id)   
+            this.updateOrderedIdList(inputVal, id)   
         }
         // Lastly update the data-order attribute to position the elements correctly
         this.updateDataOrderAttribute()
@@ -128,7 +128,10 @@ class SortableList {
     setEventListeners() {
         [...this.listElements].forEach((element, index)=> {
             const input = $(element).find('input')
-            $(input).on('focusout', ()=>{
+            $(input).on('focusout keypress', (e)=>{
+                if(e.type == 'keypress') {
+                    if(e.charCode != 13) return
+                }
                 const bossId = element.id
                 let userValue = $(input).val()
                 if(userValue > 100){
