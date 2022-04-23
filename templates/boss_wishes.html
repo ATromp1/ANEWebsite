@@ -42,7 +42,6 @@
     {% load account %}
     <div class="bosswish-content-container">    
         <div class="page-header"><span class="material-icons" style="vertical-align:-5px;">view_list</span><span class="page-header-text">Boss Wishes</span></div>
-        {% if user.is_staff %}
             <div class="bosswish-officer-header">
                 <div class="ane-btn p-2 active" id="switchToBossWish">Boss Wishes</div>
                 <div class="ane-btn p-2" id="switchToWishSummary">Wish Table</div>
@@ -56,11 +55,20 @@
             <div class="bosswish-officer-grid">
             <div class="officer-grid-bossname-col">
             <div class="dummy-boss" style="height:75px;"></div>
-            {% for boss in bosses %}
-                <div class=""><input class="boss-visibility-checkbox" type="checkbox" id="{{boss.id}}" {% if boss.visible%}checked{%endif%}>{{boss.name}}</div>
-            {% endfor %} 
+           
+                {% for boss in bosses %}
+                    <div class="">
+                        {% if user.is_staff %}
+                            <input class="boss-visibility-checkbox" type="checkbox" id="{{boss.id}}" {% if boss.visible%}checked{%endif%}>
+                        {% endif %}
+                        {{boss.name}}
+                    </div>
+                {% endfor %} 
+            
             {% comment %} End {boss in bosses} {% endcomment %}
+            {% if user.is_staff %}
             <div class="ane-btn ane-btn-disabled boss-visibity-save-btn">Save</div>
+            {% endif %}
             </div>
             {% for char in all_char_bosswishes %}
                 <div class="officer-grid-char">
@@ -83,7 +91,6 @@
         #  End Officer Summary
         #
         -->
-        {% endif %}
 
 
         <!-- 
@@ -138,7 +145,6 @@
     const bossWishes = {{boss_wishes|safe}}
 </script>
 
-{% if user.is_staff%}
 <script>
     $('#switchToBossWish').on('click', switchView)
     $('#switchToWishSummary').on('click', switchView)
@@ -158,6 +164,9 @@
         }
     }
 
+</script>
+{% if user.is_staff %}
+<script>
     $(document).ready(()=>{
         const bossVisibitySaveBtn = $('.boss-visibity-save-btn')
         $('.boss-visibility-checkbox').on('change', (e)=>{
@@ -188,8 +197,6 @@
             })
         }
     })
-
-
 </script>
 {% endif %}
 <script>
