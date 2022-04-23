@@ -1,0 +1,164 @@
+
+:root{
+    --list-item-height: 50px;
+    --dummy-boss-height: 20px;
+}
+.bosswish-officer-header{
+    max-width: 400px;
+    display:flex;
+    margin: 0 auto 2rem auto;
+    justify-content: space-between;
+    &>div{
+        width: 45%;
+    }
+}
+.bosswish-officer-grid{
+    display:grid;
+    justify-content: center;
+    grid-template-columns: 10em repeat(auto-fit, 25px);
+    padding-bottom: 2rem;
+    
+}
+.officer-grid-bossname-col{
+    width: fit-content;
+}
+.officer-grid-char {
+    width: 25px;
+    text-align: center;
+
+    .officer-grid-charname {
+        writing-mode: vertical-lr;
+        height: 75px;
+        overflow: hidden;
+        //text-orientation: upright;
+        //letter-spacing: -.3em;
+        margin: 0;
+    }
+    .officer-grid-bosswish{
+        &.can-help{
+            color: #6c757d;
+        }
+        &.bench-me{
+            color:var(--danger-bg-color)
+        }
+    }
+    .officer-grid-bosswish:nth-child(odd){
+        background-color: #343A40;
+    }
+    .officer-grid-bosswish:nth-child(even){
+        background-color: var(--bg-content-container);
+    }
+}
+
+.draggable-icon {
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+}
+
+.bosswish-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-items: center;
+}
+
+.bosswish-char-col {
+    display:flex;
+    flex-direction: column;
+    max-width: 300px;
+    width: 90px;
+}
+.bosswish-char {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.wish-toolbar{
+    .save-wishes{
+        margin:auto;
+        font-size: 1.2rem;
+        padding: .5rem 1rem;
+        position: relative;
+    }
+    .wish-info{
+        margin: .5rem auto;
+        width: fit-content;
+        padding: .5rem 1rem;
+        background-color: var(--bg-content-container);
+        &>p{
+            margin:.5rem 0;
+        }
+    }
+}
+
+
+
+.draggable-list {
+    /* Note, due to this element's height being set with JS,
+       padding will only work on top/bottom and it will only
+       increase the height of element */
+    position: relative;
+    padding-top: 30px;
+}
+.bosswish-boss {
+    background-color: var(--bg-content-container);
+    padding: .5rem 1rem;
+    height: var(--list-item-height);
+    min-width: 260px;
+    position: absolute;
+    transform: translateX(-50%);
+    left: 50%;
+    input[type=number] {
+        border: 1px solid #aaa;
+        float:right;
+        text-align: center;
+        margin-left: 10px;
+        background-color: var(--bg-hover-color);
+        color: var(--white-color)
+    }
+    transition: top 300ms ease-out;
+
+    &.can-help{
+        color: #6c757d
+    }
+
+    &.bench-me {
+        color: var(--danger-bg-color);
+
+        input[type=number] {
+            border-color: var(--danger-bg-color);
+            color: var(--danger-bg-color);
+        }
+    }
+
+    &[dragging]{
+        transition: none;
+        &::after{
+            top:-50%;
+            left: 0;
+            position: absolute;
+            content: "";
+            width: 260px;
+            height: 600px;
+        }
+    }
+}
+
+@for $i from 0 through 20 {
+    .bosswish-boss[data-order="#{$i}"]{
+        top: calc(var(--list-item-height) * #{$i - 1})
+    }
+}
+
+// Remove the arrows on a number input
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+

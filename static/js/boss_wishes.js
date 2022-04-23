@@ -149,6 +149,7 @@ class SortableList {
         $('.save-wishes').on('click', ()=>{
             const btn = $('.save-wishes')
             loadingButton(btn, "Wishes Saved", "success", ()=>this.syncDataToDb())
+            unsavedChanges = 0
         })
 
         this.setupDraggableListElements()
@@ -226,6 +227,7 @@ class SortableList {
     inputValueChanged() {
         const saveBtn = $('.save-wishes')
         saveBtn.removeClass('ane-btn-disabled')
+        unsavedChanges = 1
     }
 
     updateValuesArray() {

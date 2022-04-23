@@ -140,6 +140,7 @@
 
 {% if user.is_staff%}
 <script>
+    var unsavedChanges = 0;
     $('#switchToBossWish').on('click', switchView)
     $('#switchToWishSummary').on('click', switchView)
     function switchView(e) {
@@ -188,6 +189,12 @@
             })
         }
     })
+
+    function confirmLeave() {
+        if(unsavedChanges)
+            return "Wishes are unsaved, are you sure you want to quit?"
+    }
+    window.onbeforeunload = confirmLeave;
 </script>
 {% endif %}
 <script src="{% static '/js/modal.js' %}"></script>
