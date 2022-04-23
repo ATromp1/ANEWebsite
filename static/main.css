@@ -1388,7 +1388,9 @@ input[type=number] {
               .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn.active {
                 background-color: var(--success-bg-color); }
                 .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn.active:hover {
-                  background-color: var(--success-bg-hover); } }
+                  background-color: var(--success-bg-hover); }
+  .draggable-icon {
+    display: none; } }
 
 /* /.................// Mediaquery @560px //................./ */
 .event-view-header-bossname-dropdown {

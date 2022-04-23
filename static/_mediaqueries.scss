@@ -169,6 +169,11 @@
             }
         }
     }
+
+    // Remove the draggable icons on smaller screen ( Boss Wishes)
+    .draggable-icon {
+        display:none;
+    }
 }
 
 /* /.................// Mediaquery @560px //................./ */
