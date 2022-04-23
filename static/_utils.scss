@@ -1,0 +1,188 @@
+$btnBorderColor: #aaa;
+$btnBorderHoverColor: #0d6efd;
+
+$dangerColor: #aa2234;
+$dangerHoverColor: #d52a41;
+$successColor: #22915d;
+$successHoverColor: #2cba77;
+$warningColor: #8c741d;
+$warningHoverColor: #c19c0b;
+$infoColor: #106df9;
+$infoHoverColor: #3f8bfd;
+$defaultButtonColor: #343A40;
+$defaultButtonHoverColor: #6E7276;
+
+$textWhite: #fff;
+$textBlack: #000;
+$textDisabled: #6c757d;
+
+$globalAnimationTime: 150ms;
+
+$borderRadius: 5px;
+$borderThickness: 2px;
+// Generic Button Styling
+.ane-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    border: $borderThickness solid $btnBorderColor;
+    transition: all $globalAnimationTime ease-in-out;
+    transition-property: color, background-color;
+    color: $textWhite;
+    border-radius: $borderRadius;
+    background-color: $defaultButtonColor;
+    &:hover{
+        color: $textWhite;
+        background-color: $defaultButtonHoverColor;
+    }
+    &.active {
+        border: 2px solid $btnBorderHoverColor;
+    }
+
+    &.ane-btn-success {
+        background-color: $successColor;
+        border-color: transparent;
+        &:hover {
+            background-color: $successHoverColor;
+        }
+    }
+    &.ane-btn-warning {
+        background-color: $warningColor;
+        border-color: transparent;
+        &:hover {
+            background-color: $warningHoverColor;
+        }
+    }
+    &.ane-btn-danger {
+        background-color: $dangerColor;
+        border-color: transparent;
+        &:hover {
+            background-color: $dangerHoverColor;
+        }
+    }
+    &.ane-btn-info {
+        background-color: $infoColor;
+        border-color: transparent;
+        &:hover {
+            background-color: $infoHoverColor;
+        }
+    }
+
+    &.ane-btn-disabled {
+        background-color: $defaultButtonColor;
+        pointer-events: none;
+        cursor: default;
+        border-color: $textDisabled;
+        color: $textDisabled;
+        &:hover{
+            background-color: $defaultButtonColor;
+            border-color: $textDisabled;
+            color: $textDisabled;
+        }
+    }
+
+    &[loading] {
+        cursor:default;
+        pointer-events: none;
+        background-color: $defaultButtonColor;
+        border-color: transparent;
+        color: $textDisabled;
+        position: relative;
+        overflow: hidden;
+        z-index: 0;
+
+        // To fix the button shrinking when removing border
+        margin-top: -2px !important;
+        margin-bottom: -2px !important;
+        border-radius: 7px !important;
+
+        &:hover{
+            background-color: $defaultButtonColor;
+        }
+        &::before {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            z-index: -2;
+            width: 500px;
+            height: 500px;
+            background-color: $textDisabled;
+            background-repeat: no-repeat;
+            background-size: 50% 50%, 50% 50%;
+            background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+            background-image: linear-gradient(#{$textDisabled}, #{$textDisabled}), linear-gradient(#{$successColor}, #{$successColor});
+            animation: loading 1.3s linear infinite;
+        }
+        
+        &::after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            left: $borderThickness * 2;
+            top: $borderThickness * 2;
+            width: calc(100% - #{$borderThickness * 4});
+            height: calc(100% - #{$borderThickness * 4});
+            background: $defaultButtonColor;
+        }
+    }
+
+    @keyframes loading {
+        100% {
+            transform: rotate(1turn);
+        }
+      }
+}
+
+
+.wow-class-text {
+    &.warrior {
+        color: var(--classcolor-warrior);
+    }
+
+    &.paladin {
+        color: var(--classcolor-paladin);
+    }
+
+    &.hunter {
+        color: var(--classcolor-hunter);
+    }
+
+    &.rogue {
+        color: var(--classcolor-rogue);
+    }
+
+    &.priest {
+        color: var(--classcolor-priest);
+    }
+
+    &.shaman {
+        color: var(--classcolor-shaman);
+    }
+
+    &.mage {
+        color: var(--classcolor-mage);
+    }
+
+    &.warlock {
+        color: var(--classcolor-warlock);
+    }
+
+    &.monk {
+        color: var(--classcolor-monk);
+    }
+
+    &.druid {
+        color: var(--classcolor-druid);
+    }
+
+    &.demonhunter {
+        color: var(--classcolor-demonhunter);
+    }
+
+    &.deathknight {
+        color: var(--classcolor-deathknight);
+    }
+}
