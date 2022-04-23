@@ -357,7 +357,6 @@ class RosterPerBoss {
         const ALREADY_SELECTED = $('<div/>',{
             'class':'py-2',
             'style': 'margin-left:0.4rem; margin-bottom:0;',
-            //'text': "Alts"
         })
         $(ROSTER_TABLE).append(ALREADY_SELECTED)
         

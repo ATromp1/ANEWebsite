@@ -249,6 +249,7 @@ class SortableList {
             const input = $(element).find('input')
 
             if($(input).val() == 99){
+                $(element).removeClass('bench-me')
                 $(element).addClass('can-help')
             } else if ($(input).val() <= 0) {
                 $(element).addClass('bench-me')
