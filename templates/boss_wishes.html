@@ -166,9 +166,7 @@
         })
 
         $(bossVisibitySaveBtn).on('click', ()=> {
-            $(bossVisibitySaveBtn).removeClass('ane-btn-success')
-            $(bossVisibitySaveBtn).addClass('ane-btn-disabled')
-            saveBossVisibilityToDb()
+            loadingButton(bossVisibitySaveBtn, "Saved", "success", ()=>saveBossVisibilityToDb())
         })
 
         function saveBossVisibilityToDb() {

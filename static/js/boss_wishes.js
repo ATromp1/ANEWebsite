@@ -148,14 +148,7 @@ class SortableList {
 
         $('.save-wishes').on('click', ()=>{
             const btn = $('.save-wishes')
-            btn.attr('loading',true)
-            btn.addClass('ane-btn-disabled')
-            setTimeout(()=>{
-                btn.removeAttr('loading')
-                status_alert(1500, "Wishes Saved", "success")
-            },832)
-            
-            this.syncDataToDb()
+            loadingButton(btn, "Wishes Saved", "success", ()=>this.syncDataToDb())
         })
 
         this.setupDraggableListElements()
@@ -233,7 +226,6 @@ class SortableList {
     inputValueChanged() {
         const saveBtn = $('.save-wishes')
         saveBtn.removeClass('ane-btn-disabled')
-
     }
 
     updateValuesArray() {

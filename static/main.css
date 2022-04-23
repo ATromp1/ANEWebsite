@@ -8,16 +8,15 @@
   text-decoration: none;
   border: 2px solid #aaa;
   transition: all 150ms ease-in-out;
+  transition-property: color, background-color;
   color: #fff;
-  box-sizing: border-box;
   border-radius: 5px;
   background-color: #343A40; }
   .ane-btn:hover {
-    color: #fff; }
+    color: #fff;
+    background-color: #6E7276; }
   .ane-btn.active {
     border: 2px solid #0d6efd; }
-  .ane-btn:hover {
-    background-color: #6E7276; }
   .ane-btn.ane-btn-success {
     background-color: #22915d;
     border-color: transparent; }
@@ -52,32 +51,42 @@
     cursor: default;
     pointer-events: none;
     background-color: #343A40;
-    border-color: #aaa;
-    color: #6c757d; }
+    border-color: transparent;
+    color: #6c757d;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    margin-top: -2px !important;
+    margin-bottom: -2px !important;
+    border-radius: 7px !important; }
     .ane-btn[loading]:hover {
       background-color: #343A40; }
+    .ane-btn[loading]::before {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      z-index: -2;
+      width: 500px;
+      height: 500px;
+      background-color: #6c757d;
+      background-repeat: no-repeat;
+      background-size: 50% 50%, 50% 50%;
+      background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+      background-image: linear-gradient(#6c757d, #6c757d), linear-gradient(#22915d, #22915d);
+      animation: loading 1.3s linear infinite; }
     .ane-btn[loading]::after {
       content: '';
       position: absolute;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 100%;
-      border: 5px solid transparent;
-      border-top-color: #3f8bfd;
-      border-bottom-color: #3f8bfd;
-      animation: loading 1.5s linear infinite; }
+      z-index: -1;
+      left: 4px;
+      top: 4px;
+      width: calc(100% - 8px);
+      height: calc(100% - 8px);
+      background: #343A40; }
 
 @keyframes loading {
-  0% {
-    transform: rotate(0deg) scale(1, 1); }
-  25% {
-    transform: rotate(90deg) scale(1.1, 1.1); }
-  50% {
-    transform: rotate(180deg) scale(1, 1); }
-  75% {
-    transform: rotate(270deg) scale(1.1, 1.1); }
   100% {
-    transform: rotate(360deg) scale(1, 1); } }
+    transform: rotate(1turn); } }
 
 .wow-class-text.warrior {
   color: var(--classcolor-warrior); }
@@ -125,7 +134,7 @@
   --white-color: #fff;
   --container-bg: rgba(53, 56, 64, 0.85);
   --container-bg-hover: rgba(63, 66, 74, 0.85);
-  --bg-navbar-color: rgba(34, 38, 42, 0.25);
+  --bg-content-container: rgba(34, 38, 42, 0.25);
   --danger-bg-color: #aa2234;
   --danger-bg-hover: #d52a41;
   --success-bg-color: #22915d;
@@ -134,10 +143,6 @@
   --warning-bg-hover: #c19c0b;
   --info-bg-color: #106df9;
   --info-bg-hover: #3f8bfd;
-  /*     --info-bg-color: #4351D5;
-    --success-bg-color: #447A46;
-    --warning-bg-color: #8c741d;
-    --danger-bg-color: #A64A44; */
   --active-border-color: #0d6efd;
   /* Class colors WoW */
   --classcolor-warrior: #C69B6D;
@@ -160,6 +165,9 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0; }
+
+*, *::before, *::after {
+  box-sizing: border-box; }
 
 body {
   background-color: var(--main-bg-color);
@@ -791,7 +799,7 @@ body {
       margin: 0;
       padding: 0.5rem;
       border-radius: var(--border-radius-size);
-      background-color: var(--bg-navbar-color);
+      background-color: var(--bg-content-container);
       align-items: center;
       list-style: none;
       display: flex;
@@ -1088,6 +1096,191 @@ body {
   width: 90%;
   margin: auto; }
 
+:root {
+  --list-item-height: 50px;
+  --dummy-boss-height: 20px; }
+
+.bosswish-officer-header {
+  max-width: 400px;
+  display: flex;
+  margin: 0 auto 2rem auto;
+  justify-content: space-between; }
+  .bosswish-officer-header > div {
+    width: 45%; }
+
+.bosswish-officer-grid {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 10em repeat(auto-fit, 25px);
+  padding-bottom: 2rem; }
+
+.officer-grid-bossname-col {
+  width: fit-content; }
+
+.officer-grid-char {
+  width: 25px;
+  text-align: center; }
+  .officer-grid-char .officer-grid-charname {
+    writing-mode: vertical-lr;
+    height: 75px;
+    overflow: hidden;
+    margin: 0; }
+  .officer-grid-char .officer-grid-bosswish.can-help {
+    color: #6c757d; }
+  .officer-grid-char .officer-grid-bosswish.bench-me {
+    color: var(--danger-bg-color); }
+  .officer-grid-char .officer-grid-bosswish:nth-child(odd) {
+    background-color: #343A40; }
+  .officer-grid-char .officer-grid-bosswish:nth-child(even) {
+    background-color: var(--bg-content-container); }
+
+.draggable-icon {
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none; }
+
+.bosswish-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  justify-items: center; }
+
+.bosswish-char-col {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  width: 90px; }
+
+.bosswish-char {
+  text-align: center;
+  font-size: 1.5rem; }
+
+.wish-toolbar .save-wishes {
+  margin: auto;
+  font-size: 1.2rem;
+  padding: .5rem 1rem;
+  position: relative; }
+
+.wish-toolbar .wish-info {
+  margin: .5rem auto;
+  width: fit-content;
+  padding: .5rem 1rem;
+  background-color: var(--bg-content-container); }
+  .wish-toolbar .wish-info > p {
+    margin: .5rem 0; }
+
+.draggable-list {
+  /* Note, due to this element's height being set with JS,
+       padding will only work on top/bottom and it will only
+       increase the height of element */
+  position: relative;
+  padding-top: 30px; }
+
+.bosswish-boss {
+  background-color: var(--bg-content-container);
+  padding: .5rem 1rem;
+  height: var(--list-item-height);
+  min-width: 260px;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
+  transition: top 300ms ease-out; }
+  .bosswish-boss input[type=number] {
+    border: 1px solid #aaa;
+    float: right;
+    text-align: center;
+    margin-left: 10px;
+    background-color: var(--bg-hover-color);
+    color: var(--white-color); }
+  .bosswish-boss.can-help {
+    color: #6c757d; }
+  .bosswish-boss.bench-me {
+    color: var(--danger-bg-color); }
+    .bosswish-boss.bench-me input[type=number] {
+      border-color: var(--danger-bg-color);
+      color: var(--danger-bg-color); }
+  .bosswish-boss[dragging] {
+    transition: none; }
+    .bosswish-boss[dragging]::after {
+      top: -50%;
+      left: 0;
+      position: absolute;
+      content: "";
+      width: 260px;
+      height: 600px; }
+
+.bosswish-boss[data-order="0"] {
+  top: calc(var(--list-item-height) * -1); }
+
+.bosswish-boss[data-order="1"] {
+  top: calc(var(--list-item-height) * 0); }
+
+.bosswish-boss[data-order="2"] {
+  top: calc(var(--list-item-height) * 1); }
+
+.bosswish-boss[data-order="3"] {
+  top: calc(var(--list-item-height) * 2); }
+
+.bosswish-boss[data-order="4"] {
+  top: calc(var(--list-item-height) * 3); }
+
+.bosswish-boss[data-order="5"] {
+  top: calc(var(--list-item-height) * 4); }
+
+.bosswish-boss[data-order="6"] {
+  top: calc(var(--list-item-height) * 5); }
+
+.bosswish-boss[data-order="7"] {
+  top: calc(var(--list-item-height) * 6); }
+
+.bosswish-boss[data-order="8"] {
+  top: calc(var(--list-item-height) * 7); }
+
+.bosswish-boss[data-order="9"] {
+  top: calc(var(--list-item-height) * 8); }
+
+.bosswish-boss[data-order="10"] {
+  top: calc(var(--list-item-height) * 9); }
+
+.bosswish-boss[data-order="11"] {
+  top: calc(var(--list-item-height) * 10); }
+
+.bosswish-boss[data-order="12"] {
+  top: calc(var(--list-item-height) * 11); }
+
+.bosswish-boss[data-order="13"] {
+  top: calc(var(--list-item-height) * 12); }
+
+.bosswish-boss[data-order="14"] {
+  top: calc(var(--list-item-height) * 13); }
+
+.bosswish-boss[data-order="15"] {
+  top: calc(var(--list-item-height) * 14); }
+
+.bosswish-boss[data-order="16"] {
+  top: calc(var(--list-item-height) * 15); }
+
+.bosswish-boss[data-order="17"] {
+  top: calc(var(--list-item-height) * 16); }
+
+.bosswish-boss[data-order="18"] {
+  top: calc(var(--list-item-height) * 17); }
+
+.bosswish-boss[data-order="19"] {
+  top: calc(var(--list-item-height) * 18); }
+
+.bosswish-boss[data-order="20"] {
+  top: calc(var(--list-item-height) * 19); }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0; }
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield; }
+
 /* /.................// Mediaquery @600px //................./ */
 /* Navbar (Hamburger menu) -- Calendar  */
 @media screen and (max-width: 600px) {
@@ -1197,6 +1390,64 @@ body {
                 .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn.active:hover {
                   background-color: var(--success-bg-hover); } }
 
+/* /.................// Mediaquery @560px //................./ */
+.event-view-header-bossname-dropdown {
+  display: none; }
+
+@media screen and (max-width: 560px) {
+  /* Make the boss list a whole screen thing */
+  .event-view-boss-list {
+    display: none !important;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    background-color: var(--bg-navbar-color) !important;
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: flex-start !important;
+    align-content: flex-start; }
+    .event-view-boss-list.active {
+      display: flex !important; }
+  .close-bosslist-overlay {
+    top: .5rem;
+    right: .5rem;
+    height: 50px;
+    width: 50px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: absolute; }
+    .close-bosslist-overlay > span {
+      font-size: 2em; }
+  .boss-list-header {
+    width: 100%;
+    text-align: center; }
+  .boss-view-btn {
+    padding: 0 !important;
+    width: calc(50% - 1rem) !important; }
+  /* // boss list // */
+  /* Make buttons on event header have smaller margins */
+  .event-view-header-buttons {
+    margin-right: .2rem !important; }
+  .event-view-header-date {
+    margin-left: .2rem !important; }
+  .event-view-headercenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center; }
+  .event-view-header-bossname-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    border: 2px solid #aaa;
+    border-radius: 5px;
+    padding: 5px 7px; }
+    .event-view-header-bossname-dropdown::before {
+      font-size: .9em;
+      font-family: 'Material Icons';
+      content: 'open_in_full'; } }
+
 /* /.................// Mediaquery @420px //................./ */
 @media screen and (max-width: 420px) {
   .calendar-grid-container {
@@ -1211,188 +1462,3 @@ body {
     margin-top: 3px; }
   .events-list-container {
     width: 100%; } }
-
-:root {
-  --list-item-height: 50px;
-  --dummy-boss-height: 20px; }
-
-.bosswish-officer-header {
-  max-width: 400px;
-  display: flex;
-  margin: 0 auto 2rem auto;
-  justify-content: space-between; }
-  .bosswish-officer-header > div {
-    width: 45%; }
-
-.bosswish-officer-grid {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: 10em repeat(auto-fit, 25px);
-  padding-bottom: 2rem; }
-
-.officer-grid-bossname-col {
-  width: fit-content; }
-
-.officer-grid-char {
-  width: 25px;
-  text-align: center; }
-  .officer-grid-char .officer-grid-charname {
-    writing-mode: vertical-lr;
-    height: 75px;
-    overflow: hidden;
-    margin: 0; }
-  .officer-grid-char .officer-grid-bosswish.can-help {
-    color: #6c757d; }
-  .officer-grid-char .officer-grid-bosswish.bench-me {
-    color: var(--danger-bg-color); }
-  .officer-grid-char .officer-grid-bosswish:nth-child(odd) {
-    background-color: #343A40; }
-  .officer-grid-char .officer-grid-bosswish:nth-child(even) {
-    background-color: var(--bg-navbar-color); }
-
-.draggable-icon {
-  vertical-align: middle;
-  cursor: pointer;
-  user-select: none; }
-
-.bosswish-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  justify-items: center; }
-
-.bosswish-char-col {
-  display: flex;
-  flex-direction: column;
-  max-width: 300px;
-  width: 90px; }
-
-.bosswish-char {
-  text-align: center;
-  font-size: 1.5rem; }
-
-.wish-toolbar .save-wishes {
-  margin: auto;
-  font-size: 1.2rem;
-  padding: .5rem 1rem;
-  position: relative; }
-
-.wish-toolbar .wish-info {
-  margin: .5rem auto;
-  width: fit-content;
-  padding: .5rem 1rem;
-  background-color: var(--bg-navbar-color); }
-  .wish-toolbar .wish-info > p {
-    margin: .5rem 0; }
-
-.draggable-list {
-  /* Note, due to this element's height being set with JS,
-       padding will only work on top/bottom and it will only
-       increase the height of element */
-  position: relative;
-  padding-top: 30px; }
-
-.bosswish-boss {
-  background-color: var(--bg-navbar-color);
-  padding: .5rem 1rem;
-  height: var(--list-item-height);
-  min-width: 260px;
-  position: absolute;
-  transform: translateX(-50%);
-  left: 50%;
-  transition: top 300ms ease-out; }
-  .bosswish-boss input[type=number] {
-    border: 1px solid #aaa;
-    float: right;
-    text-align: center;
-    margin-left: 10px;
-    background-color: var(--bg-hover-color);
-    color: var(--white-color); }
-  .bosswish-boss.can-help {
-    color: #6c757d; }
-  .bosswish-boss.bench-me {
-    color: var(--danger-bg-color); }
-    .bosswish-boss.bench-me input[type=number] {
-      border-color: var(--danger-bg-color);
-      color: var(--danger-bg-color); }
-  .bosswish-boss[dragging] {
-    transition: none; }
-    .bosswish-boss[dragging]::after {
-      top: -50%;
-      left: 0;
-      position: absolute;
-      content: "";
-      width: 260px;
-      height: 600px; }
-
-.bosswish-boss[data-order="0"] {
-  top: calc(var(--list-item-height) * -1); }
-
-.bosswish-boss[data-order="1"] {
-  top: calc(var(--list-item-height) * 0); }
-
-.bosswish-boss[data-order="2"] {
-  top: calc(var(--list-item-height) * 1); }
-
-.bosswish-boss[data-order="3"] {
-  top: calc(var(--list-item-height) * 2); }
-
-.bosswish-boss[data-order="4"] {
-  top: calc(var(--list-item-height) * 3); }
-
-.bosswish-boss[data-order="5"] {
-  top: calc(var(--list-item-height) * 4); }
-
-.bosswish-boss[data-order="6"] {
-  top: calc(var(--list-item-height) * 5); }
-
-.bosswish-boss[data-order="7"] {
-  top: calc(var(--list-item-height) * 6); }
-
-.bosswish-boss[data-order="8"] {
-  top: calc(var(--list-item-height) * 7); }
-
-.bosswish-boss[data-order="9"] {
-  top: calc(var(--list-item-height) * 8); }
-
-.bosswish-boss[data-order="10"] {
-  top: calc(var(--list-item-height) * 9); }
-
-.bosswish-boss[data-order="11"] {
-  top: calc(var(--list-item-height) * 10); }
-
-.bosswish-boss[data-order="12"] {
-  top: calc(var(--list-item-height) * 11); }
-
-.bosswish-boss[data-order="13"] {
-  top: calc(var(--list-item-height) * 12); }
-
-.bosswish-boss[data-order="14"] {
-  top: calc(var(--list-item-height) * 13); }
-
-.bosswish-boss[data-order="15"] {
-  top: calc(var(--list-item-height) * 14); }
-
-.bosswish-boss[data-order="16"] {
-  top: calc(var(--list-item-height) * 15); }
-
-.bosswish-boss[data-order="17"] {
-  top: calc(var(--list-item-height) * 16); }
-
-.bosswish-boss[data-order="18"] {
-  top: calc(var(--list-item-height) * 17); }
-
-.bosswish-boss[data-order="19"] {
-  top: calc(var(--list-item-height) * 18); }
-
-.bosswish-boss[data-order="20"] {
-  top: calc(var(--list-item-height) * 19); }
-
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0; }
-
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield; }

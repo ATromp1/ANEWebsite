@@ -70,7 +70,14 @@
     <div class="event-view-container">
         <div class="event-view-boss-container">
             <div class="event-view-boss-list">
-                <div class="mt-3" style="padding-bottom:16px;"><span style="font-size:1.5em;">Bosses</span></div>
+                <div class="close-bosslist-overlay" style="display:none;">
+                    <span class="material-icons">
+                        close
+                    </span>
+                </div>
+                <div class="mt-3 boss-list-header" style="padding-bottom:16px;">
+                    <span style="font-size:1.5em;">Bosses</span>
+                </div>
             </div>
             <div class="boss-detail-container">
                 <div class="event-view-info-header">
@@ -80,10 +87,14 @@
                             <span class="event-view-date text-secondary" style="font-size:1em;"> - {{ event.date }}</span>
                         </div>
                     </div>
-                    <div class="event-view-header-bossname">
-                        Event Summary
+                    <div class="event-view-headercenter">
+                        <div class="event-view-header-bossname">
+                            Event Summary
+                        </div>
+                        <div class="event-view-header-bossname-dropdown ane-btn">
+                            Switch Boss
+                        </div>
                     </div>
-                    
                     
                     <div class="event-view-header-buttons">
                         {% if is_past_event%}
@@ -239,6 +250,19 @@
         let css_classes = {{css_classes|safe}}
         let boss_rosters = {{selected_roster|safe}}
         let user_event_summary = {{user_char_selected|safe}}
+    </script>
+
+    <script>
+        $(document).ready(()=> {
+            // Toggle boss list overlay
+            const bossListOverlayBtn = $('.event-view-header-bossname-dropdown')
+            const bossList = $('.event-view-boss-list')
+            $(bossListOverlayBtn).on('click',()=>$(bossList).toggleClass('active'))
+            const bossListBtns = $('.boss-view-btn');
+            $(bossListBtns).on('click',()=>$(bossList).removeClass('active'))
+            $('.close-bosslist-overlay').on('click',()=>$(bossList).removeClass('active'))
+            //$('.boss-detail-container').on('click',()=>$(bossList).removeClass('active'))
+        })
     </script>
     <script src="{% static '/js/event_view_utils.js' %}"></script>
     <script src="{% static '/js/great_vault.js' %}"></script>
