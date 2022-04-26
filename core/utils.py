@@ -186,13 +186,13 @@ def decline_raid_button(request, event_date):
                                         raid_event=event_obj,
                                         account_id=get_current_user_data(request)['id'])
 
-    remove_late_user(event_obj)
+    remove_late_user(request, event_obj)
 
     return redirect('events')
 
 
-def remove_late_user(event_obj):
-    late_user_obj = LateUser.objects.filter(raid_event=event_obj)
+def remove_late_user(request, event_obj):
+    late_user_obj = LateUser.objects.filter(raid_event=event_obj, user=MyUser.objects.get(user=request.user))
     if late_user_obj.exists():
         late_user_obj.delete()
 
