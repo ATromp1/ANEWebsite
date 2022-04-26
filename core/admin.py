@@ -21,7 +21,7 @@ class BossPerEventAdmin(admin.ModelAdmin):
 
 
 class LateUserAdmin(admin.ModelAdmin):
-    list_display = ['user', 'date', 'minutes_late']
+    list_display = ['user', 'raid_event', 'minutes_late']
 
 
 class AbsentUserAdmin(admin.ModelAdmin):

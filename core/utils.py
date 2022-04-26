@@ -307,7 +307,7 @@ def save_late_user(request, ajax_data):
         minutes_late = ajax_data.get('minutes_late')
         current_raid = RaidEvent.objects.get(date=date)
         try:
-            late_user_obj = LateUser.objects.get(raid_event=current_raid)
+            late_user_obj = LateUser.objects.get(user=MyUser.objects.get(user=request.user), raid_event=current_raid)
             if ajax_data.get('delete') == 'True':
                 return late_user_obj.delete()
 
@@ -316,8 +316,7 @@ def save_late_user(request, ajax_data):
                                     minutes_late=minutes_late,
                                     user=MyUser.objects.get(user=request.user))
         else:
-            LateUser.objects.filter(raid_event=current_raid).update(
-                minutes_late=minutes_late)
+            LateUser.objects.filter(raid_event=current_raid, user=MyUser.objects.get(user=request.user)).update(minutes_late=minutes_late)
 
 
 def publish_boss_ajax(ajax_data, current_raid):
