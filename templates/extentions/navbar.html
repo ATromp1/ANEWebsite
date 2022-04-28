@@ -12,27 +12,20 @@
         <div class="navbar-links">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'home' %}">Home</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'roster' %}">Roster</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'boss-wishes' %}">Wishes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'calendar' %}">Calendar</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'roster' %}">Roster</a>
                 </li>
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'events' %}">Events</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'calendar' %}">Calendar</a>
                 </li>
-                {% if is_officer == True %}
-                <li class="nav-item navbar-toggle-officer-view">
-                    {% if user.is_staff %}
-                    <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn active ane-btn">Disable Officer</a>
-                    {% else %}
-                    <a href="{% url 'toggle-staff' %}" class="toggle-officer-btn ane-btn">Enable Officer</a>
-                    {% endif %}
+                <li class="nav-item">
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'events' %}">Events</a>
                 </li>
-                {% endif %}
-
                 <li class="responsive-user-btn">
                     {% if request.user.is_authenticated %}
                     <a class="navbar-btn navbar-user-menu-btn ane-btn" href="{% url 'logout-user-button' %}">Logout</a>
@@ -43,22 +36,32 @@
             </ul>
         </div>
         <div class="navbar-user">
-            <div class="navbar-user-menu">
-                {% if user.is_staff %}
-                <span><a href="/admin" title="Admin Page">{{ social_user }}</a></span>
-                {% else %}
-                <span>{{ social_user }}</span>
-                {% endif %}
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        {% if request.user.is_authenticated %}
-                        <a class="navbar-btn navbar-user-menu-btn ane-btn" href="{% url 'logout-user-button' %}">Logout</a>
-                        {% else %}
-                        <a class="navbar-btn navbar-user-menu-btn ane-btn" href="{% url 'login-user-button' %}">Login</a>
-                        {% endif %}
-                    </li>
-                </ul>
+            {% if request.user.is_authenticated %}
+            <div class="navbar-dropdown">
+                <div class="nav-item">
+                    <button class="navbar-btn ane-btn px-3" style="width:100%">{{ social_user }}</button>
+                </div>
+                <div class="navbar-dropdown-content">
+                    <a href="{% url 'sync-bnet' %}" class="rebtn">Re-Sync Bnet Data</a>
+                    <a href="{% url 'boss-wishes' %}" class="rebtn">Wishes</a>
+                    {% if is_officer == True %}
+                    {% if user.is_staff %}
+                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn active rebtn">Disable Officer</a>
+                    {% else %}
+                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn rebtn">Enable Officer</a>
+                    {% endif %}
+                    {% endif %}
+                    {% if user.is_staff %}
+                    <a href="/admin" class="rebtn">Admin Page</a>
+                    {% endif %}
+                    <a href="{% url 'logout-user-button' %}" class="rebtn">Logout</a>
+                </div>
             </div>
+            {% else %}
+            <div class="nav-item">
+                <a class="navbar-btn navbar-user-menu-btn ane-btn rebtn" href="{% url 'login-user-button' %}">Login</a>    
+            </div>
+            {% endif %}
         </div>
     </div>
 
@@ -73,32 +76,40 @@
         </div>
         <div class="navbar-hamburger-menu-content">
             <ul class="navbar-hamburger-links">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item" style="text-align:center;width:90%;">
+                    <span style="font-size:2em;">{{social_user}}</span>
+                </li>
+                {% endif %}
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'home' %}">Home</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'roster' %}">Roster</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'boss-wishes' %}">Wishes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'calendar' %}">Calendar</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'roster' %}">Roster</a>
                 </li>
                 <li class="nav-item">
-                    <a class="navbar-btn ane-btn" href="{% url 'events' %}">Events</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'calendar' %}">Calendar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'events' %}">Events</a>
                 </li>
                 {% if is_officer == True %}
                 <li class="nav-item navbar-toggle-officer-view">
                     {% if user.is_staff %}
-                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn ane-btn active">Disable Officer</a>
+                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn ane-btn active rebtn">Disable Officer</a>
                     {% else %}
-                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn ane-btn">Enable Officer</a>
+                    <a href="{% url 'toggle-staff' %}" class="navbar-btn toggle-officer-btn ane-btn rebtn">Enable Officer</a>
                     {% endif %}
                 </li>
                 {% endif %}
                 <li class="nav-item">
                     {% if request.user.is_authenticated %}
-                    <a class="navbar-btn ane-btn" href="{% url 'logout-user-button' %}">Logout</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'logout-user-button' %}">Logout</a>
                     {% else %}
-                    <a class="navbar-btn ane-btn" href="{% url 'login-user-button' %}">Login</a>
+                    <a class="navbar-btn ane-btn rebtn" href="{% url 'login-user-button' %}">Login</a>
                     {% endif %}
                 </li>
             </ul>

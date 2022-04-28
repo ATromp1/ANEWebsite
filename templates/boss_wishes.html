@@ -10,10 +10,6 @@
 <body>
 {% block content %}
 {% load static %}
-<!-- Alert message -->
-<div class="status-alert">
-    <span>Late Time Saved</span>
-</div>
 <!-- Modal -->
 <div class="input-modal" id="events-late-modal">
     <div class="input-modal-container">
@@ -99,19 +95,19 @@
         #
         -->
         <div class="wish-toolbar">
-            <button class="save-wishes ane-btn ane-btn-success ane-btn-disabled">
-                Save Wishes
-            </button>
             <div class="wish-info">
                 <p>[ 1-{{bosses|length}} ] Prioritize your boss wishes</p>
                 <p><span class="text-secondary">[ 99 ]</span> Means you don't need loot but want to kill</p>
                 <p><span class="text-danger">[ 0 ]</span> Means you want to be benched</p>
             </div>
+            <button class="save-wishes ane-btn ane-btn-success ane-btn-disabled">
+                Save Wishes
+            </button>
         </div>
         <div class="bosswish-grid">
         {% for char in user_chars %}
             <div class="bosswish-char-col">
-            <div class="bosswish-char | wow-class-text {{char.css_class}} |">{{char}}</div>
+            <div class="bosswish-char | wow-class-text {{char.css_class}} | mt-3">{{char}}</div>
             <div class="draggable-list" id="{{char.character_id}}">
             {% for boss in bosses %}
                 {% if boss.visible %}

@@ -10,10 +10,6 @@
 <body>
 {% block content %}
 {% load static %}
-<!-- Alert message -->
-<div class="status-alert">
-    <span>Late Time Saved</span>
-</div>
 <!-- Modal -->
 <div class="input-modal" id="events-late-modal">
     <div class="input-modal-container">
@@ -47,8 +43,8 @@
             {% if request.user.is_authenticated %}
             <div class="home-sync-bnet">
                 <span>{{ social_user }}</br></span>
-                <a class="ane-btn ane-btn-info" style="max-width: 200px;margin:auto;padding:.5rem 0;" href="{% url 'sync-bnet' %}">Re-Sync Bnet Data</a>
-                <a class="ane-btn ane-btn-info" style="max-width: 200px;margin:auto;padding:.5rem 0;margin-top:1rem;" href="{% url 'boss-wishes' %}">Boss Wishes</a>
+                <a class="ane-btn ane-btn-info rebtn" style="max-width: 200px;margin:auto;padding:.5rem 0;" href="{% url 'sync-bnet' %}">Re-Sync Bnet Data</a>
+                <a class="ane-btn ane-btn-info rebtn" style="max-width: 200px;margin:auto;padding:.5rem 0;margin-top:1rem;" href="{% url 'boss-wishes' %}">Boss Wishes</a>
             </div>
             {% else %}
             <div class="home-not-logged-in">
@@ -58,8 +54,8 @@
             {% if user.is_staff %}
             <div class="home-staff-options" style="margin-top:1rem;">
                 <span class="home-staff-options-header">Officer Options</span>
-                <div class="home-update-roster">
-                    <a class="ane-btn ane-btn-info" style="max-width: 200px;margin:auto;padding:.5rem 0;" href="{% url 'update-roster' %}">Update Roster</a>
+                <div class="home-update-roster" >
+                    <a class="ane-btn ane-btn-info rebtn" style="max-width: 200px;margin:auto;padding:.5rem 0;" href="{% url 'update-roster' %}">Update Roster</a>
                 </div>
             </div>
             {% endif %}
@@ -146,7 +142,6 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{% static '/js/modal.js' %}"></script>
-
 {% endblock %}
 
 </body>
