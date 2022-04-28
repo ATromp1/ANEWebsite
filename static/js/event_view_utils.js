@@ -116,3 +116,22 @@ function removeValueFromArray(arr, value){
     }
     return arr;
 }
+
+function sortByWishes(roster, bossId) {
+    // TODO - returned list so that 0 sorted at end, then 99, then rest in order. 
+    let sortedRoster = roster.map((char) => {
+        let wish = char.wishes[bossId]
+        if(wish == undefined) {
+            wish = '-'
+        }
+        return {
+            'name': char.name,
+            'playable_class': char.playable_class,
+            'roles': char.roles,
+            'account_id': char.account_id,
+            'wishes': char.wishes,
+            'wish': char.wishes[bossId] != undefined ? char.wishes[bossId] : '-',
+         }
+    })
+    return groupBy(sortedRoster, "wish")
+}

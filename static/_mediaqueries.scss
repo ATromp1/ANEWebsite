@@ -1,47 +1,18 @@
 /* /.................// Mediaquery @600px //................./ */
-/* Navbar (Hamburger menu) -- Calendar  */
-@media screen and (max-width: 600px) {
-    .events-list-container {
-        width: 90%;
-
-    }
-
-    .event-view-benched-roster,
-    .event-view-late-users {
-        display: none;
-    }
-
-    .event-view-container {
-        width: 100%;
-    }
-
-    /* calendar-grid-container */
-    .calendar-grid-container {
-        max-height: 370px;
-        width: 95%;
-        padding: 1em;
-
-        .calendar-grid {
-
-            column-gap: 0;
-        }
-    }
-
+/* Navbar (Hamburger menu)  */
+@media screen and (max-width: 49em) {
     .navbar {
         height: 3.5rem;
-
-        /* On smaller screens we use different menu */
         .navbar-content-container {
-            display: none;
+            display:none;
         }
 
-        /* Only used on smaller screens - displayed in mediaqueries @600px */
+        /* Only used on smaller screens */
         .navbar-hamburger-menu {
             display: block;
             position: absolute;
             width: 0%;
-            transition: width 200ms ease-in-out;
-
+            transition: all 200ms ease-in-out;
 
             &.open {
                 width: 100%;
@@ -58,7 +29,6 @@
                 .hamburger-lines .line3 {
                     transform: rotate(-35deg);
                 }
-
             }
 
             .hamburger-menu-toggle-button {
@@ -167,6 +137,35 @@
                     }
                 }
             }
+        }
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+    .events-list-container {
+        width: 90%;
+
+    }
+
+    .event-view-benched-roster,
+    .event-view-late-users {
+        display: none;
+    }
+
+    .event-view-container {
+        width: 100%;
+    }
+
+    /* calendar-grid-container */
+    .calendar-grid-container {
+        max-height: 370px;
+        width: 95%;
+        padding: 1em;
+
+        .calendar-grid {
+
+            column-gap: 0;
         }
     }
 

@@ -51,13 +51,11 @@
     cursor: default;
     pointer-events: none;
     background-color: #343A40;
-    border-color: transparent;
+    border: 2px solid transparent;
     color: #6c757d;
     position: relative;
-    overflow: hidden;
+    clip-path: inset(0 round 5px);
     z-index: 0;
-    margin-top: -2px !important;
-    margin-bottom: -2px !important;
     border-radius: 7px !important; }
     .ane-btn[loading]:hover {
       background-color: #343A40; }
@@ -163,6 +161,8 @@
 * {
   font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   margin: 0;
   padding: 0; }
 
@@ -187,6 +187,7 @@ html {
     font-size: 2.5em; }
 
 .status-alert {
+  display: block !important;
   position: fixed;
   width: 200px;
   margin: auto;
@@ -378,6 +379,59 @@ body {
   .navbar .navbar-hamburger-menu {
     /* Only used on smaller screens - displayed in mediaqueries @600px */
     display: none; }
+  .navbar .navbar-dropdown {
+    display: inline-block;
+    position: relative; }
+    .navbar .navbar-dropdown::after {
+      font-family: 'Material Icons';
+      cursor: pointer;
+      content: 'expand_more';
+      font-size: 1.5em;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -7px; }
+    .navbar .navbar-dropdown .navbar-dropdown-content {
+      display: flex;
+      transform: scale(0);
+      opacity: 0;
+      position: absolute;
+      right: 0;
+      background-color: var(--bg-navbar-color);
+      border-radius: var(--border-radius-size);
+      width: 150%;
+      flex-direction: column;
+      align-items: center;
+      transition: opacity 150ms ease-in-out; }
+      .navbar .navbar-dropdown .navbar-dropdown-content > a {
+        padding: .5rem 1rem;
+        text-align: center;
+        width: 100%;
+        text-decoration: none;
+        color: white;
+        transition: background-color ease-in-out 150ms; }
+        .navbar .navbar-dropdown .navbar-dropdown-content > a:hover {
+          background-color: #6e7377; }
+        .navbar .navbar-dropdown .navbar-dropdown-content > a:first-of-type {
+          border-top-left-radius: var(--border-radius-size);
+          border-top-right-radius: var(--border-radius-size); }
+        .navbar .navbar-dropdown .navbar-dropdown-content > a:last-of-type {
+          border-bottom-left-radius: var(--border-radius-size);
+          border-bottom-right-radius: var(--border-radius-size); }
+    .navbar .navbar-dropdown:hover .navbar-dropdown-content {
+      opacity: 100;
+      transform: scale(1); }
+    .navbar .navbar-dropdown .toggle-officer-btn {
+      height: 100%;
+      width: 100%;
+      border-color: transparent;
+      background-color: var(--warning-bg-color); }
+      .navbar .navbar-dropdown .toggle-officer-btn.active {
+        background-color: var(--success-bg-color); }
+        .navbar .navbar-dropdown .toggle-officer-btn.active:hover {
+          background-color: var(--success-bg-hover); }
+      .navbar .navbar-dropdown .toggle-officer-btn:hover {
+        background-color: var(--warning-bg-hover) !important; }
   .navbar .navbar-content-container {
     display: flex;
     justify-content: space-between;
@@ -385,7 +439,7 @@ body {
     align-items: center; }
     .navbar .navbar-content-container .nav-item {
       height: 50px;
-      width: 100px;
+      min-width: 100px;
       background-color: var(--bg-hover-color);
       color: var(--white-color);
       border-radius: var(--border-radius-size); }
@@ -405,24 +459,6 @@ body {
         .navbar .navbar-content-container .navbar-ane .navbar-logo img {
           height: 52px;
           width: 52px; }
-    .navbar .navbar-content-container .navbar-toggle-officer-view {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      border-radius: var(--border-radius-size); }
-      .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn {
-        height: 100%;
-        width: 100%;
-        border-color: transparent;
-        background-color: var(--warning-bg-color); }
-        .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn.active {
-          background-color: var(--success-bg-color); }
-          .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn.active:hover {
-            background-color: var(--success-bg-hover);
-            color: #fff; }
-        .navbar .navbar-content-container .navbar-toggle-officer-view .toggle-officer-btn:hover {
-          background-color: var(--warning-bg-hover);
-          color: #fff; }
     .navbar .navbar-content-container .navbar-links {
       min-width: 370px;
       max-width: 500px;
@@ -442,7 +478,6 @@ body {
           display: none; }
     .navbar .navbar-content-container .navbar-user {
       margin-right: 1em;
-      width: 10%;
       text-align: right;
       color: var(--white-color); }
       .navbar .navbar-content-container .navbar-user .navbar-user-menu {
@@ -462,19 +497,22 @@ body {
           display: none; }
       .navbar .navbar-content-container .navbar-logo {
         margin-left: 2px !important; } }
-  @media screen and (max-width: 46em) {
-    .navbar .navbar-ane {
-      display: none; }
-    .navbar .navbar-user {
-      display: none; }
-    .navbar .responsive-user-btn {
-      display: block !important;
-      height: 100%; }
-    .navbar .navbar-content-container {
-      justify-content: center; }
-    .navbar .navbar-links {
-      max-width: 100% !important;
-      width: 100% !important; } }
+  @media screen and (max-width: 48em) {
+    .navbar {
+      /*         .navbar-user {
+            display: none;
+        } */
+      /*         .responsive-user-btn {
+            display: block !important;
+            height: 100%;
+        } */ }
+      .navbar .navbar-ane {
+        display: none !important; }
+      .navbar .navbar-content-container {
+        justify-content: center; }
+      .navbar .navbar-links {
+        max-width: 100% !important;
+        width: 100% !important; } }
 
 /* /.................// Calendar //................./ */
 .calendar-grid-container {
@@ -932,9 +970,9 @@ body {
       .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:hover {
         transform: scale(1.1, 1.1); }
     .event-view-container .event-view-boss-container .event-view-summary {
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: column;
+      /*             display: flex;
+            flex-wrap: wrap;
+            flex-direction: column; */
       margin-top: 2rem;
       margin: 2em auto;
       width: 90%;
@@ -951,19 +989,20 @@ body {
           display: inline-block;
           margin: 0 3px 1rem 3px; }
       .event-view-container .event-view-boss-container .event-view-summary .summary-boss-container {
-        flex-wrap: wrap; }
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 1rem; }
       .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss {
         display: flex;
         flex-direction: column;
-        min-width: 200px;
-        margin: 0 0.5rem 1rem 0.5rem; }
+        max-height: 175px;
+        justify-content: flex-start !important; }
         .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-boss-name {
           font-size: 1.7em;
           text-align: center; }
         .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-benched {
           font-size: 1.5em;
-          background-color: var(--warning-bg-color);
-          border-radius: var(--border-radius-size);
+          color: var(--warning-bg-color);
           text-align: center; }
         .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-boss .event-view-summary-role {
           text-align: center; }
@@ -1286,33 +1325,18 @@ input[type=number] {
   -moz-appearance: textfield; }
 
 /* /.................// Mediaquery @600px //................./ */
-/* Navbar (Hamburger menu) -- Calendar  */
-@media screen and (max-width: 600px) {
-  .events-list-container {
-    width: 90%; }
-  .event-view-benched-roster,
-  .event-view-late-users {
-    display: none; }
-  .event-view-container {
-    width: 100%; }
-  /* calendar-grid-container */
-  .calendar-grid-container {
-    max-height: 370px;
-    width: 95%;
-    padding: 1em; }
-    .calendar-grid-container .calendar-grid {
-      column-gap: 0; }
+/* Navbar (Hamburger menu)  */
+@media screen and (max-width: 49em) {
   .navbar {
     height: 3.5rem;
-    /* On smaller screens we use different menu */
-    /* Only used on smaller screens - displayed in mediaqueries @600px */ }
+    /* Only used on smaller screens */ }
     .navbar .navbar-content-container {
       display: none; }
     .navbar .navbar-hamburger-menu {
       display: block;
       position: absolute;
       width: 0%;
-      transition: width 200ms ease-in-out; }
+      transition: all 200ms ease-in-out; }
       .navbar .navbar-hamburger-menu.open {
         width: 100%;
         height: 100vh; }
@@ -1392,7 +1416,23 @@ input[type=number] {
               .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn.active {
                 background-color: var(--success-bg-color); }
                 .navbar .navbar-hamburger-menu .navbar-hamburger-menu-content .navbar-hamburger-links .nav-item.navbar-toggle-officer-view .toggle-officer-btn.active:hover {
-                  background-color: var(--success-bg-hover); }
+                  background-color: var(--success-bg-hover); } }
+
+@media screen and (max-width: 600px) {
+  .events-list-container {
+    width: 90%; }
+  .event-view-benched-roster,
+  .event-view-late-users {
+    display: none; }
+  .event-view-container {
+    width: 100%; }
+  /* calendar-grid-container */
+  .calendar-grid-container {
+    max-height: 370px;
+    width: 95%;
+    padding: 1em; }
+    .calendar-grid-container .calendar-grid {
+      column-gap: 0; }
   .draggable-icon {
     display: none; } }
 
