@@ -88,15 +88,15 @@ $borderThickness: 2px;
         cursor:default;
         pointer-events: none;
         background-color: $defaultButtonColor;
-        border-color: transparent;
+        border: 2px solid transparent;
         color: $textDisabled;
         position: relative;
-        overflow: hidden;
+        clip-path: inset(0 round #{$borderRadius});
         z-index: 0;
 
         // To fix the button shrinking when removing border
-        margin-top: -2px !important;
-        margin-bottom: -2px !important;
+        //margin-top: -2px !important;
+        //margin-bottom: -2px !important;
         border-radius: 7px !important;
 
         &:hover{

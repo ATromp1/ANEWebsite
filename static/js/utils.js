@@ -92,22 +92,19 @@ function clamp(number, min, max) {
 }
 
 function loadingButton(btn, statusText="", statusType="info", func) {
-    const borderThickness = 2;
-    btn.addClass('ane-btn-disabled')
-    btn.attr('loading',true)
-    let xPadding = (parseInt($(btn).css('padding-left') || 0) + parseInt($(btn).css('padding-right') || 0) + (borderThickness * 2)) / 2
-    let yPadding = (parseInt($(btn).css('padding-top')  || 0) + parseInt($(btn).css('padding-bottom')|| 0) + (borderThickness * 2)) / 2
-    $(btn).css('padding-left', xPadding);
-    $(btn).css('padding-right', xPadding);
-    $(btn).css('padding-bottom', yPadding);
-    $(btn).css('padding-top', yPadding);
+    $(btn).addClass('ane-btn-disabled')
+    $(btn).attr('loading',true)
     setTimeout(()=>{
-        btn.removeAttr('loading')
-        btn.removeAttr('style')
+        $(btn).removeAttr('loading')
+        //$(btn).removeAttr('style')
         if(statusText != "")
             status_alert(1500, statusText, statusType)
         if(func)
             func()
     },(Math.random()+0.1)*1000*1.5)
+}
 
+function redirectButton(btn) {
+    $(btn).addClass('ane-btn-disabled')
+    $(btn).attr('loading',true)
 }
