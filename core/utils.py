@@ -493,14 +493,15 @@ def set_officer_staff(request):
 
 
 def toggle_staff_button(request):
+    refererURL = request.META.get('HTTP_REFERER') or 'home'
     if request.user.is_staff:
         request.user.is_staff = False
         request.user.save()
-        return redirect('home')
+        return redirect(refererURL)
     if not request.user.is_staff and is_user_officer(request):
         request.user.is_staff = True
         request.user.save()
-        return redirect('home')
+        return redirect(refererURL)
 
 
 def is_user_officer(request):
