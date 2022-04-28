@@ -37,6 +37,8 @@
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
 </script>
 <script>
+    {% comment %} Center the navbar by making the logo the same size as the user-navbar {% endcomment %}
+    $(function(){let navbarUserWidth = $('.navbar-user').css('width');$('.navbar-ane').css('width', navbarUserWidth);});
     {% comment %} Checks for elements with class of 'rebtn'. On click it calls "loadingButton()" with the element as arg.
                   If the user presses the back button the loading attribute and class gets removed because the state gets saved on
                   browser back clicks.  {% endcomment %}

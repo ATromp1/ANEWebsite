@@ -451,7 +451,6 @@ body {
       .navbar .navbar-content-container .navbar-btn:hover {
         color: var(--white-color); }
     .navbar .navbar-content-container .navbar-ane {
-      width: 10%;
       color: var(--white-color);
       display: flex; }
       .navbar .navbar-content-container .navbar-ane .navbar-logo {
@@ -460,6 +459,7 @@ body {
           height: 52px;
           width: 52px; }
     .navbar .navbar-content-container .navbar-links {
+      margin: auto;
       min-width: 370px;
       max-width: 500px;
       width: 80%; }

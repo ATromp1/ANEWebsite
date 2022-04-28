@@ -409,7 +409,6 @@ body {
         align-content: center;
         align-items: center;
 
-
         .nav-item {
             height: 50px;
             min-width: 100px;
@@ -431,7 +430,6 @@ body {
         }
 
         .navbar-ane {
-            width: 10%;
             color: var(--white-color);
             display: flex;
 
@@ -446,10 +444,10 @@ body {
         }
 
         .navbar-links {
+            margin: auto;
             min-width: 370px;
             max-width: 500px;
             width: 80%;
-
 
             .navbar-nav {
                 height: 3rem;
