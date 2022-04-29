@@ -430,6 +430,8 @@ body {
         }
 
         .navbar-ane {
+            width: 52px;
+            transition: width 150ms ease-in;
             color: var(--white-color);
             display: flex;
 
