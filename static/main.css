@@ -943,34 +943,44 @@ body {
           display: inline-block; }
     .event-view-container .event-view-boss-container .event-view-attendance-status span {
       font-size: 1.2em; }
-    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-char {
-      margin: 3px 0px; }
-      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-char:hover {
-        outline: 2px solid #aaa; }
-    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-options {
-      margin-right: 5px; }
-    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rects {
-      align-items: center;
-      margin-left: auto; }
-    .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect {
-      border-radius: var(--border-radius-size);
-      margin: 0 3px;
-      height: 20px;
-      width: 20px;
-      border: 1px solid #aaa;
-      position: relative;
-      background-color: var(--bg-hover-color);
-      transition: 200ms all ease-in-out; }
-      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect.killed {
-        background-color: var(--info-bg-color); }
-      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(2) {
-        border-right: 3px solid var(--danger-bg-color); }
-      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(5) {
-        border-right: 3px solid var(--warning-bg-color); }
-      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(8) {
-        border-right: 3px solid var(--success-bg-color); }
-      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:hover {
-        transform: scale(1.1, 1.1); }
+    .event-view-container .event-view-boss-container .summary-vault-info {
+      display: flex;
+      flex-direction: column;
+      width: fit-content; }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-char {
+        margin: 3px 0px; }
+        .event-view-container .event-view-boss-container .summary-vault-info .great-vault-char:hover {
+          outline: 2px solid #aaa; }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-options {
+        margin-right: 5px; }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rects {
+        align-items: center;
+        margin-left: auto; }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect {
+        border-radius: var(--border-radius-size);
+        margin: 0 3px;
+        height: 20px;
+        width: 20px;
+        border: 1px solid #aaa;
+        position: relative;
+        background-color: var(--bg-hover-color);
+        transition: 200ms all ease-in-out; }
+        .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect.killed {
+          background-color: var(--info-bg-color); }
+        .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(2) {
+          border-right: 3px solid var(--danger-bg-color); }
+        .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(5) {
+          border-right: 3px solid var(--warning-bg-color); }
+        .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:nth-child(8) {
+          border-right: 3px solid var(--success-bg-color); }
+        .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect:hover {
+          transform: scale(1.1, 1.1); }
+        .event-view-container .event-view-boss-container .summary-vault-info .great-vault-boss-rect.summary {
+          border: none; }
+      .event-view-container .event-view-boss-container .summary-vault-info .great-vault-summary .rects {
+        text-align: center;
+        margin-left: auto;
+        margin-right: 40px; }
     .event-view-container .event-view-boss-container .event-view-summary {
       /*             display: flex;
             flex-wrap: wrap;
@@ -982,14 +992,18 @@ body {
       padding-bottom: 1.5em; }
       .event-view-container .event-view-boss-container .event-view-summary.hidden {
         display: none; }
-      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info > div {
-        margin: 0 2rem; }
-      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info .publish-buttons-container {
-        width: 10rem; }
-        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info .publish-buttons-container .publish-button {
-          width: 45%;
-          display: inline-block;
-          margin: 0 3px 1rem 3px; }
+      .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info {
+        display: flex;
+        flex-wrap: wrap;
+        width: fit-content; }
+        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info > div {
+          margin: 0 2rem; }
+        .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info .publish-buttons-container {
+          width: 10rem; }
+          .event-view-container .event-view-boss-container .event-view-summary .event-view-summary-officer-info .publish-buttons-container .publish-button {
+            width: 45%;
+            display: inline-block;
+            margin: 0 3px 1rem 3px; }
       .event-view-container .event-view-boss-container .event-view-summary .summary-boss-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
