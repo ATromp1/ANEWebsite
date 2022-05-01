@@ -1,0 +1,17 @@
+# Node Modules
+node_modules
+package-lock.json
+package.json
+
+# Pycache, DLL files, etc
+**/__pycache__
+**/migrations
+*.py[cod]
+*.pyc
+
+# Server files
+.env
+venv/
+db.sqlite3
+logs/
+static/admin/
