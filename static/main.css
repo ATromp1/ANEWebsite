@@ -451,7 +451,7 @@ body {
       .navbar .navbar-content-container .navbar-btn:hover {
         color: var(--white-color); }
     .navbar .navbar-content-container .navbar-ane {
-      width: 52px;
+      width: 135px;
       transition: width 150ms ease-in;
       color: var(--white-color);
       display: flex; }

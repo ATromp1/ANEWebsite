@@ -430,7 +430,10 @@ body {
         }
 
         .navbar-ane {
-            width: 52px;
+            // This value is a guess based on the width of the length of the username of currently logged in player
+            // Later gets changed to proper value in Javascript. Initial value is to avoid the navbar snapping into place
+            // When document loads
+            width: 135px;
             transition: width 150ms ease-in;
             color: var(--white-color);
             display: flex;
