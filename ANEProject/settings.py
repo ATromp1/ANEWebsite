@@ -79,7 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'ANEProject.error_hander.ErrorHandlerMiddleware'
+    'ANEProject.error_handler.ErrorHandlerMiddleware',
 ]
 
 ROOT_URLCONF = 'ANEProject.urls'
@@ -96,6 +96,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'ANEProject.static_file_hash.static_file_hash_processor',
             ],
         },
     },

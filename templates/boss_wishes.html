@@ -214,7 +214,7 @@
     window.onbeforeunload = confirmLeave;
 </script>
 <script src="{% static '/js/modal.js' %}"></script>
-<script src="{% static '/js/boss_wishes.js' %}"></script>
+<script src="{% static '/js/boss_wishes.js' %}?{{ static_hash }}"></script>
 
 {% endblock %}
 

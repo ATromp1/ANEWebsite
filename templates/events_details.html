@@ -260,9 +260,9 @@
             //$('.boss-detail-container').on('click',()=>$(bossList).removeClass('active'))
         })
     </script>
-    <script src="{% static '/js/event_view_utils.js' %}"></script>
-    <script src="{% static '/js/great_vault.js' %}"></script>
-    <script src="{% static '/js/event_view.js' %}"></script>
+    <script src="{% static '/js/event_view_utils.js' %}?{{ static_hash }}"></script>
+    <script src="{% static '/js/great_vault.js' %}?{{ static_hash }}"></script>
+    <script src="{% static '/js/event_view.js' %}?{{ static_hash }}"></script>
     <script src="{% static '/js/modal.js' %}"></script>
     <script src="{% static '/js/roster_template.js' %}"></script>
     
