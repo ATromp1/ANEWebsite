@@ -82,7 +82,10 @@ class SortableList {
         for (const [id, val] of Object.entries(initialState)) {
             const input = $(this.listContainer).find('#' + id).find('input')
             let inputVal = val
-            if (val == '-') inputVal = 99
+            if (val == '-') {
+                inputVal = 99
+                $(input).closest('.bosswish-boss').addClass('no-value')
+            }
             $(input).val(inputVal)
         }
         for (const [id, val] of Object.entries(initialState)) {
@@ -145,7 +148,7 @@ class SortableList {
                     $(input).val(0)
                     userValue = 0
                 }
-                console.log("blur")
+
                 this.updateOrderedIdList(userValue, bossId)
                 this.updateDataOrderAttribute()
                 this.updateInputValue()
@@ -155,6 +158,8 @@ class SortableList {
 
         $('.save-wishes').on('click', () => {
             const btn = $('.save-wishes')
+            $('.bosswish-boss').removeClass('no-value')
+            $('.bosswish-bossname').tooltip('disable')
             loadingButton(btn, "Wishes Saved", "success", () => this.syncDataToDb())
             unsavedChanges = 0
         })

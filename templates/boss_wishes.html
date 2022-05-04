@@ -215,6 +215,14 @@
 </script>
 <script src="{% static '/js/modal.js' %}"></script>
 <script src="{% static '/js/boss_wishes.js' %}?{{ static_hash }}"></script>
+<script>
+    $(function() {
+        setTimeout(()=>{
+            $('.no-value').find('.bosswish-bossname').prop('title', "No value saved for this boss")
+            $('.no-value').find('.bosswish-bossname').tooltip()
+        }, 250)
+    })
+</script>
 
 {% endblock %}
 

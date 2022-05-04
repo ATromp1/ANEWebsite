@@ -1106,20 +1106,10 @@ body {
         .event-view-container .event-view-boss-container .event-view-boss-info .event-view-benched-roster .benched-roster-row:hover {
           outline: 1px solid #aaa; }
     .event-view-container .event-view-boss-container .event-view-template-buttons {
-      display: flex; }
+      display: flex;
+      gap: 5px; }
       .event-view-container .event-view-boss-container .event-view-template-buttons .template-button {
-        background-color: var(--info-bg-color);
         width: calc(100% / 2 - 3px * 2); }
-        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template {
-          background-color: var(--success-bg-color);
-          margin-right: 3px; }
-          .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-save-template:hover {
-            background-color: var(--success-bg-hover); }
-        .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template {
-          background-color: var(--info-bg-color);
-          margin-left: 3px; }
-          .event-view-container .event-view-boss-container .event-view-template-buttons .template-button.event-view-load-template:hover {
-            background-color: var(--info-bg-hover); }
 
 .event-view-raid-links {
   position: absolute;
@@ -1189,7 +1179,7 @@ body {
   .officer-grid-char .officer-grid-bosswish.bench-me {
     color: var(--danger-bg-color); }
   .officer-grid-char .officer-grid-bosswish:nth-child(odd) {
-    background-color: #343A40; }
+    background-color: #343a40; }
   .officer-grid-char .officer-grid-bosswish:nth-child(even) {
     background-color: var(--bg-content-container); }
 
@@ -1216,16 +1206,16 @@ body {
 .wish-toolbar .save-wishes {
   margin: auto;
   font-size: 1.2rem;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   position: relative; }
 
 .wish-toolbar .wish-info {
-  margin: .5rem auto;
+  margin: 0.5rem auto;
   width: fit-content;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   background-color: var(--bg-content-container); }
   .wish-toolbar .wish-info > p {
-    margin: .5rem 0; }
+    margin: 0.5rem 0; }
 
 .draggable-list {
   /* Note, due to this element's height being set with JS,
@@ -1235,28 +1225,41 @@ body {
   padding-top: 30px; }
 
 .bosswish-boss {
+  display: flex;
+  align-items: center;
   background-color: var(--bg-content-container);
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   height: var(--list-item-height);
   min-width: 260px;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
   transition: top 300ms ease-out; }
-  .bosswish-boss input[type=number] {
+  .bosswish-boss input[type="number"] {
     border: 1px solid #aaa;
-    float: right;
     text-align: center;
-    margin-left: 10px;
+    margin-left: auto;
     background-color: var(--bg-hover-color);
     color: var(--white-color); }
   .bosswish-boss.can-help {
     color: #6c757d; }
   .bosswish-boss.bench-me {
     color: var(--danger-bg-color); }
-    .bosswish-boss.bench-me input[type=number] {
+    .bosswish-boss.bench-me input[type="number"] {
       border-color: var(--danger-bg-color);
       color: var(--danger-bg-color); }
+  .bosswish-boss.no-value {
+    color: #0d6dfd; }
+    .bosswish-boss.no-value > .bosswish-bossname {
+      display: flex;
+      align-items: center; }
+      .bosswish-boss.no-value > .bosswish-bossname::before {
+        font-family: "Material Icons";
+        font-size: 1.5em;
+        content: "priority_high";
+        background: -webkit-linear-gradient(#cb9b0a, #e3c504);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent; }
   .bosswish-boss[dragging] {
     transition: none; }
     .bosswish-boss[dragging]::after {
@@ -1337,7 +1340,7 @@ input::-webkit-inner-spin-button {
   margin: 0; }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield; }
 
 /* /.................// Mediaquery @600px //................./ */
