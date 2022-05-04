@@ -132,6 +132,7 @@ class SortableList {
             $(input).on('focusout keypress', (e) => {
                 if (e.type == 'keypress') {
                     if (e.charCode != 13) return
+                    input.blur()
                 }
                 const bossId = element.id
                 let userValue = $(input).val()
@@ -144,8 +145,7 @@ class SortableList {
                     $(input).val(0)
                     userValue = 0
                 }
-
-
+                console.log("blur")
                 this.updateOrderedIdList(userValue, bossId)
                 this.updateDataOrderAttribute()
                 this.updateInputValue()
