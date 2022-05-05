@@ -360,12 +360,11 @@ class RosterPerBoss {
         $(ROSTER_TABLE).append(ALREADY_SELECTED)
 
         let groupedRoster = groupBy(this.benchedRoster, 'playable_class')
-        let sortedByWish = sortByWishes(this.benchedRoster, this.boss)
+        //let sortedByWish = sortByWishes(this.benchedRoster, this.boss)
         const ROLES = ['tank', 'healer', 'mdps', 'rdps']
         const TD_CSS_CLASSES = "event-view-role-icon"
-        for (let i in groupedRoster) {
-            let sortedItem = groupedRoster[i]
-            sortedItem.forEach((char) => {
+        Object.values(groupedRoster).forEach(playable_class => {
+            playable_class.forEach((char) => {
                 let $tr = $('<tr/>', {
                     'class': 'benched-roster-row'
                 })
@@ -375,13 +374,28 @@ class RosterPerBoss {
                         'class': "text-secondary",
                         'text': char.name
                     }))
+
+                    let charInRoster = this.getAccountsCharInRoster(char.account_id)
+                    const $td = $('<td/>', {
+                        'class': 'position-absolute',
+                        'text': "In as: "
+                    })
+
+                    $td.append($('<span/>', {
+                        'class': css_classes[charInRoster.playable_class],
+                        'text': charInRoster.name,
+                    }))
+                    $tr.append($td)
+
+                    $(ROSTER_TABLE).append($tr)
                 } else {
                     let bossWish = char.wishes[raid_event.currentlySelectedRoster] || '-'
                     $tr.append($('<td/>', {
                         'class': css_classes[char.playable_class],
                         'text': char.name
                     }))
-                    // If is staff append the boss wishes to the character
+
+                    // If is staff append additional information
                     if (is_staff) {
                         let bossWishCssClass;
                         if (bossWish == '99') {
@@ -391,19 +405,14 @@ class RosterPerBoss {
                         } else {
                             bossWishCssClass = ''
                         }
+
                         $tr.append($('<td/>', {
                             style: 'width:3rem;',
                             class: bossWishCssClass,
                             text: ` [ ${bossWish} ]`,
                         }))
-                    }
-                }
 
-                // Don't append the role icons if user is not staff
-                if (is_staff) {
-                    if (!accountIdInRoster) {
-                        for (let role in ROLES) {
-                            role = ROLES[role]
+                        ROLES.forEach(role => {
                             if (char.roles.includes(role)) {
                                 $tr.append($('<td/>', {
                                     'id': role,
@@ -416,29 +425,13 @@ class RosterPerBoss {
                             } else {
                                 $tr.append($('<td/>'))
                             }
-                        }
-                    } else {
-                        let charInRoster = this.getAccountsCharInRoster(char.account_id)
-                        const $td = $('<td/>', {
-                            'class': 'position-absolute',
-                            'text': "In as: "
                         })
-                        $td.append($('<span/>', {
-                            'class': css_classes[charInRoster.playable_class],
-                            'text': charInRoster.name,
-                        }))
-                        $tr.append($td)
                     }
-                }
-
-                if (accountIdInRoster) {
-                    $(ROSTER_TABLE).append($tr)
-                } else {
+                    
                     $(ROSTER_TABLE).prepend($tr)
                 }
-
             })
-        }
+        })
     }
 
     getAccountsCharInRoster(account_id) {
